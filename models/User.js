@@ -6,8 +6,12 @@ var addUserQuery = multiline(function() {/*
   INSERT INTO Users (flickrID,oauth,secret)
   VALUES (?, ?, ?);
 */});
+
 function add(flickrId, flickrOAuthToken, flickrOAuthSecret, callback) {
-  connection.query(addUserQuery, [flickrId, flickrOAuthToken, flickrOAuthSecret], callback);
+  connection.query(
+    addUserQuery, 
+    [flickrId, flickrOAuthToken, flickrOAuthSecret], 
+    callback);
 }
 
 var updateUserQuery = multiline(function() {/*
@@ -16,12 +20,15 @@ var updateUserQuery = multiline(function() {/*
   WHERE flickrID=?;
 */});
 function update(flickrId, flickrOAuthToken, flickrOAuthSecret, callback) {
-  connection.query(updateUserQuery, [flickrOAuthToken, flickrOAuthSecret, flickrId], callback);
+  connection.query(
+    updateUserQuery, 
+    [flickrOAuthToken, flickrOAuthSecret, flickrId], 
+    callback);
 }
 
 var selectUserQuery = multiline(function() {/*
-  SELECT * FROM
-  Users WHERE flickrID = ?;
+  SELECT * FROM Users 
+  WHERE flickrID = ?;
 */});
 function select(flickrId, callback) {
   connection.query(selectUserQuery, [flickrId], function(err, result) {
@@ -29,8 +36,12 @@ function select(flickrId, callback) {
   });
 }
 
-//Test Dem Queries
+exports.add = add;
+exports.update = update;
+exports.selectById = select;
 
+//Test Dem Queries
+/*
 add('12','34','56',function(err){
   if(err) console.log(err);
 });
@@ -42,3 +53,4 @@ update('12','133123','2323231',function(err){
 select('12', function(err, result){
 	err ? console.log(err) : console.log(result);
 });
+*/
