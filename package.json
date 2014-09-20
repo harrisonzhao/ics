@@ -1,5 +1,4 @@
 {
-  "name": "infinite cloud storage",
   "version": "0.0.1",
   "repository":{
     "type": "git",
@@ -25,7 +24,7 @@
     "mysql": "^2.5.0",
     "passport": "~0.1.17",
     "passport-local": "~0.1.6",
-    "passport-flickr": "^0.2.0",
+    "passport-flickr": "0.2.0",
     "rootpath": "0.1.2"
   },
   "engines": {

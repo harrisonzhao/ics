@@ -13,24 +13,9 @@ app.get('/login', staticPages.renderLogin);
 app.get('/signup', staticPages.renderSignup);
 
 var auth = require('controllers/auth');
-app.post('/login', auth.localLogin);
 app.get('/logout', auth.logout);
-app.post('/signup', auth.localSignup);
-app.get('/auth/facebook', auth.facebookAuth);
-app.get('/auth/facebook/callback', auth.facebookAuthCallback);
-app.get('/auth/google', auth.googleAuth);
-app.get('/auth/google/callback', auth.googleAuthCallback);
-app.get('/auth/twitter', auth.twitterAuth);
-app.get('/auth/twitter/callback', auth.twitterAuthCallback);
-
-var userApi = require('controllers/userApi');
-app.get('/api/v1/users', userApi.getUsers);
-app.get('/api/v1/users/:id', userApi.getUserById);
-app.post('/api/v1/users', userApi.postUser);
-app.put('/api/v1/users', userApi.updateUser);
-app.delete('/api/v1/users/:id', userApi.deleteUserById);
-app.post('/api/v1/login', userApi.loginUser);
-app.post('/api/v1/logout', userApi.logoutUser);
+app.get('/auth/flickr', auth.flickrAuth);
+app.get('/auth/flickr/callback', auth.flickrAuthCallback);
 
 app.all('*', auth.checkLoggedIn);
 app.get('/profile', staticPages.renderProfile);

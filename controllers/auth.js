@@ -8,39 +8,15 @@ exports.checkLoggedIn = function(req, res, next) {
   req.user ? next() : res.redirect('/login');
 }
 
-exports.facebookAuth = passport.authenticate('facebook', {scope: 'email'});
-exports.facebookAuthCallback = passport.authenticate('facebook', { 
+exports.flickrAuth = passport.authenticate('flickr');
+exports.flickrAuthCallback = passport.authenticate('flickr', { 
   successRedirect: '/profile',
   failureRedirect: '/' 
-});
-
-exports.googleAuth = passport.authenticate('google', {scope: 'profile email'});
-exports.googleAuthCallback = passport.authenticate('google', { 
-  successRedirect: '/profile',
-  failureRedirect: '/' 
-});
-
-exports.twitterAuth = passport.authenticate('twitter', {scope: 'email' });
-exports.twitterAuthCallback = passport.authenticate('twitter', { 
-  successRedirect: '/profile',
-  failureRedirect: '/' 
-});
-
-exports.localSignup = passport.authenticate('local-signup', {
-  successRedirect : '/profile',
-  failureRedirect : '/signup',
-  failureFlash : true
-});
-
-exports.localLogin = passport.authenticate('local-login', {
-  successRedirect: '/profile',
-  failureRedirect: '/login',
-  failureFlash: true
 });
 
 exports.logout = function(req, res, next) {
   if (!req.user) {
-    next('not logged in');
+    res.redirect('/login')
   } else {
     req.logout();
     res.redirect('/');

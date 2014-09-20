@@ -12,12 +12,14 @@ module.exports = function(passport) {
   /* Passport needs ability to serialize and deserialize users out of session */
 
   // Serialize the user for the session
-  passport.serializeUser(function(user, done) { done(null, user.id); });
+  // only store the id
+  passport.serializeUser(function(user, done) { /*done(null, user.id);*/ });
 
   // Deserialize the user
   passport.deserializeUser(function(id, done) {
     //User.findById(id, function(err, user) { done(err, user); });
   });
 
-  passport.use('flickr', new FlickrStrategy(configAuth, flickrVerifyCallback));
+  passport.use('flickr', new FlickrStrategy(
+          configAuth.flickrAuth, flickrVerifyCallback));
 };
