@@ -21,6 +21,7 @@
     "helmet": "0.3.x",
     "method-override": "1.0.x",
     "mongoose": ">= 2.6.5",
+    "multiline": "^1.0.0 ",
     "mysql": "^2.5.0",
     "passport": "~0.1.17",
     "passport-local": "~0.1.6",
