@@ -24,6 +24,9 @@ CREATE TABLE IF NOT EXISTS Files (
   PRIMARY KEY (idUser,direct,filename)
 );
 
+INSERT INTO Files (idUser,filename,isDirectory)
+VALUES (1,'afolder',1);
+
 DROP TABLE IF EXISTS Parts;
 CREATE TABLE IF NOT EXISTS Parts (
   fidOwner INT NOT NULL,

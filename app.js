@@ -32,3 +32,4 @@ app.listen(configs.settings.secrets.port);
 console.log('listening on port ' + configs.settings.secrets.port);
 
 require('models/User');
+require('models/Files');
