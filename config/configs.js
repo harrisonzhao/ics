@@ -9,20 +9,22 @@ var flash = require('connect-flash');
 var hbs = require('hbs');
 var helmet = require('helmet');
 var methodOverride = require('method-override');
-var mongoose = require('mongoose');
 var morgan = require('morgan');
+var mysql = require('mysql');
 var path = require('path');
 var passport = require('passport');
 var session = require('express-session');
 
 var settings = require('./settings/exports');
 
-var MongoStore = require('connect-mongo')(session);
-
-//set up mongodb connection and setup passport configuration
-mongoose.connect(settings.secrets.db);
-mongoose.connection.on('error', function() {
-  console.error('MongoDB connection error. Make sure MongoDB is running.');
+//set up mysql connection and setup passport configuration
+var connection = mysql.createConnection(settings.secrets.mysqlConfigs);
+connection.connect(function(err) {
+  if (err) {
+    console.error('error connecting: ' + err.stack);
+  } else {
+    console.log('connected as id ' + connection.threadId);
+  }
 });
 require('./auth/passport')(passport);
 
@@ -44,15 +46,13 @@ var config = {
     app.use(cookieparser());
     app.use(methodOverride());
     app.use(session({
-      secret: settings.secrets.sessionSecret,
-      store: new MongoStore({
-        db: mongoose.connections[0].db
-      })
+      secret: settings.secrets.sessionSecret
     }));
     app.use(flash());
     app.use(passport.initialize());
     app.use(passport.session());
   },
+  mysql: connection,
   passport: passport,
   settings: settings
 }
