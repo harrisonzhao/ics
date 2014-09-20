@@ -25,8 +25,10 @@ app.get('*', staticPages.serve404);
 /**
  * handles the errors when next(err) is called
  */
-var errorHandler = require('controllers/errorHandler').errorHandler;
-app.use(errorHandler);
+//var errorHandler = require('controllers/errorHandler').errorHandler;
+//app.use(errorHandler);
 
 app.listen(configs.settings.secrets.port);
 console.log('listening on port ' + configs.settings.secrets.port);
+
+require('models/User');
