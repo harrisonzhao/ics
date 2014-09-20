@@ -7,17 +7,42 @@ var connection = require('config/configs').mysql;
 //get user by profile id (string)
 
 var addUserQuery = multiline(function() {/*
-
+  INSERT INTO Users (flickrID,oauth,secret)
+  VALUES (?, ?, ?);
 */});
-function addUser(flickrId, flickrOAuthToken, flickrOAuthSecret, callback) {
+function add(flickrId, flickrOAuthToken, flickrOAuthSecret, callback) {
+  connection.query(addUserQuery, [flickrId, flickrOAuthToken, flickrOAuthSecret], callback);
+}
 
+var updateUserQuery = multiline(function() {/*
+  UPDATE Users
+  SET oauth=?,secret=?
+  WHERE flickrID=?;
+*/});
+function update(flickrId, flickrOAuthToken, flickrOAuthSecret, callback) {
+  connection.query(updateUserQuery, [flickrOAuthToken, flickrOAuthSecret, flickrId], callback);
 }
 
 var selectUserQuery = multiline(function() {/*
-  select * from Users where flickrId = ?;
+  SELECT * FROM
+  Users WHERE flickrID = ?;
 */});
-function selectUserById(flickrId, callback) {
+function select(flickrId, callback) {
   connection.query(selectUserQuery, [flickrId], function(err, result) {
     err ? callback(err) : callback(null, result[0]);
   });
 }
+
+//Test Dem Queries
+
+add('12','34','56',function(err){
+  if(err) console.log(err);
+});
+
+update('12','133123','2323231',function(err){
+  if(err) console.log(err);
+});
+
+select('12', function(err, result){
+	err ? console.log(err) : console.log(result);
+});
