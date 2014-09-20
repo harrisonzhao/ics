@@ -1,10 +1,6 @@
 'use strict';
 var multiline = require('multiline');
 var connection = require('config/configs').mysql;
-//add user
-//params: (flickrId, flickrOAuthToken, flickrOAuthSecret)
-//
-//get user by profile id (string)
 
 var addUserQuery = multiline(function() {/*
   INSERT INTO Users (flickrID,oauth,secret)
