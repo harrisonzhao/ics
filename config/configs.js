@@ -26,7 +26,7 @@ connection.connect(function(err) {
     console.log('connected as id ' + connection.threadId);
   }
 });
-require('./auth/passport')(passport);
+require('./passport')(passport);
 
 //exported configurations
 var config = {
@@ -46,7 +46,9 @@ var config = {
     app.use(cookieparser());
     app.use(methodOverride());
     app.use(session({
-      secret: settings.secrets.sessionSecret
+      secret: settings.secrets.sessionSecret,
+      key: 'sid', 
+      cookie: { secure: true }
     }));
     app.use(flash());
     app.use(passport.initialize());

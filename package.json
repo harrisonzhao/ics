@@ -11,7 +11,7 @@
     "compression": "1.0.2",
     "connect-flash": "~0.1.1",
     "express": "^4.9.0",
-    "flickr-with-uploads": "*",
+    "flickrapi": "^0.3.23",
     "mongoose": "latest",
     "morgan": "1.0.1",
     "express-session": "1.2.x",
@@ -23,7 +23,6 @@
     "mysql": "^2.5.0",
     "passport": "~0.1.17",
     "passport-local": "~0.1.6",
-    "passport-flickr": "0.2.0",
     "rootpath": "0.1.2"
   },
   "engines": {
