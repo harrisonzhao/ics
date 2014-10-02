@@ -1,56 +1,102 @@
 'use strict';
 var multiline = require('multiline');
-var connection = require('config/configs').mysql;
+var bcrypt = require('bcryptjs');
+var connection = require('config/db');
 
-var addUserQuery = multiline(function() {/*
-  INSERT INTO Users (flickrID,oauth,secret)
-  VALUES (?, ?, ?);
+function comparePassword(user, password, callback) {
+  return bcrypt.compareSync(password, user.passwordHash);
+}
+
+var createQuery = multiline(function() {/*
+  insert into Users (email, passwordHash) values (?, ?);
 */});
 
-function add(flickrId, flickrOAuthToken, flickrOAuthSecret, callback) {
+/**
+ * creates user given email and password
+ * @param  {[type]}   email    [description]
+ * @param  {[type]}   password [description]
+ * @param  {Function} callback
+ * args: err, result
+ * result contains the inserted Id for the user
+ */
+function create(email, password, callback) {
   connection.query(
-    addUserQuery, 
-    [flickrId, flickrOAuthToken, flickrOAuthSecret], 
-    callback);
+    createQuery, 
+    [email, bcrypt.hashSync(password,8)], 
+    function(err, result) {
+      err ? callback(err) : callback(null, result.insertId);
+    });
+}
+
+var selectByIdQuery = multiline(function() {/*
+  select * from Users where userId = ?;
+*/});
+
+/**
+ * [selectById description]
+ * @param  {[type]}   id       [description]
+ * @param  {Function} callback [description]
+ * args: err, result
+ */
+function selectById(id, callback) {
+  connection.query(selectByIdQuery, [id], callback);
+}
+
+var selectByEmailQuery = multiline(function() {/*
+  select * from Users where email = ?;
+*/});
+
+/**
+ * [selectByEmail description]
+ * @param  {[type]}   email    [description]
+ * @param  {Function} callback [description]
+ * args: err, result
+ */
+function selectByEmail(email, callback) {
+  connection.query(selectByEmailQuery, [email], callback);
 }
 
 var updateUserQuery = multiline(function() {/*
-  UPDATE Users
-  SET oauth=?,secret=?
-  WHERE flickrID=?;
+  update Users set
+  email = ?,
+  passwordHash = ?
+  where userId = ?;
 */});
-function update(flickrId, flickrOAuthToken, flickrOAuthSecret, callback) {
+
+/**
+ * @param  {object}   user
+ * the user object
+ * @param  {Function} callback [description]
+ */
+function update(user, callback) {
   connection.query(
     updateUserQuery, 
-    [flickrOAuthToken, flickrOAuthSecret, flickrId], 
+    [user.email, user.password_hash, user.user_id],
     callback);
 }
 
-var selectUserQuery = multiline(function() {/*
-  SELECT * FROM Users 
-  WHERE flickrID = ?;
+var deleteByIdQuery = multiline(function() {/*
+  delete from Users
+  where userId = ?;
 */});
-function select(flickrId, callback) {
-  connection.query(selectUserQuery, [flickrId], function(err, result) {
-    err ? callback(err) : callback(null, result[0]);
-  });
+
+function deleteById(userId, callback) {
+  connection.query(deleteByIdQuery, [userId], callback);
 }
 
-exports.add = add;
+var deleteByEmailQuery = multiline(function() {/*
+  delete from Users
+  where email = ?;
+*/});
+
+function deleteByEmail(email, callback) {
+  connection.query(deleteByEmailQuery, [email], callback);
+}
+
+exports.comparePassword = comparePassword;
+exports.create = create;
+exports.selectById = selectById;
+exports.selectByEmail = selectByEmail;
 exports.update = update;
-exports.selectById = select;
-
-//Test Dem Queries
-/*
-add('12','34','56',function(err){
-  if(err) console.log(err);
-});
-
-update('12','133123','2323231',function(err){
-  if(err) console.log(err);
-});
-
-select('12', function(err, result){
-	err ? console.log(err) : console.log(result);
-});
-*/
+exports.deleteById = deleteById;
+exports.deleteUserByEmail = deleteByEmail;

@@ -1,2 +1,2 @@
-alias ms="mysql --host=us-cdbr-azure-east-a.cloudapp.net --user=b522e363b6ec6a --password=c4e9977f infcsAlQ0HlL9eeC"
-alias mf="mysql --host=us-cdbr-azure-east-a.cloudapp.net --user=b522e363b6ec6a --password=c4e9977f infcsAlQ0HlL9eeC < models/setupv2.sql"
+alias ms="mysql -h infcs.cloudapp.net -u ics --password="suchrekt" infcs"
+alias mf="mysql -h infcs.cloudapp.net -u ics --password="suchrekt" infcs < models/setupv2.sql"

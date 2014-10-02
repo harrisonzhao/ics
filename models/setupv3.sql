@@ -1,4 +1,4 @@
-USE infcsAlQ0HlL9eeC;
+USE infcs;
 
 DROP TABLE IF EXISTS Users;
 CREATE TABLE IF NOT EXISTS Users (

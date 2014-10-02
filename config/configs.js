@@ -16,16 +16,10 @@ var passport = require('passport');
 var session = require('express-session');
 
 var settings = require('./settings/exports');
+var connection = require('./db');
 
 //set up mysql connection and setup passport configuration
-var connection = mysql.createConnection(settings.secrets.mysqlConfigs);
-connection.connect(function(err) {
-  if (err) {
-    console.error('error connecting: ' + err.stack);
-  } else {
-    console.log('connected as id ' + connection.threadId);
-  }
-});
+//var connection = mysql.createConnection(settings.secrets.mysqlConfigs);
 require('./passport')(passport);
 
 //exported configurations
