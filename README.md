@@ -1,4 +1,4 @@
-User Authentication with Node.js and Mongodb
+~~~ INFINITE CLOUD STORAGE ~~~
 =========
 
 Prerequisites
@@ -7,17 +7,6 @@ Prerequisites
 
 Getting Started
 ---------------
-
-To get started, clone the repository:
-
-```bash
-git clone https://github.com/thehackerati/node-starter-app myproject
-
-cd myproject
-
-npm install
-
-node app.js
 
 #point the browser to localhost:3000 to visit the site
 ```

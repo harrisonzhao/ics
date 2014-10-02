@@ -29,7 +29,7 @@ function create(email, password, callback) {
 }
 
 var selectByIdQuery = multiline(function() {/*
-  select * from Users where userId = ?;
+  select * from Users where idUser = ?;
 */});
 
 /**
@@ -60,7 +60,7 @@ var updateUserQuery = multiline(function() {/*
   update Users set
   email = ?,
   passwordHash = ?
-  where userId = ?;
+  where idUser = ?;
 */});
 
 /**
@@ -71,17 +71,17 @@ var updateUserQuery = multiline(function() {/*
 function update(user, callback) {
   connection.query(
     updateUserQuery, 
-    [user.email, user.password_hash, user.user_id],
+    [user.email, user.password_hash, user.idUser],
     callback);
 }
 
 var deleteByIdQuery = multiline(function() {/*
   delete from Users
-  where userId = ?;
+  where idUser = ?;
 */});
 
-function deleteById(userId, callback) {
-  connection.query(deleteByIdQuery, [userId], callback);
+function deleteById(idUser, callback) {
+  connection.query(deleteByIdQuery, [idUser], callback);
 }
 
 var deleteByEmailQuery = multiline(function() {/*

@@ -18,8 +18,7 @@ var session = require('express-session');
 var settings = require('./settings/exports');
 var connection = require('./db');
 
-//set up mysql connection and setup passport configuration
-//var connection = mysql.createConnection(settings.secrets.mysqlConfigs);
+//setup passport configuration
 require('./passport')(passport);
 
 //exported configurations
