@@ -3,8 +3,8 @@ var multiline = require('multiline');
 var bcrypt = require('bcryptjs');
 var connection = require('config/db');
 
-function comparePassword(user, password, callback) {
-  return bcrypt.compareSync(password, user.passwordHash);
+function validPassword(password, passwordHash) {
+  return bcrypt.compareSync(password, passwordHash);
 }
 
 var createQuery = multiline(function() {/*
@@ -17,7 +17,7 @@ var createQuery = multiline(function() {/*
  * @param  {[type]}   password [description]
  * @param  {Function} callback
  * args: err, result
- * result contains the inserted Id for the user
+ * result contains the insertId for the user
  */
 function create(email, password, callback) {
   connection.query(
@@ -39,7 +39,9 @@ var selectByIdQuery = multiline(function() {/*
  * args: err, result
  */
 function selectById(id, callback) {
-  connection.query(selectByIdQuery, [id], callback);
+  connection.query(selectByIdQuery, [id], function(err, result) {
+    err ? callback(err) : callback(null, result[0]);
+  });
 }
 
 var selectByEmailQuery = multiline(function() {/*
@@ -53,7 +55,9 @@ var selectByEmailQuery = multiline(function() {/*
  * args: err, result
  */
 function selectByEmail(email, callback) {
-  connection.query(selectByEmailQuery, [email], callback);
+  connection.query(selectByEmailQuery, [email], function(err, result) {
+    err ? callback(err) : callback(null, result[0]);
+  });
 }
 
 var updateUserQuery = multiline(function() {/*
@@ -71,7 +75,7 @@ var updateUserQuery = multiline(function() {/*
 function update(user, callback) {
   connection.query(
     updateUserQuery, 
-    [user.email, user.password_hash, user.idUser],
+    [user.email, user.passwordHash, user.idUser],
     callback);
 }
 

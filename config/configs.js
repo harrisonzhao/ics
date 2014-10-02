@@ -14,6 +14,7 @@ var mysql = require('mysql');
 var path = require('path');
 var passport = require('passport');
 var session = require('express-session');
+var SessionStore = require('express-mysql-session')
 
 var settings = require('./settings/exports');
 var connection = require('./db');
@@ -41,7 +42,8 @@ var config = {
     app.use(session({
       secret: settings.secrets.sessionSecret,
       key: 'sid', 
-      cookie: { secure: true }
+      cookie: { secure: true },
+      store: new SessionStore(settings.secrets.mysqlConfigs)
     }));
     app.use(flash());
     app.use(passport.initialize());

@@ -8,15 +8,9 @@ exports.checkLoggedIn = function(req, res, next) {
   req.user ? next() : res.redirect('/login');
 }
 
-exports.flickrAuth = passport.authenticate('flickr');
-exports.flickrAuthCallback = passport.authenticate('flickr', { 
-  successRedirect: '/profile',
-  failureRedirect: '/' 
-});
-
 exports.logout = function(req, res, next) {
   if (!req.user) {
-    res.redirect('/login')
+    res.send(400, 'not logged in');
   } else {
     req.logout();
     res.redirect('/');

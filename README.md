@@ -33,3 +33,32 @@ Project Structure
 
 
 TODO: delete or set up mail
+
+http://bgrins.github.io/filereader.js/
+
+For writing file to downloads:
+
+    window.webkitRequestFileSystem(window.TEMPORARY, 1024*1024, function(fs) {
+        fs.root.getFile('test.bin', {create: true}, function(fileEntry) {
+            fileEntry.createWriter(function(fileWriter) {
+                var arr = new Uint8Array(3);
+    
+                arr[0] = 97;
+                arr[1] = 98;
+                arr[2] = 99;
+    
+                var blob = new Blob([arr]);
+    
+                fileWriter.addEventListener("writeend", function() {
+                    // navigate to file, will download
+                    location.href = fileEntry.toURL();
+                }, false);
+    
+                fileWriter.write(blob);
+            }, function() {});
+        }, function() {});
+    }, function() {});
+
+
+access-control-allow-origin: 
+cross site http
