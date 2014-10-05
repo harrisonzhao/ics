@@ -4,13 +4,21 @@ require('rootpath')();
 var async = require('async');
 var LocalStrategy = require('passport-local').Strategy;
 var Users = require('models/Users');
+var dbErrors = require('config/settings/dbErrors');
 
 function localLoginVerifyCallback(email, password, done) {
   Users.selectByEmail(email, function(err, result) {
     if (err) { return done(err); }
-    if (!result) { return done(null, false); }
-    Users.validPassword(password, result.passwordHash) ? 
-            done(null, result) : done(null, false);
+    if (!result) { 
+      return done(null, false, {
+        message: 'Invalid username or password'
+      }); 
+    }
+    if (Users.comparePassword(password, result.passwordHash)) {
+      done(null, result); 
+    } else {
+      done(null, false, {message: 'Invalid username or password'})
+    }
   });
 }
 
@@ -18,14 +26,12 @@ function localSignupVerifyCallback(email, password, done) {
   async.waterfall(
   [
     function(callback) {
-      Users.selectByEmail(email, function(err, result) {
-        if (err) { return done(err); }
-        if (result) { return done(null, false); }
-        callback(null);
+      Users.create(email, password, function(err, result) {
+        if (err && err.errno === dbErrors.duplicateEntry) {
+          return done(null, false, {message: 'Email already taken'});
+        }
+        err ? callback(err) : callback(null, result); 
       });
-    },
-    function(callback) {
-      Users.create(email, password, callback);
     },
     function(idUser, callback) {
       Users.selectById(idUser, callback);
@@ -37,11 +43,10 @@ function localSignupVerifyCallback(email, password, done) {
 }
 
 module.exports = function(passport) {
-  /* Passport needs ability to serialize and deserialize users out of session */
 
   // Serialize the user for the session
   // only store the id
-  passport.serializeUser(function(user, done) { done(null, user.id); });
+  passport.serializeUser(function(user, done) { done(null, user.idUser); });
 
   // Deserialize the user
   passport.deserializeUser(function(id, done) {

@@ -3,7 +3,7 @@ var multiline = require('multiline');
 var bcrypt = require('bcryptjs');
 var connection = require('config/db');
 
-function validPassword(password, passwordHash) {
+function comparePassword(password, passwordHash) {
   return bcrypt.compareSync(password, passwordHash);
 }
 

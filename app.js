@@ -7,6 +7,11 @@ var app = module.exports = express();
 var configs = require('config/configs');
 configs.configure(app);
 
+var auth = require('controllers/auth');
+app.post('/auth/signup', auth.signup);
+app.post('/auth/login', auth.login);
+app.del('/auth/session', auth.checkLoggedIn, auth.logout);
+
 // var options = {
 //     api_key: '45a330b4bcbe145c9b8a7e53dfe21c56',
 //     secret: 'e175d4c4458c0e0f',
@@ -15,13 +20,7 @@ configs.configure(app);
 //     permissions: 'delete'
 //   };
 //options.callback = 'http://127.0.0.1:3000/auth/flickr/callback';
-var staticPages = require('controllers/pages');
-app.get('/', staticPages.renderIndex);
-app.get('/login', staticPages.renderLogin);
-app.get('/signup', staticPages.renderSignup);
 
-var auth = require('controllers/auth');
-app.get('/logout', auth.logout);
 // app.get('/auth/flickr', auth.flickrAuth);
 // app.get('/auth/flickr/callback', function(req, res) {
 //   console.log('hiiii');
@@ -33,10 +32,10 @@ app.get('/logout', auth.logout);
 //   console.log('whaaaaa');
 // });
 
-app.all('*', auth.checkLoggedIn);
-app.get('/profile', staticPages.renderProfile);
+// app.all('*', auth.checkLoggedIn);
+// app.get('/profile', staticPages.renderProfile);
 
-app.get('*', staticPages.serve404);
+// app.get('*', staticPages.serve404);
 
 /**
  * handles the errors when next(err) is called
