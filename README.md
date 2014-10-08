@@ -80,3 +80,6 @@ For writing file to downloads:
 
 access-control-allow-origin: 
 cross site http
+
+to get photos:
+https://www.flickr.com/services/api/flickr.photos.getSizes.html

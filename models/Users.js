@@ -13,8 +13,8 @@ var createQuery = multiline(function() {/*
 
 /**
  * creates user given email and password
- * @param  {[type]}   email    [description]
- * @param  {[type]}   password [description]
+ * @param  {string}   email    [description]
+ * @param  {string}   password [description]
  * @param  {Function} callback
  * args: err, result
  * result contains the insertId for the user

@@ -10,10 +10,12 @@ CREATE TABLE IF NOT EXISTS Users (
 
 DROP TABLE IF EXISTS FlickrAccounts;
 CREATE TABLE IF NOT EXISTS FlickrAccounts (
-  apiKey VARCHAR(45) NOT NULL UNIQUE,
-  apiSecret VARCHAR(45) NOT NULL,
-  oAuthToken VARCHAR(45) NULL,
-  oAuthSecret VARCHAR(45) NULL,
+  api_key VARCHAR(45) NOT NULL UNIQUE,
+  secret VARCHAR(45) NOT NULL,
+  oauth_timestamp VARCHAR(45) NOT NULL,
+  oauth_nonce VARCHAR(45) NOT NULL,
+  oauth_token: VARCHAR(45) NULL,
+  oauth_token_secret: VARCHAR(45) NULL,
   flickrUsername VARCHAR(45) NULL,
   idUser INT NOT NULL,
   PRIMARY KEY (idUser, apiKey)
