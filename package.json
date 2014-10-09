@@ -13,7 +13,7 @@
     "connect-flash": "~0.1.1",
     "express": "^4.9.0",
     "express-mysql-session": "^0.2.0",
-    "flickrapi": "^0.3.23",
+    "flickrapi": "^0.3.26",
     "morgan": "1.0.1",
     "express-session": "1.2.x",
     "hbs": "2.7.x",
@@ -23,6 +23,7 @@
     "mysql": "^2.5.0",
     "passport": "~0.1.17",
     "passport-local": "~0.1.6",
+    "request": "latest",
     "rootpath": "0.1.2"
   },
   "engines": {

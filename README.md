@@ -83,3 +83,6 @@ cross site http
 
 to get photos:
 https://www.flickr.com/services/api/flickr.photos.getSizes.html
+
+file-reader stream 
+https://github.com/maxogden/filereader-stream

@@ -4,21 +4,20 @@ DROP TABLE IF EXISTS Users;
 CREATE TABLE IF NOT EXISTS Users (
   idUser INT NOT NULL AUTO_INCREMENT,
   email VARCHAR(45) NOT NULL UNIQUE,
+  apiKey VARCHAR(45) DEFAULT NULL,
+  apiKeySecret VARCHAR(45) DEFAULT NULL,
   passwordHash VARCHAR(60) NOT NULL,
   PRIMARY KEY (idUser)
 );
 
+#for now only support 1 flickr account per user i guess
 DROP TABLE IF EXISTS FlickrAccounts;
 CREATE TABLE IF NOT EXISTS FlickrAccounts (
-  api_key VARCHAR(45) NOT NULL UNIQUE,
-  secret VARCHAR(45) NOT NULL,
-  oauth_timestamp VARCHAR(45) NOT NULL,
-  oauth_nonce VARCHAR(45) NOT NULL,
-  oauth_token: VARCHAR(45) NULL,
-  oauth_token_secret: VARCHAR(45) NULL,
-  flickrUsername VARCHAR(45) NULL,
+  accessToken VARCHAR(45) NOT NULL,
+  accessTokenSecret VARCHAR(45) NOT NULL,
   idUser INT NOT NULL,
-  PRIMARY KEY (idUser, apiKey)
+  bytesUsed BIGINT UNSIGNED DEFAULT 0,
+  PRIMARY KEY (idUser, accessToken)
 );
 
 /* Additional constraints for Nodes (application level):
@@ -43,19 +42,19 @@ DROP TABLE IF EXISTS Files;
 CREATE TABLE IF NOT EXISTS Files (
   idNode INT NOT NULL AUTO_INCREMENT,
   extension VARCHAR(5) NULL,
-  bytes INT NOT NULL,
+  totalBytes INT NOT NULL,
   PRIMARY KEY (idNode)
 );
 
 DROP TABLE IF EXISTS Images;
 CREATE TABLE IF NOT EXISTS Images (
   idNode INT NOT NULL,
-  imgnum INT NOT NULL,
-  flickrImg VARCHAR(45) NOT NULL,
-  url VARCHAR(100) NOT NULL,
+  imgNum INT NOT NULL,
+  idImg VARCHAR(45) NOT NULL,
   height INT NOT NULL,
   width INT NOT NULL,
   bytes INT NOT NULL,
+  accessToken VARCHAR(45) DEFAULT NULL,
   PRIMARY KEY (idNode,imgnum)
 );
 

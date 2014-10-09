@@ -30,8 +30,7 @@ var config = {
 
     //configure handlebars
     app.set('views', path.join(__dirname, '../views'));
-    app.set('view engine', 'hbs');
-    app.engine('hbs', hbs.__express);
+    app.set('view engine', 'html');
     app.engine('html', hbs.__express);
 
     app.use(express.static(path.join(__dirname, "../public")));
