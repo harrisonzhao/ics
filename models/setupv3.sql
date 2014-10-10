@@ -4,8 +4,8 @@ DROP TABLE IF EXISTS Users;
 CREATE TABLE IF NOT EXISTS Users (
   idUser INT NOT NULL AUTO_INCREMENT,
   apiKey VARCHAR(45) NOT NULL,
-  apiKeySecret VARCHAR(45) NOT NULL,
-  email VARCHAR(45) NOT NULL UNIQUE,
+  apiKeySecret VARCHAR(32) NOT NULL,
+  email VARCHAR(16) NOT NULL UNIQUE,
   passwordHash VARCHAR(60) NOT NULL,
   PRIMARY KEY (idUser)
 );
@@ -16,12 +16,13 @@ CREATE TABLE IF NOT EXISTS Users (
 #for now only support 1 flickr account per user i guess
 DROP TABLE IF EXISTS FlickrAccounts;
 CREATE TABLE IF NOT EXISTS FlickrAccounts (
-  accessToken VARCHAR(45) UNIQUE NOT NULL,
-  accessTokenSecret VARCHAR(45) NOT NULL,
+  accessToken VARCHAR(34) UNIQUE NOT NULL,
+  accessTokenSecret VARCHAR(16) NOT NULL,
   bytesUsed BIGINT UNSIGNED DEFAULT 0,
   idUser INT NOT NULL,
-  PRIMARY KEY (idUser, accessToken)
+  PRIMARY KEY (accessToken)
 );
+ALTER TABLE FlickrAccounts ADD INDEX(idUser);
 
 /* Additional constraints for Nodes (application level):
 * Parent is null if node is in root
@@ -58,8 +59,6 @@ CREATE TABLE IF NOT EXISTS Images (
   height INT NOT NULL,
   width INT NOT NULL,
   bytes INT NOT NULL, #the bytes taken up by the png
-  #the two foreign keys together form a unique identifier for a given flickr account
-  idOwner INT NOT NULL, #foreign key from Users idUser
   accessToken VARCHAR(45) NOT NULL, #foreign key from FlickrAccounts
   PRIMARY KEY (idNode, imgnum)
 );
@@ -71,7 +70,7 @@ CREATE TRIGGER BeforeImageInsert BEFORE INSERT ON Images
   BEGIN
     UPDATE FlickrAccounts 
     SET bytesUsed = bytesUsed + NEW.bytes
-    WHERE idUser = NEW.idOwner AND accessToken = NEW.accessToken;
+    WHERE accessToken = NEW.accessToken;
   END;
 $$
 DELIMITER ;
@@ -83,7 +82,7 @@ CREATE TRIGGER BeforeImageDelete BEFORE DELETE ON Images
   BEGIN
     UPDATE FlickrAccounts 
     SET bytesUsed = bytesUsed - OLD.bytes
-    WHERE idUser = OLD.idOwner AND accessToken = OLD.accessToken;
+    WHERE accessToken = OLD.accessToken;
   END;
 $$
 DELIMITER ;
@@ -107,8 +106,8 @@ INSERT INTO Files(idNode, extension, totalBytes)
 VALUES(3, 'dave', 529);
 
 INSERT INTO FlickrAccounts (accessToken, accessTokenSecret, idUser) VALUES ('a', 'b', 1);
-INSERT INTO Images(idNode, imgNum, idImg, height, width, bytes, idOwner, accessToken) 
-           VALUES (1, 1, '123', 10, 11, 10, 1, 'a');
+INSERT INTO Images(idNode, imgNum, idImg, height, width, bytes, accessToken) 
+           VALUES (1, 1, '123', 10, 11, 10, 'a');
 #add some 
 # Some useful select queries
 

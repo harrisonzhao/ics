@@ -72,7 +72,7 @@ console.log('listening on port ' + configs.settings.secrets.port);
 var Flickr = require('flickrapi');
 Flickr.tokenOnly(
 {
-  api_key:'2b31b1da603a3d701fa3337b4',
+  api_key:'2b31b1da603a3d701f173aae3a3337b4',
   secret: 'dd1f577ae7faa7d3'
 }, function(err, flickr) {
   err ? console.log(err) : flickr.blogs.getServices(function(err) {
