@@ -8,21 +8,28 @@ function comparePassword(password, passwordHash) {
 }
 
 var createQuery = multiline(function() {/*
-  insert into Users (email, passwordHash) values (?, ?);
+  insert into Users (
+    apiKey, 
+    apiKeySecret,
+    email, 
+    passwordHash
+  ) values (?, ?, ?, ?);
 */});
 
 /**
  * creates user given email and password
- * @param  {string}   email    [description]
- * @param  {string}   password [description]
+ * @param  {string}   apiKey        [description]
+ * @param  {string}   apiKeySecret  [description]
+ * @param  {string}   email         [description]
+ * @param  {string}   password      [description]
  * @param  {Function} callback
  * args: err, result
  * result contains the insertId for the user
  */
-function create(email, password, callback) {
+function create(apiKey, apiKeySecret, email, password, callback) {
   connection.query(
     createQuery, 
-    [email, bcrypt.hashSync(password,8)], 
+    [apiKey, apiKeySecret, email, bcrypt.hashSync(password,8)], 
     function(err, result) {
       err ? callback(err) : callback(null, result.insertId);
     });
@@ -62,6 +69,8 @@ function selectByEmail(email, callback) {
 
 var updateUserQuery = multiline(function() {/*
   update Users set
+  apiKey = ?,
+  apiKeySecret = ?,
   email = ?,
   passwordHash = ?
   where idUser = ?;
@@ -75,7 +84,13 @@ var updateUserQuery = multiline(function() {/*
 function update(user, callback) {
   connection.query(
     updateUserQuery, 
-    [user.email, user.passwordHash, user.idUser],
+    [
+      user.apiKey,
+      user.apiKeySecret,
+      user.email,
+      user.passwordHash,
+      user.idUser
+    ],
     callback);
 }
 
