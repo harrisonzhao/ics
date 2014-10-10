@@ -18,9 +18,12 @@ function flickrApiCallback(req, res) {
 
 function authenticateFlickrKeys(req, res, next) {
 // gotta store the flickr options
+// the tuple (api key, access token is unique)
   tempOptionsStore[req.user.idUser] = {
-    api_key: '45a330b4bcbe145c9b8a7e53dfe21c56',
-    secret: 'e175d4c4458c0e0f',
+    api_key:'2b31b1da603a3d701f173aae3a3337b4',
+    secret: 'dd1f577ae7faa7d3',
+    //api_key: '45a330b4bcbe145c9b8a7e53dfe21c56',
+    //secret: 'e175d4c4458c0e0f',
     //access_token: '72157647421924547-33f5e8fee2329c42',
     //access_token_secret: 'd0e63b4b168ed94d',
     permissions: 'delete',

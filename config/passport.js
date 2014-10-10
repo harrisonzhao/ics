@@ -4,6 +4,7 @@ require('rootpath')();
 var async = require('async');
 var LocalStrategy = require('passport-local').Strategy;
 var Users = require('models/Users');
+var testApiKey = require('lib/flickr/testApiKey');
 var dbErrors = require('config/settings/dbErrors');
 
 function localLoginVerifyCallback(email, password, done) {
@@ -22,15 +23,28 @@ function localLoginVerifyCallback(email, password, done) {
   });
 }
 
-function localSignupVerifyCallback(email, password, done) {
+//body must contain fields apiKey and secret
+function localSignupVerifyCallback(req, email, password, done) {
+  if (!(req.body.apiKey && req.body.secret && email && password)) {
+    return done(new Error('missing some fields'));
+  }
   async.waterfall(
   [
     function(callback) {
-      Users.create(email, password, function(err, result) {
+      testApiKey(req.body.apiKey, req.body.secret, callback);
+    },
+    function(callback) {
+      Users.create(
+        req.body.apiKey, 
+        req.body.secret, 
+        email, 
+        password, 
+        function(err, result) {
+
         if (err && err.errno === dbErrors.duplicateEntry) {
           return done(null, false, {message: 'Email already taken'});
         }
-        err ? callback(err) : callback(null, result); 
+        err ? callback(err) : callback(null, result);
       });
     },
     function(idUser, callback) {
@@ -61,9 +75,11 @@ module.exports = function(passport) {
   localLoginVerifyCallback));
 
   // Local signup strategy
+  // body must contain fields apiKey and secret
   passport.use('local-signup', new LocalStrategy({
     usernameField: 'email',
-    passwordField: 'password'
+    passwordField: 'password',
+    passReqToCallback: true
   },
   localSignupVerifyCallback));
 

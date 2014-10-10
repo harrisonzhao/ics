@@ -7,20 +7,44 @@ var createQuery = multiline(function() {/*
     accessToken,
     accessTokenSecret,
     idUser
-  ) values ()
+  ) values (?, ?, ?, ?);
 */});
-function create() {
-
+function create(accessToken, accessTokenSecret, idUser, callback) {
+  connection.query(
+    createQuery, 
+    [accessToken, accessTokenSecret, idUser], 
+    function(err) {
+      callback(err);
+    });
 }
 
-function selectByBest() {
-
+var selectBestQuery = multiline(function() {/*
+  select accessToken, accessTokenSecret 
+  from FlickrAccounts
+  where bytesUsed = (
+    select min(bytesUsed)
+    from FlickrAccounts
+    where idUser = ?
+  ) LIMIT 1;
+*/});
+function selectBest(idUser, callback) {
+  connection.query(selectBestQuery, [idUser], function(err, result) {
+    err ? callback(err) : callback(result[0]);
+  });
 }
 
-function selectMin() {
-
+var deleteByAccessToken = multiline(function() {/*
+  delete from FlickrAccounts
+  where accessToken = ?;
+*/});
+function deleteByAccessToken(token, callback) {
+  connection.query(deleteByAccessToken, [token], callback);
 }
 
-function deleteByIdAndKey() {
-
+var deleteByIdQuery = multiline(function() {/*
+  delete from FlickrAccounts
+  where idUser = ?;
+*/});
+function deleteById(idUser, callback) {
+  connection.query(deleteByIdQuery, [idUser], callback);
 }

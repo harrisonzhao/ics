@@ -20,9 +20,8 @@ CREATE TABLE IF NOT EXISTS FlickrAccounts (
   accessTokenSecret VARCHAR(45) NOT NULL,
   bytesUsed BIGINT UNSIGNED DEFAULT 0,
   idUser INT NOT NULL,
-  PRIMARY KEY (accessToken)
+  PRIMARY KEY (idUser, accessToken)
 );
-ALTER TABLE FlickrAccounts ADD INDEX(idUser);
 
 /* Additional constraints for Nodes (application level):
 * Parent is null if node is in root
@@ -46,7 +45,7 @@ DROP TABLE IF EXISTS Files;
 CREATE TABLE IF NOT EXISTS Files (
   idNode INT NOT NULL AUTO_INCREMENT,
   extension VARCHAR(5) NULL,
-  totalBytes INT NOT NULL,
+  totalBytes INT NOT NULL, #the bytes taken up by the file
   PRIMARY KEY (idNode)
 );
 
@@ -58,9 +57,11 @@ CREATE TABLE IF NOT EXISTS Images (
   idImg VARCHAR(45) NOT NULL,
   height INT NOT NULL,
   width INT NOT NULL,
-  bytes INT NOT NULL,
-  accessToken VARCHAR(45) NOT NULL,
-  PRIMARY KEY (idNode,imgnum)
+  bytes INT NOT NULL, #the bytes taken up by the png
+  #the two foreign keys together form a unique identifier for a given flickr account
+  idOwner INT NOT NULL, #foreign key from Users idUser
+  accessToken VARCHAR(45) NOT NULL, #foreign key from FlickrAccounts
+  PRIMARY KEY (idNode, imgnum)
 );
 
 DROP TRIGGER IF EXISTS BeforeImageInsert;
@@ -70,7 +71,7 @@ CREATE TRIGGER BeforeImageInsert BEFORE INSERT ON Images
   BEGIN
     UPDATE FlickrAccounts 
     SET bytesUsed = bytesUsed + NEW.bytes
-    WHERE accessToken = NEW.accessToken;
+    WHERE idUser = NEW.idOwner AND accessToken = NEW.accessToken;
   END;
 $$
 DELIMITER ;
@@ -82,7 +83,7 @@ CREATE TRIGGER BeforeImageDelete BEFORE DELETE ON Images
   BEGIN
     UPDATE FlickrAccounts 
     SET bytesUsed = bytesUsed - OLD.bytes
-    WHERE accessToken = OLD.accessToken;
+    WHERE idUser = OLD.idOwner AND accessToken = OLD.accessToken;
   END;
 $$
 DELIMITER ;
@@ -90,21 +91,25 @@ DELIMITER ;
 # Insert some shit
 
 # Add user
-INSERT INTO Users(email, passwordHash)
-VALUES ('wing@xhao.com', 'fuckmeright');
+INSERT INTO Users(apiKey, apiKeySecret, email, passwordHash)
+VALUES ('a', 'b', 'wing@xhao.com', 'pw');
 
 # Add directorys
 INSERT INTO Nodes(idOwner, idParent, name, isDirectory)
-VALUES (1, null, 'kittyporn', 1);
+VALUES (1, null, 'wat', 1);
 INSERT INTO Nodes(idOwner, idParent, name, isDirectory)
-VALUES (1, 1, 'youtouchmytail', 1);
+VALUES (1, 1, 'the', 1);
 
 # Add file
 INSERT INTO Nodes(idOwner, idParent, name, isDirectory)
-VALUES(1, 2, 'meeowwwch', 0);
+VALUES(1, 2, 'fuck', 0);
 INSERT INTO Files(idNode, extension, totalBytes)
-VALUES(3, 'txt', 529);
+VALUES(3, 'dave', 529);
 
+INSERT INTO FlickrAccounts (accessToken, accessTokenSecret, idUser) VALUES ('a', 'b', 1);
+INSERT INTO Images(idNode, imgNum, idImg, height, width, bytes, idOwner, accessToken) 
+           VALUES (1, 1, '123', 10, 11, 10, 1, 'a');
+#add some 
 # Some useful select queries
 
 
