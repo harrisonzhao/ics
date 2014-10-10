@@ -20,13 +20,17 @@ function authenticateFlickrKeys(req, res, next) {
 // gotta store the flickr options
 // the tuple (api key, access token is unique)
   tempOptionsStore[req.user.idUser] = {
-    secret: 'dd1f577ae7faa7d3',
-    api_key: '2b31b1da603a3d701f173aae3a3337b4',
+    //secret: 'dd1f577ae7faa7d3',
+    //api_key: '2b31b1da603a3d701f173aae3a3337b4',
     //above is wrong matching key
-    //api_key: '45a330b4bcbe145c9b8a7e53dfe21c56',
-    //secret: 'e175d4c4458c0e0f',
-    //access_token: '72157647421924547-33f5e8fee2329c42',
-    //access_token_secret: 'd0e63b4b168ed94d',
+    api_key: '45a330b4bcbe145c9b8a7e53dfe21c56',
+    secret: 'e175d4c4458c0e0f',
+    access_token: '72157647421924547-33f5e8fee2329c42',
+    access_token_secret: 'd0e63b4b168ed94d',
+    is_public: 0,
+    is_friend: 0,
+    is_family: 0,
+    hidden: 2,
     permissions: 'delete',
     silent: true,
     callback: 'http://127.0.0.1:3000/auth/flickr/callback'
@@ -38,7 +42,7 @@ function authenticateFlickrKeys(req, res, next) {
     }
     var uploadOptions = {
       photos: [{
-        title: 'test2032',
+        title: 'test2032fasd',
         photo: __dirname + '/../../public/img/img008.jpg'
       }]
     }

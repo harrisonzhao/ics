@@ -37,3 +37,12 @@ exports.signup = function(req, res, next) {
     authenticateCallback(req, res, next, err, user, info);
   })(req, res, next);
 }
+
+exports.setCookieAndRender = function(req, res) {
+  if(req.user) {
+    res.cookie('user', JSON.stringify({
+
+    }));
+  }
+  res.render('index.html');
+}

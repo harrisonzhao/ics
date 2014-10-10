@@ -1,6 +1,11 @@
 'use strict';
+/*global angular*/
 
 var auth = angular.module('auth');
+
+function Auth($location, $rootScope, Session, User, $cookieStore) {
+  $rootScope.currentUser = 
+}
 
 auth.factory(
   'Auth', 
@@ -8,8 +13,10 @@ auth.factory(
     '$location',
     '$rootScope',
     'Session',
-    'User'
-  function Auth($location, $rootScope, Session, User, $cookieStore) {
+    'User',
+    Auth
+  ]);
+    function Auth($location, $rootScope, Session, User, $cookieStore) {
     $rootScope.currentUser = $cookieStore.get('user') || null;
     $cookieStore.remove('user');
 
