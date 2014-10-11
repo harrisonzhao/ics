@@ -47,8 +47,8 @@ File structure:
       index.hbs         --> main page for app
       layout.hbs        --> doctype, title, head boilerplate
       partials/         --> angular view partials (partial hbs templates)
-        partial1.hbs
-        partial2.hbs
+        partial1.html
+        partial2.html
 
 CRUD = Create Read Update Delete
 

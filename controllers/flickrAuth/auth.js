@@ -1,7 +1,9 @@
 'use strict';
 (require('rootpath')());
 
+var async = require('async');
 var Flickr = require('flickrapi');
+var FlickrAccounts = require('models/FlickrAccounts');
 
 //global for this module to temporarily store flickrApiOptions
 var tempOptionsStore = {};
@@ -11,52 +13,42 @@ function flickrApiCallback(req, res) {
   if (tempOptionsStore[req.user.idUser] !== undefined &&
       req.query.oauth_token && req.query.oauth_verifier) {
     tempOptionsStore[req.user.idUser].exchange(req.query);
-    //redirect to page that closes
-    res.render('close');
+    //redirect back to main page
+    res.redirect('/');
   }
 }
 
-function authenticateFlickrKeys(req, res, next) {
-// gotta store the flickr options
-// the tuple (api key, access token is unique)
+function authenticateFlickrAccount(req, res, next) {
+  //must temporarily store flickr options
+  if (tempOptionsStore[req.user.idUser]) {
+    return next(new Error('cannot authenticate at this time!'));
+  }
   tempOptionsStore[req.user.idUser] = {
-    //secret: 'dd1f577ae7faa7d3',
-    //api_key: '2b31b1da603a3d701f173aae3a3337b4',
-    //above is wrong matching key
-    api_key: '45a330b4bcbe145c9b8a7e53dfe21c56',
-    secret: 'e175d4c4458c0e0f',
-    access_token: '72157647421924547-33f5e8fee2329c42',
-    access_token_secret: 'd0e63b4b168ed94d',
+    api_key: req.user.apiKey,
+    secret: req.user.apiKeySecret,
     permissions: 'delete',
     silent: true,
     callback: 'http://127.0.0.1:3000/auth/flickr/callback'
   };
-  Flickr.authenticate(tempOptionsStore[req.user.idUser], function(error, flickr) {
-    if (error) {
-      delete tempOptionsStore[req.user.idUser];
-      return next(error); 
+  async.waterfall(
+  [
+    function(callback) {
+      Flickr.authenticate(tempOptionsStore[req.user.idUser], callback);
+    },
+    function(flickr, callback) {
+      FlickrAccounts.create(
+        flickr.options.access_token,
+        flickr.options.access_token_secret,
+        req.user.idUser,
+        callback);
     }
-    var uploadOptions = {
-      photos: [{
-        title: 'test2032fasdfdaffafadse',
-        photo: __dirname + '/../../public/img/hi.png',
-        is_public: 0,
-        is_friend: 0,
-        is_family: 0,
-        hidden: '2'
-      }]
-    }
-    console.log(flickr.options);
-    Flickr.upload(uploadOptions, flickr.options, function(err, result) {
-      if(err) {
-        return console.error(error);
-      }
-      console.log("photos uploaded", result);
-    });
+  ],
+  function(err) {
     delete tempOptionsStore[req.user.idUser];
+    if (err) { return next(err); }
     res.sendStatus(200);
   });
 }
 
 exports.flickrApiCallback = flickrApiCallback;
-exports.authenticateFlickrKeys = authenticateFlickrKeys;
+exports.authenticateFlickrAccount = authenticateFlickrAccount;

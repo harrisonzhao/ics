@@ -66,8 +66,6 @@ app.get('/hi', function(req, res, next) {
 app.listen(configs.settings.secrets.port);
 console.log('listening on port ' + configs.settings.secrets.port);
 
-var Flickr = require('flickrapi');
-
 /*
 /////////////////
 //THIS WORKS
@@ -159,3 +157,46 @@ request.get(flickrURL, function(error, response, body) {
         //processResult(false, body);
       });
 */
+
+
+
+//auth and uploading with api (server side)
+/*
+  Flickr.authenticate(tempOptionsStore[req.user.idUser], function(err, flickr) {
+    if (err) {
+      delete tempOptionsStore[req.user.idUser];
+      return next(err); 
+    }
+
+    var uploadOptions = {
+      photos: [{
+        title: 'test2032fasdfdaffafadse',
+        photo: __dirname + '/../../public/img/hi.png',
+        is_public: 0,
+        is_friend: 0,
+        is_family: 0,
+        hidden: '2'
+      }]
+    }
+    console.log(flickr.options);
+    Flickr.upload(uploadOptions, flickr.options, function(err, result) {
+      if(err) {
+        return console.error(error);
+      }
+      console.log("photos uploaded", result);
+    });
+    delete tempOptionsStore[req.user.idUser];
+    res.sendStatus(200);
+  });
+*/
+
+/*
+options:
+    //secret: 'dd1f577ae7faa7d3',
+    //api_key: '2b31b1da603a3d701f173aae3a3337b4',
+    //above is wrong matching key
+    // api_key: '45a330b4bcbe145c9b8a7e53dfe21c56',
+    // secret: 'e175d4c4458c0e0f',
+    // access_token: '72157647421924547-33f5e8fee2329c42',
+    // access_token_secret: 'd0e63b4b168ed94d',
+ */

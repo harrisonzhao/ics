@@ -1,11 +1,15 @@
 USE infcs;
 
+#using VARCHARS because lazy testing can't type out 32 char
+
 DROP TABLE IF EXISTS Users;
 CREATE TABLE IF NOT EXISTS Users (
   idUser INT NOT NULL AUTO_INCREMENT,
-  apiKey VARCHAR(45) NOT NULL,
-  apiKeySecret VARCHAR(32) NOT NULL,
-  email VARCHAR(16) NOT NULL UNIQUE,
+  apiKey VARCHAR(45) NOT NULL,        #length is exactly 32
+  apiKeySecret VARCHAR(16) NOT NULL,  #length is exactly 32
+  email VARCHAR(254) NOT NULL UNIQUE, #max email length is 254 chars
+  firstName VARCHAR(45) NOT NULL,
+  lastName VARCHAR(45) NOT NULL,
   passwordHash VARCHAR(60) NOT NULL,
   PRIMARY KEY (idUser)
 );
@@ -16,8 +20,8 @@ CREATE TABLE IF NOT EXISTS Users (
 #for now only support 1 flickr account per user i guess
 DROP TABLE IF EXISTS FlickrAccounts;
 CREATE TABLE IF NOT EXISTS FlickrAccounts (
-  accessToken VARCHAR(34) UNIQUE NOT NULL,
-  accessTokenSecret VARCHAR(16) NOT NULL,
+  accessToken VARCHAR(34) UNIQUE NOT NULL,  #length is exactly 34
+  accessTokenSecret VARCHAR(16) NOT NULL,   #length is exactly 16
   bytesUsed BIGINT UNSIGNED DEFAULT 0,
   idUser INT NOT NULL,
   PRIMARY KEY (accessToken)
@@ -46,7 +50,7 @@ DROP TABLE IF EXISTS Files;
 CREATE TABLE IF NOT EXISTS Files (
   idNode INT NOT NULL AUTO_INCREMENT,
   extension VARCHAR(5) NULL,
-  totalBytes INT NOT NULL, #the bytes taken up by the file
+  totalBytes BIGINT NOT NULL, #the bytes taken up by the file, could be big
   PRIMARY KEY (idNode)
 );
 
@@ -58,8 +62,8 @@ CREATE TABLE IF NOT EXISTS Images (
   idImg VARCHAR(45) NOT NULL,
   height INT NOT NULL,
   width INT NOT NULL,
-  bytes INT NOT NULL, #the bytes taken up by the png
-  accessToken VARCHAR(45) NOT NULL, #foreign key from FlickrAccounts
+  bytes INT NOT NULL, #the bytes taken up by the png, max 200 * 10^6
+  accessToken VARCHAR(34) NOT NULL, #foreign key from FlickrAccounts
   PRIMARY KEY (idNode, imgnum)
 );
 

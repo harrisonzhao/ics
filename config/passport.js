@@ -23,7 +23,7 @@ function localLoginVerifyCallback(email, password, done) {
   });
 }
 
-//body must contain fields apiKey and secret
+//body must contain fields apiKey, apiKeySecret, firstName, and lastName
 function localSignupVerifyCallback(req, email, password, done) {
   if (!(req.body.apiKey && req.body.secret && email && password)) {
     return done(new Error('missing some fields'));
@@ -36,8 +36,10 @@ function localSignupVerifyCallback(req, email, password, done) {
     function(callback) {
       Users.create(
         req.body.apiKey, 
-        req.body.secret, 
-        email, 
+        req.body.apiKeySecret, 
+        email,
+        req.body.firstName,
+        req.body.lastName,
         password, 
         function(err, result) {
 
@@ -75,7 +77,7 @@ module.exports = function(passport) {
   localLoginVerifyCallback));
 
   // Local signup strategy
-  // body must contain fields apiKey and secret
+  // body must contain fields apiKey, apiKeySecret, firstName, and lastName
   passport.use('local-signup', new LocalStrategy({
     usernameField: 'email',
     passwordField: 'password',
