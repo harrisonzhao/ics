@@ -27,10 +27,6 @@ function authenticateFlickrKeys(req, res, next) {
     secret: 'e175d4c4458c0e0f',
     access_token: '72157647421924547-33f5e8fee2329c42',
     access_token_secret: 'd0e63b4b168ed94d',
-    is_public: 0,
-    is_friend: 0,
-    is_family: 0,
-    hidden: 2,
     permissions: 'delete',
     silent: true,
     callback: 'http://127.0.0.1:3000/auth/flickr/callback'
@@ -42,8 +38,12 @@ function authenticateFlickrKeys(req, res, next) {
     }
     var uploadOptions = {
       photos: [{
-        title: 'test2032fasd',
-        photo: __dirname + '/../../public/img/img008.jpg'
+        title: 'test2032fasdfdaffafadse',
+        photo: __dirname + '/../../public/img/hi.png',
+        is_public: 0,
+        is_friend: 0,
+        is_family: 0,
+        hidden: '2'
       }]
     }
     console.log(flickr.options);
