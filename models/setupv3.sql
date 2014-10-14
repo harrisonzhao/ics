@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS Nodes (
 
 DROP TABLE IF EXISTS Files;
 CREATE TABLE IF NOT EXISTS Files (
-  idNode INT NOT NULL AUTO_INCREMENT,
+  idNode INT NOT NULL,
   extension VARCHAR(5) NULL,
   totalBytes BIGINT NOT NULL, #the bytes taken up by the file, could be big
   PRIMARY KEY (idNode)
