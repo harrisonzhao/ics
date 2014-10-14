@@ -59,7 +59,7 @@ DROP TABLE IF EXISTS Images;
 CREATE TABLE IF NOT EXISTS Images (
   idNode INT NOT NULL,
   imgNum INT NOT NULL,
-  idImg VARCHAR(45) NOT NULL,
+  idImg VARCHAR(45) UNIQUE NOT NULL,
   height INT NOT NULL,
   width INT NOT NULL,
   bytes INT NOT NULL, #the bytes taken up by the png, max 200 * 10^6
