@@ -10,7 +10,6 @@ var hbs = require('hbs');
 var helmet = require('helmet');
 var methodOverride = require('method-override');
 var morgan = require('morgan');
-var mysql = require('mysql');
 var path = require('path');
 var passport = require('passport');
 var session = require('express-session');
@@ -31,9 +30,9 @@ var config = {
     //configure handlebars
     app.set('views', path.join(__dirname, '../views'));
     app.set('view engine', 'html');
-    app.engine('html', hbs.__express);
+    app.engine('html', require('ejs').renderFile);
 
-    app.use(express.static(path.join(__dirname, "../public")));
+    app.use(express.static(path.join(__dirname, '../public')));
     app.use(compress());
     app.use(bodyParser());
     app.use(cookieparser());

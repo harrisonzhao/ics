@@ -11,14 +11,12 @@ function localLoginVerifyCallback(email, password, done) {
   Users.selectByEmail(email, function(err, result) {
     if (err) { return done(err); }
     if (!result) { 
-      return done(null, false, {
-        message: 'Invalid username or password'
-      }); 
+      return done(null, false, { email: 'Email is not registered.' }); 
     }
     if (Users.comparePassword(password, result.passwordHash)) {
       done(null, result); 
     } else {
-      done(null, false, {message: 'Invalid username or password'})
+      done(null, false,{ password: 'Password is incorrect.' });
     }
   });
 }
@@ -36,7 +34,9 @@ function localSignupVerifyCallback(req, email, password, done) {
   [
     function(callback) {
       testApiKey(req.body.apiKey, req.body.secret, function(err) {
-        if (err) { callback(new Error('Invalid api key or api key secret')); }
+        if (err) { return done(null, false, { 
+          apiKey: 'Invalid api key or secret'}); 
+        }
         callback(null);
       });
     },
@@ -51,7 +51,7 @@ function localSignupVerifyCallback(req, email, password, done) {
         function(err, result) {
 
         if (err && err.errno === dbErrors.duplicateEntry) {
-          return done(null, false, {message: 'Email already taken'});
+          return done(null, false, {email: 'Email already taken'});
         }
         err ? callback(err) : callback(null, result);
       });

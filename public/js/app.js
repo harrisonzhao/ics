@@ -40,7 +40,6 @@ app.config([
 ]);
 
 app.run(function ($rootScope, $location, Auth) {
-
   //watching the value of the currentUser variable.
   $rootScope.$watch('currentUser', function(currentUser) {
     // if no currentUser and on a page that requires authorization 
