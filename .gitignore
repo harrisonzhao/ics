@@ -5,3 +5,5 @@ node_modules/
 data/
 data/flickr/
 public/bower_components/
+public/.sass_cache/
+public/css/main.css

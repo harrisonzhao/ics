@@ -7,7 +7,14 @@ Prerequisites
 
 Getting Started
 ---------------
+run these commands before starting server (only need to do once):
 
+npm install
+bower install
+sass public/css/main.scss > public/css/main.css
+
+to run server:
+node app.js
 #point the browser to localhost:3000 to visit the site
 ```
 
