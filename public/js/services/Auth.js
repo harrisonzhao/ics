@@ -1,10 +1,82 @@
+/**
+ * modifies $rootScope.currentUser
+ * reference: https://docs.angularjs.org/api/ngResource/service/$resource
+ * see config/passport.js for login parameters
+ */
 'use strict';
-/*global angular*/
+var auth = angular.module('services.auth', ['ngCookies']);
 
-var auth = angular.module('auth');
+//TODO change routes
+function userFactory($resource) {
+  return $resource('/auth/user/');
+}
+auth.factory('User', ['$resource', userFactory]);
 
-function Auth($location, $rootScope, Session, User, $cookieStore) {
-  $rootScope.currentUser = 
+function sessionFactory($resource) {
+  return $resource('/auth/session/');
+}
+auth.factory('Session', ['$resource', sessionFactory]);
+
+function Auth($location, $rootScope, $cookieStore, Session, User) {
+
+  //cookie store 'user' is set with res.cookie from node server
+  $rootScope.currentUser = $cookieStore.get('user') || null;
+  $cookieStore.remove('user');
+
+  return {
+
+    /**
+     * [login description]
+     * @param  {object}   user
+     * must have fields: email, password
+     * @param  {Function} callback
+     * args: err
+     */
+    login: function(user, callback) {
+      callback = callback || angular.noop;
+      //post email and password to server
+      Session.save({}, user, function(user) { //success
+        $rootScope.currentUser = user;
+        callback(null);
+      }, function(err) {  //failure
+        callback(err.data);
+      });
+    },
+
+    logout: function(callback) {
+      callback = callback || angular.noop;
+      Session.delete({}, {}, function() {
+        $rootScope.currentUser = null;
+        callback();
+      }, function(err) {
+        callback(err.data);
+      });
+    },
+
+    /**
+     * [createUser description]
+     * @param  {object}   userInfo
+     * must have fields: 
+     * apiKey, apiKeySecret, email, firstName, lastName, password
+     * @param  {Function} callback
+     * args: err
+     */
+    createUser: function(userInfo, callback) {
+      callback = callback || angular.noop;
+      User.save({}, userInfo, function(user) {
+        $rootScope.currentUser = user;
+      }, function(err) {
+        callback(err.data);
+      });
+    },
+
+    currentUser: function() {
+      Session.get({}, function(user) {
+        $rootScope.currentUser = user;
+      });
+    }
+
+  }
 }
 
 auth.factory(
@@ -12,85 +84,8 @@ auth.factory(
   [
     '$location',
     '$rootScope',
+    '$cookieStore',
     'Session',
     'User',
     Auth
   ]);
-    function Auth($location, $rootScope, Session, User, $cookieStore) {
-    $rootScope.currentUser = $cookieStore.get('user') || null;
-    $cookieStore.remove('user');
-
-    return {
-
-      login: function(provider, user, callback) {
-        var cb = callback || angular.noop;
-        Session.save({
-          provider: provider,
-          email: user.email,
-          password: user.password,
-          rememberMe: user.rememberMe
-        }, function(user) {
-          $rootScope.currentUser = user;
-          return cb();
-        }, function(err) {
-          return cb(err.data);
-        });
-      },
-
-      logout: function(callback) {
-        var cb = callback || angular.noop;
-        Session.delete(function(res) {
-            $rootScope.currentUser = null;
-            return cb();
-          },
-          function(err) {
-            return cb(err.data);
-          });
-      },
-
-      createUser: function(userinfo, callback) {
-        var cb = callback || angular.noop;
-        User.save(userinfo,
-          function(user) {
-            $rootScope.currentUser = user;
-            return cb();
-          },
-          function(err) {
-            return cb(err.data);
-          });
-      },
-
-      currentUser: function() {
-        Session.get(function(user) {
-          $rootScope.currentUser = user;
-        });
-      },
-
-      changePassword: function(email, oldPassword, newPassword, callback) {
-        var cb = callback || angular.noop;
-        User.update({
-          email: email,
-          oldPassword: oldPassword,
-          newPassword: newPassword
-        }, function(user) {
-            console.log('password changed');
-            return cb();
-        }, function(err) {
-            return cb(err.data);
-        });
-      },
-
-      removeUser: function(email, password, callback) {
-        var cb = callback || angular.noop;
-        User.delete({
-          email: email,
-          password: password
-        }, function(user) {
-            console.log(user + 'removed');
-            return cb();
-        }, function(err) {
-            return cb(err.data);
-        });
-      }
-    };
-  })

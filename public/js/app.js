@@ -2,38 +2,42 @@
 /*global angular*/
 
 var app = angular.module('infiniteCloudStorage', [
+  'services.auth',
   'ngCookies',
   'ngResource',
   'ngSanitize',
   'ngRoute',
   'http-auth-interceptor',
-  'ui.bootstrap'
+  'ui.bootstrap',
+  'controllers.login',
+  'controllers.signup'
 ]);
 
-app.config(
-  [
-    '$routeProvider', 
-    '$locationProvider'
-  ], 
-  function ($routeProvider, $locationProvider) {
-    $routeProvider
-      .when('/', {
-        templateUrl: 'partials/main.html',
-        controller: 'MainCtrl'
-      })
-      .when('/login', {
-        templateUrl: 'partials/login.html',
-        controller: 'LoginCtrl'
-      })
-      .when('/signup', {
-        templateUrl: 'partials/signup.html',
-        controller: 'SignupCtrl'
-      })
-      .otherwise({
-        redirectTo: '/'
-      });
-    $locationProvider.html5Mode(true);
-  });
+function configApp($routeProvider, $locationProvider) {
+  $routeProvider
+    /*.when('/', {
+      templateUrl: 'partials/main.html',
+      controller: 'MainCtrl'
+    })*/
+    .when('/login', {
+      templateUrl: 'partials/login.html',
+      controller: 'LoginCtrl'
+    })
+    .when('/signup', {
+      templateUrl: 'partials/signup.html',
+      controller: 'SignupCtrl'
+    })
+    .otherwise({
+      redirectTo: '/'
+    });
+  $locationProvider.html5Mode(true);
+}
+
+app.config([
+  '$routeProvider', 
+  '$locationProvider', 
+  configApp
+]);
 
 app.run(function ($rootScope, $location, Auth) {
 

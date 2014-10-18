@@ -1,2 +1,2 @@
 alias ms="mysql -h infcs.cloudapp.net -u ics --password="suchrekt" infcs"
-alias mf="mysql -h infcs.cloudapp.net -u ics --password="suchrekt" infcs < models/setupv2.sql"
+alias mf="mysql -h infcs.cloudapp.net -u ics --password="suchrekt" infcs < models/setupv3.sql"

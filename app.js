@@ -10,9 +10,10 @@ configs.configure(app);
 //endpoints:
 //==========
 var auth = require('controllers/auth');
-app.post('/auth/signup', auth.signup);
-app.post('/auth/login', auth.login);
+app.get('/auth/user', auth.checkLoggedIn, auth.getUserInfo);
+app.post('/auth/user', auth.signup);
 app.delete('/auth/session', auth.checkLoggedIn, auth.logout);
+app.post('/auth/session', auth.login);
 
 //create a file
 //download(read) a file
@@ -48,9 +49,14 @@ app.delete('/auth/session', auth.checkLoggedIn, auth.logout);
 /**
  * handles the errors when next(err) is called
  */
-//var errorHandler = require('controllers/errorHandler').errorHandler;
-//app.use(errorHandler);
-
+var errorHandler = require('controllers/errorHandler').errorHandler;
+app.use(errorHandler);
+/*app.post('/auth/user', function(req, res) {
+  console.log(req.body);
+});
+app.post('/auth/session', function(req, res) {
+  console.log(req.body);
+})*/
 var flickrAuth = require('./controllers/flickrAuth/auth');
 app.get('/auth/flickr/callback', function(req, res) {
   req.user = {};
@@ -63,6 +69,20 @@ app.get('/hi', function(req, res, next) {
   req.user.idUser = 1;
   flickrAuth.authenticateFlickrKeys(req, res, next);
 });
+var path = require('path');
+app.get('/partials/*', function(req, res) {
+  var requestedView = path.join('./', req.url);
+  res.render(requestedView);
+});
+
+app.get('/*', function(req, res) {
+  if(req.user) {
+    res.cookie('user', JSON.stringify(req.user.user_info));
+  }
+
+  res.render('index.html');
+});
+
 app.listen(configs.settings.secrets.port);
 console.log('listening on port ' + configs.settings.secrets.port);
 

@@ -25,13 +25,20 @@ function localLoginVerifyCallback(email, password, done) {
 
 //body must contain fields apiKey, apiKeySecret, firstName, and lastName
 function localSignupVerifyCallback(req, email, password, done) {
-  if (!(req.body.apiKey && req.body.secret && email && password)) {
-    return done(new Error('missing some fields'));
-  }
+  if (!(
+    req.body.apiKey && 
+    req.body.secret && 
+    email && 
+    req.body.firstName &&
+    req.body.lastName &&
+    password)) { return done(new Error('Missing some fields')); }
   async.waterfall(
   [
     function(callback) {
-      testApiKey(req.body.apiKey, req.body.secret, callback);
+      testApiKey(req.body.apiKey, req.body.secret, function(err) {
+        if (err) { callback(new Error('Invalid api key or api key secret')); }
+        callback(null);
+      });
     },
     function(callback) {
       Users.create(
