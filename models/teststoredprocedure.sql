@@ -7,33 +7,27 @@ BEGIN
 
 	SELECT idNode
 	FROM Nodes
-	WHERE idNode = 1
+	WHERE idNode = baseId
 	INTO @toDelete;
 
 	SET @allDeleted = @toDelete;
 
-	WHILE ~ISNULL(@toDelete) do
-		SET @toDelete = NULL;
-    /*
+	WHILE NOT ISNULL(@toDelete) do
+		SET @tmp = NULL;
+    
 		SELECT idNode
 		FROM Nodes
 		WHERE idParent IN (@toDelete)
 		INTO @tmp;
 		
 		SET @toDelete = @tmp;
-
-		SELECT idNode
-        FROM Nodes
-        WHERE idNode IN (@allDeleted)
-        UNION
+        
         SELECT idNode
         FROM Nodes
-        WHERE idNode IN (@toDelete)
-        INTO @allDeleted;
+        WHERE idNode IN (@toDelete) OR idNode IN (@allDeleted)
+        INTO @tmp2;
         
-        */
 	END WHILE;
-
 /*
 
 	SELECT (@allDeleted);

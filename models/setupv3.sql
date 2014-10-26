@@ -133,42 +133,8 @@ INSERT INTO Images(idNode, imgNum, idImg, height, width, bytes, accessToken)
            VALUES (3, 1, '123', 10, 11, 100, 'a');
 
 # Recursively delete a directory
-DELIMITER //
-CREATE PROCEDURE 'recursiveDelete' (IN baseId INT)
-BEGIN
-	SELECT idNode
-	FROM Nodes
-	WHERE idNode = baseId
-	INTO @toDelete;
-
-	SET @allDeleted = @toDelete;
-
-	WHILE COUNT(@toDelete) > 0 do
-		SELECT idNode
-		FROM Nodes
-		WHERE idParent IN (@toDelete)
-		INTO @toDelete;
-
-		@allDeleted = (@allDeleted) UNION (@toDelete);  
-	END WHILE
-
-	SELECT (@allDeleted);
-
-	SELECT idNode
-	FROM Images
-	WHERE idNode IN (@allDeleted)
-
-	DELETE FROM Images
-	WHERE idNode IN (@allDeleted);
-
-	DELETE FROM Nodes
-	WHERE idNode IN (@allDeleted);
-END
-DELIMITER ;
-
 START TRANSACTION;
 DELETE FROM Images2;
-
 CALL recursiveDelete(1);
 COMMIT;
 ##
