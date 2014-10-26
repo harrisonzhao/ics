@@ -104,33 +104,30 @@ INSERT INTO Nodes(idOwner, idParent, name, isDirectory)
 VALUES (1, 1, 'the', 1);
 
 # Add file
+START TRANSACTION;
+
 INSERT INTO Nodes(idOwner, idParent, name, isDirectory)
 VALUES(1, 2, 'fuck', 0);
+
 INSERT INTO Files(idNode, extension, totalBytes)
-VALUES(3, 'dave', 529);
+VALUES((SELECT idNode FROM Nodes ORDER BY idNode DESC LIMIT 1), 'dave', 529);
+
+COMMIT;
 
 INSERT INTO FlickrAccounts (accessToken, accessTokenSecret, idUser) VALUES ('a', 'b', 1);
+
 INSERT INTO Images(idNode, imgNum, idImg, height, width, bytes, accessToken) 
-           VALUES (1, 1, '123', 10, 11, 10, 'a');
-#add some 
+           VALUES (3, 1, '123', 10, 11, 100, 'a');
+           
 # Some useful select queries
 
+# Get all images for a file.
+SELECT *
+FROM Images
+WHERE idNode = 3;
 
-/*
-DROP TABLE IF EXISTS Directorys;
-CREATE TABLE IF NOT EXISTS Directorys (
-  idNode INT NOT NULL,
-  layer INT NOT NULL DEFAULT 1,
-  PRIMARY KEY (idNode)
-); 
-*/
+# Get all files/directories in a directory
+SELECT *
+FROM Nodes
+WHERE idParent = 1;
 
-/*
-DROP TABLE IF EXISTS Contain;
-CREATE TABLE IF NOT EXISTS Contain (
-  idChild INT NOT NULL,
-  idParent INT NULL,
-  idUser INT NOT NULL,
-  PRIMARY KEY (idChild)
-);
-*/
