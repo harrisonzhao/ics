@@ -67,18 +67,6 @@ CREATE TABLE IF NOT EXISTS Images (
   PRIMARY KEY (idNode, imgnum)
 );
 
-DROP TABLE IF EXISTS Images2;
-CREATE TABLE IF NOT EXISTS Images2 (
-  idNode INT NOT NULL,
-  imgNum INT NOT NULL,
-  idImg VARCHAR(45) UNIQUE NOT NULL,
-  height INT NOT NULL,
-  width INT NOT NULL,
-  bytes INT NOT NULL, #the bytes taken up by the png, max 200 * 10^6
-  accessToken VARCHAR(34) NOT NULL, #foreign key from FlickrAccounts
-  PRIMARY KEY (idNode, imgnum)
-);
-
 DROP TRIGGER IF EXISTS BeforeImageInsert;
 DELIMITER $$
 CREATE TRIGGER BeforeImageInsert BEFORE INSERT ON Images
@@ -100,6 +88,20 @@ CREATE TRIGGER BeforeImageDelete BEFORE DELETE ON Images
     SET bytesUsed = bytesUsed - OLD.bytes
     WHERE accessToken = OLD.accessToken;
   END;
+$$
+DELIMITER ;
+
+DROP TRIGGER IF EXISTS BeforeNodeDelete;
+DELIMITER $$
+CREATE TRIGGER BeforeNodeDelete BEFORE DELETE ON Nodes
+	FOR EACH ROW
+	BEGIN
+		DELETE FROM Files
+        WHERE idNode = OLD.idNode;
+        
+        DELETE FROM Images
+        WHERE idNode = OLD.idNode;
+	END;
 $$
 DELIMITER ;
 
@@ -133,10 +135,12 @@ INSERT INTO Images(idNode, imgNum, idImg, height, width, bytes, accessToken)
            VALUES (3, 1, '123', 10, 11, 100, 'a');
 
 # Recursively delete a directory
+/*
 START TRANSACTION;
 DELETE FROM Images2;
 CALL recursiveDelete(1);
 COMMIT;
+*/
 ##
            
 # Some useful select queries
@@ -146,7 +150,9 @@ SELECT *
 FROM Images
 WHERE idNode = 3;
 
+DELETE FROM Nodes
+WHERE idNode = 1;
+
 # Get all files/directories in a directory
 SELECT *
 FROM Nodes
-WHERE idParent = 1;
