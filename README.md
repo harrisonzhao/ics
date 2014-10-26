@@ -51,8 +51,8 @@ File structure:
       api.js            --> route for serving JSON
       index.js          --> route for serving HTML pages and partials
     views/
-      index.hbs         --> main page for app
-      layout.hbs        --> doctype, title, head boilerplate
+      index.html        --> main page for app
+      layout.html       --> doctype, title, head boilerplate
       partials/         --> angular view partials (partial hbs templates)
         partial1.html
         partial2.html
