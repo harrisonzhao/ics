@@ -6,7 +6,6 @@ var cookieparser = require('cookie-parser');
 var compress = require('compression');
 var express = require('express');
 var flash = require('connect-flash');
-var hbs = require('hbs');
 var helmet = require('helmet');
 var methodOverride = require('method-override');
 var morgan = require('morgan');
