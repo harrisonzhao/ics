@@ -13,8 +13,8 @@ var selectByParentIdQuery = multiline(function() {/*
  * @param  {Function} callback [description]
  * args: err, result
  */
-function selectByParentId(id, callback) {
-  connection.query(selectByParentIdQuery, [id], function(err, result) {
+function selectByParentId(nid, callback) {
+  connection.query(selectByParentIdQuery, [nid], function(err, result) {
     err ? callback(err) : callback(null, result);
   });
 }
@@ -29,8 +29,8 @@ var selectByUserIdQuery = multiline(function() {/*
  * @param  {Function} callback [description]
  * args: err, result
  */
-function selectByUserId(id, callback) {
-  connection.query(selectByUserIdQuery, [id], function(err, result) {
+function selectByUserId(uid, callback) {
+  connection.query(selectByUserIdQuery, [uid], function(err, result) {
     err ? callback(err) : callback(null, result);
   });
 }
@@ -45,12 +45,46 @@ var selectByChildIdQuery = multiline(function() {/*
  * @param  {Function} callback [description]
  * args: err, result
  */
-function selectByChildId(id, callback) {
-  connection.query(selectByChildIdQuery, [id], function(err, result) {
+function selectByChildId(nid, callback) {
+  connection.query(selectByChildIdQuery, [nid], function(err, result) {
     err ? callback(err) : callback(null, result[0]);
+  });
+}
+
+var insertDirectoryQuery = multiline(function () {/*
+	insert into Nodes (idParent, idOwner, isDirectory, name)
+	values(?, ?, 1, ?);
+*/});
+
+/**
+ * [insertDirectory Insert a directory]
+ * args: err, result
+ */
+function insertDirectory(idParent, idOwner, name, callback) {
+  connection.query(
+    insertDirectoryQuery,
+    [idParent, idOwner, name], 
+    function(err, result) {
+      err ? callback(err) : callback(null, result.insertId);
+    });
+}
+
+var selectFileImagesQuery = multiline(function () {/*
+	select * from Images WHERE idNode = ?;
+*/});
+
+/**
+ * [getFileImages Get File Images]
+ * args: err, result
+ */
+ function selectFileImages(nid, callback) {
+  connection.query(selectFileImagesQuery, [nid], function(err, result) {
+    err ? callback(err) : callback(null, result);
   });
 }
 
 exports.selectByParentId = selectByParentId;
 exports.selectByUserId = selectByUserId;
 exports.selectByChildId = selectByChildId;
+exports.insertDirectory = insertDirectory;
+exports.selectFileImages = selectFileImages;

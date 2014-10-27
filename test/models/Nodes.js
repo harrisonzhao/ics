@@ -32,6 +32,23 @@ function selectByChildId(callback) {
   });
 }
 
+function insertDirectory(callback) {
+	Nodes.insertDirectory(1,1,'unittest', function(err, result){
+		if (err) { return callback(err); }
+		(result > 0).should.be.true;
+		callback(null);
+	});
+}
+
+function selectFileImages(callback) {
+  Nodes.selectFileImages(3, function(err, result) {
+    if (err) { return callback(err); }
+    result.length.should.equal(1);
+    result[0].idImg.should.equal('123');
+    callback(null);
+  });
+}
+
 describe('Nodes model', function () {
   it('nodes tests', 
     function(done) {
@@ -39,7 +56,9 @@ describe('Nodes model', function () {
       [
         selectByParentId,
         selectByUserId,
-        selectByChildId
+        selectByChildId,
+        insertDirectory,
+        selectFileImages
       ],
       function (err) {
         if (err) { console.log(err); }

@@ -105,6 +105,24 @@ CREATE TRIGGER BeforeNodeDelete BEFORE DELETE ON Nodes
 $$
 DELIMITER ;
 
+# Fail the insert if the name is already in that subdir
+DROP TRIGGER IF EXISTS BeforeNodeInsert;
+DELIMITER $$
+CREATE TRIGGER BeforeNodeInsert BEFORE INSERT ON Nodes
+	FOR EACH ROW
+	BEGIN
+		IF NEW.name IN (
+			SELECT name
+            FROM Nodes
+            WHERE idParent = NEW.idParent
+				OR (ISNULL(idParent) AND ISNULL(NEW.idParent) AND idOwner = NEW.idOwner)
+			) THEN
+				SET NEW.idOwner = NULL;
+		END IF;
+	END;
+$$
+DELIMITER ;
+
 # Insert some shit
 
 # Add user
@@ -146,6 +164,8 @@ COMMIT;
 # Some useful select queries
 
 #select * from Nodes where idOwner = 1 AND ISNULL(idParent)
+
+select * from Nodes;
 
 /*
 # Get all images for a file.
