@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS Nodes (
   idNode INT NOT NULL AUTO_INCREMENT,
   idParent INT NULL,
   idOwner INT NOT NULL,
-  isDirectory BIT NOT NULL,
+  isDirectory BOOL NOT NULL,
   name VARCHAR(45) NOT NULL,
   PRIMARY KEY (idNode)
 );
@@ -145,6 +145,9 @@ COMMIT;
            
 # Some useful select queries
 
+#select * from Nodes where idOwner = 1 AND ISNULL(idParent)
+
+/*
 # Get all images for a file.
 SELECT *
 FROM Images
@@ -156,3 +159,4 @@ WHERE idNode = 1;
 # Get all files/directories in a directory
 SELECT *
 FROM Nodes
+*/
