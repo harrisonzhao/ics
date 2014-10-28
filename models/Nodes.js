@@ -1,7 +1,15 @@
 'use strict';
 var multiline = require('multiline');
-var bcrypt = require('bcryptjs');
 var connection = require('config/db');
+
+//might want to create a trigger to assert that the directory actually exists
+//images is a list of images with info needed for database
+//directoryId is directory id of directory node is in
+//fileMetadata is object containing the fields
+//  extension, idOwner, totalBytes
+function insertFile(images, directoryId, fileMetadata, callback) {
+
+}
 
 var selectByParentIdQuery = multiline(function() {/*
   select * from Nodes where idParent = ?;

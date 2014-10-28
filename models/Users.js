@@ -12,10 +12,8 @@ var createQuery = multiline(function() {/*
     apiKey, 
     apiKeySecret,
     email,
-    firstName,
-    lastName,
     passwordHash
-  ) values (?, ?, ?, ?, ?, ?);
+  ) values (?, ?, ?, ?);
 */});
 
 /**
@@ -23,17 +21,15 @@ var createQuery = multiline(function() {/*
  * @param  {string}   apiKey        [description]
  * @param  {string}   apiKeySecret  [description]
  * @param  {string}   email         [description]
- * @param  {string}   fName         first name
- * @param  {string}   lName         last name
  * @param  {string}   password      [description]
  * @param  {Function} callback
  * args: err, result
  * result contains the insertId for the user
  */
-function create(apiKey, apiKeySecret, email, fName, lName, password, callback) {
+function create(apiKey, apiKeySecret, email, password, callback) {
   connection.query(
     createQuery, 
-    [apiKey, apiKeySecret, email, fName, lName, bcrypt.hashSync(password,8)], 
+    [apiKey, apiKeySecret, email, bcrypt.hashSync(password,8)], 
     function(err, result) {
       err ? callback(err) : callback(null, result.insertId);
     });

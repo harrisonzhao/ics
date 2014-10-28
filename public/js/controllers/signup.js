@@ -8,12 +8,10 @@ function signupCtrl($scope, $location, Auth) {
       apiKey: $scope.user.apiKey,
       apiKeySecret: $scope.user.apiKeySecret,
       email: $scope.user.email,
-      firstName: $scope.user.firstName,
-      lastName: $scope.user.lastName,
       password: $scope.user.password  
     }, function(err) {
       if (err) {
-        $scope.error = err.message;
+        $scope.error = err;
       } else {
         $location.path('/');
       }

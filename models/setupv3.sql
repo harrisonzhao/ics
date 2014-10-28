@@ -8,8 +8,6 @@ CREATE TABLE IF NOT EXISTS Users (
   apiKey VARCHAR(45) NOT NULL,        #length is exactly 32
   apiKeySecret VARCHAR(16) NOT NULL,  #length is exactly 16
   email VARCHAR(254) NOT NULL UNIQUE, #max email length is 254 chars
-  firstName VARCHAR(45) NOT NULL,
-  lastName VARCHAR(45) NOT NULL,
   passwordHash VARCHAR(60) NOT NULL,
   PRIMARY KEY (idUser)
 );

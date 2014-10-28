@@ -11,31 +11,29 @@ function localLoginVerifyCallback(email, password, done) {
   Users.selectByEmail(email, function(err, result) {
     if (err) { return done(err); }
     if (!result) { 
-      return done(null, false, { email: 'Email is not registered.' }); 
+      return done(null, false, new Error('Email is not registered.')); 
     }
     if (Users.comparePassword(password, result.passwordHash)) {
       done(null, result); 
     } else {
-      done(null, false,{ password: 'Password is incorrect.' });
+      done(null, false, new Error('Password is incorrect.'));
     }
   });
 }
 
-//body must contain fields apiKey, apiKeySecret, firstName, and lastName
+//body must contain fields apiKey, apiKeySecret
 function localSignupVerifyCallback(req, email, password, done) {
   if (!(
     req.body.apiKey && 
-    req.body.secret && 
-    email && 
-    req.body.firstName &&
-    req.body.lastName &&
+    req.body.apiKeySecret && 
+    email &&
     password)) { return done(new Error('Missing some fields')); }
   async.waterfall(
   [
     function(callback) {
-      testApiKey(req.body.apiKey, req.body.secret, function(err) {
-        if (err) { return done(null, false, { 
-          apiKey: 'Invalid api key or secret'}); 
+      testApiKey(req.body.apiKey, req.body.apiKeySecret, function(err) {
+        if (err) { 
+          return done(null, false, new Error('Invalid api key or secret')); 
         }
         callback(null);
       });
@@ -45,13 +43,11 @@ function localSignupVerifyCallback(req, email, password, done) {
         req.body.apiKey, 
         req.body.apiKeySecret, 
         email,
-        req.body.firstName,
-        req.body.lastName,
         password, 
         function(err, result) {
 
         if (err && err.errno === dbErrors.duplicateEntry) {
-          return done(null, false, {email: 'Email already taken'});
+          return done(null, false, new Error('Email already taken'));
         }
         err ? callback(err) : callback(null, result);
       });

@@ -18,7 +18,7 @@ function authenticateCallback(req, res, next, err, user, info) {
   if (error) { return next(error); }
   req.login(user, function(err) {
     if (err) { return next(err); }
-    res.send(200);
+    res.sendStatus(200);
   });
 }
 

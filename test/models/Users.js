@@ -10,8 +10,6 @@ var testUser = {
   apiKey: '1234567890123456789012345678901',
   apiKeySecret: '123456789012345',
   email: 'atest',
-  firstName: 'test',
-  lastName: 'test',
   passwordHash: 'thehash'
 };
 
@@ -20,8 +18,6 @@ function create(callback) {
     testUser.apiKey,
     testUser.apiKeySecret,
     testUser.email,
-    testUser.firstName,
-    testUser.lastName,
     testUser.passwordHash,
     function(err, result) {
       if(err) {return callback(err); }

@@ -65,6 +65,7 @@ function Auth($location, $rootScope, $cookieStore, Session, User) {
       callback = callback || angular.noop;
       User.save({}, userInfo, function(user) {
         $rootScope.currentUser = user;
+        callback(null);
       }, function(err) {
         callback(err.data);
       });
