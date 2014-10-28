@@ -15,14 +15,15 @@ CREATE TABLE IF NOT EXISTS Users (
 #for now only support everyone using our api key
 #access tokens are unique and never expire
 #select best access token when inserting based on bytes used
-#for now only support 1 flickr account per user i guess
+#for now only support 1 flickr account per user I guess
 DROP TABLE IF EXISTS FlickrAccounts;
 CREATE TABLE IF NOT EXISTS FlickrAccounts (
   accessToken VARCHAR(34) UNIQUE NOT NULL,  #length is exactly 34
   accessTokenSecret VARCHAR(16) NOT NULL,   #length is exactly 16
   bytesUsed BIGINT UNSIGNED DEFAULT 0,
   idUser INT NOT NULL,
-  PRIMARY KEY (accessToken)
+  PRIMARY KEY (accessToken),
+  CHECK(bytesUsed >= 0 AND bytesUsed <= 1000000000000)
 );
 ALTER TABLE FlickrAccounts ADD INDEX(idUser);
 
