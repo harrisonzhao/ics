@@ -2,7 +2,9 @@
 (require('rootpath')());
 
 var async = require('async');
+var FlickrAccounts = require('models/FlickrAccounts');
 var Nodes = require('models/Nodes');
+var Images = require('models/Images');
 var fsCreateFile = require('lib/fsModel/createFile');
 var flickrWrappers = require('lib/flickr/signedWrappers');
 
@@ -40,11 +42,20 @@ function changeDirectory(req, res, next) {
 //imgNum, idImg, height, width, bytes, accessToken
 //metadata: idParent, name, totalBytes, extension
 function createFile(req, res, next) {
-  if (!(req.body.images && req.body.metadata)) {
+  if (!(req.body.images instanceof Array && req.body.metadata)) {
     return next(new Error('Missing some fields'));
   }
-  //may have to store bytes as string
-  //TODO: need to convert image width and height and imgNum and bytes to int
+  req.body.images = req.body.images.map(function(image) {
+    return {
+      imgNum: parseInt(image.imgNum),
+      idImg: image.idImg,
+      height: parseInt(image.height),
+      width: parseInt(image.width),
+      bytes: parseInt(image.bytes),
+      accessToken: image.accessToken
+    };
+  });
+
   fsCreateFile(
     req.body.images, 
     req.body.metadata, 
@@ -54,17 +65,74 @@ function createFile(req, res, next) {
     });
 }
 
-//must provide node id
-function downloadFile(req, res, next) {
+//GET
+//must provide idNode
+function getDownloadFileUrls(req, res, next) {
+  if (!(req.query.idNode)) {
+    return next(new Error('Missing some params'));
+  }
+  req.query.idNode = parseInt(req.query.idNode);
+  var images;
+  var accessTokenSecretPairs;
+  async.watefall(
+  [
+    function(callback) {
+      Images.selectByNodeId(req.query.idNode, function(err, results) {
+        if(err) { return callback(err); }
+        images = results;
+        callback(null);
+      });
+    },
+    function(callback) {
+      FlickrAccounts.getAccessTokenSecretPairs(
+        images.map(function(image) { return image.accessToken; }),
+        function(err, results) {
+          if(err) { return callback(err); }
+          accessTokenSecretPairs = results;
+          callback(null);
+        });
+    },
+    function(callback) {
+      callback(null, images.map(function(image) {
+        return flickrWrappers.getImageSizes(
+          req.user.apiKey,
+          req.user.apiKeySecret,
+          image.accessToken,
+          accessTokenSecretPairs[image.accessToken]);
+      }));
+    }
+  ],
+  function(err, results) {
+    err ? next(err) : res.send(results);
+  });
+}
 
+//GET
+//must provide title
+//called once for every image
+//if multiple images, called multiple times
+function getUploadFileData(req, res, next) {
+  if (!(req.query.title)) {
+    return next(new Error('Missing some params'));
+  }
+  FlickrAccounts.selectBest(req.user.idUser, function(err, result) {
+    if (err) { return next(err); }
+    res.send(flickrWrappers.upload(
+      req.user.apiKey,
+      req.user.apiKeySecret,
+      result.accessToken,
+      result.accessTokenSecret,
+      req.query.title));
+  });
 }
 
 function deleteNode(req, res, next) {
-//??
+  //what do over here??
 }
 
 exports.makeDirectory = makeDirectory;
 exports.changeDirectory = changeDirectory;
 exports.createFile = createFile;
-exports.downloadFile = downloadFile;
+exports.getDownloadFileUrls = getDownloadFileUrls;
+exports.getUploadFileData = getUploadFileData;
 exports.deleteNode = deleteNode;

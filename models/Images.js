@@ -3,16 +3,16 @@ var multiline = require('multiline');
 var connection = require('config/db');
 
 var selectByNodeIdQuery = multiline(function () {/*
-  select * from Images WHERE idNode = ?;
+  select * from Images WHERE idNode = ? ORDER BY imgNum ASC;
 */});
 
 /**
  * [getFileImages Get File Images]
- * args: err, result
+ * args: err, results
  */
 function selectByNodeId(nid, callback) {
-  connection.query(selectByNodeIdQuery, [nid], function(err, result) {
-    err ? callback(err) : callback(null, result);
+  connection.query(selectByNodeIdQuery, [nid], function(err, results) {
+    err ? callback(err) : callback(null, results);
   });
 }
 

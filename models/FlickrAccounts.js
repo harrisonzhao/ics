@@ -1,4 +1,5 @@
 'use strict';
+var async = require('async');
 var multiline = require('multiline');
 var connection = require('config/db');
 
@@ -75,3 +76,34 @@ var deleteByIdQuery = multiline(function() {/*
 function deleteById(idUser, callback) {
   connection.query(deleteByIdQuery, [idUser], callback);
 }
+
+var selectSecretByTokenQuery = multiline(function() {/*
+  select accessTokenSecret from FlickrAccounts
+  where accessToken = ?;
+*/});
+
+function selectSecretByTokenQuery(token, callback) {
+  connection.query(selectSecretByTokenQuery, [token], function(err, result) {
+    err ? callback(err) : callback(null, result[0]);
+  });
+}
+
+function getAccessTokenSecretPairs(tokens, callback) {
+  async.reduce(
+    tokens,
+    {}, 
+    function(memo, token, callback) {
+      selectSecretByTokenQuery(token, function(err, result) {
+        if(err) { return callback(err); }
+        memo[token] = result;
+        callback(null, memo);
+      });
+    }, 
+    callback);
+}
+
+exports.create = create;
+exports.selectBest = selectBest;
+exports.deleteByAccessToken = deleteByAccessToken;
+exports.deleteById = deleteById;
+exports.getAccessTokenSecretPairs = getAccessTokenSecretPairs;
