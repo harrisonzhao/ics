@@ -7,7 +7,7 @@ var Nodes = require('models/Nodes');
 var async = require('async');
 
 function selectByParentId(callback) {
-  Nodes.selectByParentId(1, function(err, result) {
+  Nodes.selectByParentId(1, 1, function(err, result) {
     if (err) { return callback(err); }
     result[0].idNode.should.equal(2);
     result.length.should.equal(1);
@@ -15,8 +15,8 @@ function selectByParentId(callback) {
   });
 }
 
-function selectByUserId(callback) {
-  Nodes.selectByUserId(1, function(err, result) {
+function selectByParentIdNull(callback) {
+  Nodes.selectByParentId(null, 1, function(err, result) {
     if (err) { return callback(err); }
     result[0].idNode.should.equal(1);
     result.length.should.equal(1);
@@ -25,7 +25,7 @@ function selectByUserId(callback) {
 }
 
 function selectByChildId(callback) {
-  Nodes.selectByChildId(1, function(err, result) {
+  Nodes.selectByChildId(1, 1, function(err, result) {
     if (err) { return callback(err); }
     (result.idParent == null).should.be.true;
     callback(null);
@@ -55,7 +55,7 @@ describe('Nodes model', function () {
       async.waterfall(
       [
         selectByParentId,
-        selectByUserId,
+        selectByParentIdNull,
         selectByChildId,
         insertDirectory,
         selectFileImages

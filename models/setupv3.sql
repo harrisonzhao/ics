@@ -46,6 +46,8 @@ CREATE TABLE IF NOT EXISTS Nodes (
   PRIMARY KEY (idNode)
 );
 
+CREATE INDEX ownerIndx ON Nodes(idOwner) USING BTREE;
+
 DROP TABLE IF EXISTS Files;
 CREATE TABLE IF NOT EXISTS Files (
   idNode INT NOT NULL,
@@ -113,11 +115,11 @@ CREATE TRIGGER BeforeNodeInsert BEFORE INSERT ON Nodes
 	BEGIN
 		IF NEW.name IN (
 			SELECT name
-            FROM Nodes
-            WHERE idParent = NEW.idParent
+      FROM Nodes
+      WHERE idParent = NEW.idParent
 				OR (ISNULL(idParent) AND ISNULL(NEW.idParent) AND idOwner = NEW.idOwner)
-			) THEN
-				SET NEW.idOwner = NULL;
+		) THEN
+			SET NEW.idOwner = NULL;
 		END IF;
 	END;
 $$

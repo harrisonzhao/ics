@@ -4,7 +4,11 @@ var bcrypt = require('bcryptjs');
 var connection = require('config/db');
 
 var selectByParentIdQuery = multiline(function() {/*
-  select * from Nodes where idParent = ?;
+  select * from Nodes where idParent = ? AND idOwner = ?;
+*/});
+
+var selectByParentIdNullQuery = multiline(function() {/*
+  select * from Nodes where idOwner = ? AND ISNULL(idParent);
 */});
 
 /**
@@ -13,30 +17,21 @@ var selectByParentIdQuery = multiline(function() {/*
  * @param  {Function} callback [description]
  * args: err, result
  */
-function selectByParentId(nid, callback) {
-  connection.query(selectByParentIdQuery, [nid], function(err, result) {
-    err ? callback(err) : callback(null, result);
-  });
-}
-
-var selectByUserIdQuery = multiline(function() {/*
-  select * from Nodes where idOwner = ? AND ISNULL(idParent);
-*/});
-
-/**
- * [selectByUserId Gets the root directory contents for a user]
- * @param  {[type]}   id       [description]
- * @param  {Function} callback [description]
- * args: err, result
- */
-function selectByUserId(uid, callback) {
-  connection.query(selectByUserIdQuery, [uid], function(err, result) {
-    err ? callback(err) : callback(null, result);
-  });
+function selectByParentId(nid, uid, callback) {
+	if(nid != null){
+	  connection.query(selectByParentIdQuery, [nid, uid], function(err, result) {
+	    err ? callback(err) : callback(null, result);
+	  });
+	}
+	else{
+		connection.query(selectByParentIdNullQuery, [uid], function(err, result) {
+	    err ? callback(err) : callback(null, result);
+	  });
+	}
 }
 
 var selectByChildIdQuery = multiline(function() {/*
-  select * from Nodes where idNode = ?;
+  select * from Nodes where idNode = ? AND idOwner = ?;
 */});
 
 /**
@@ -45,8 +40,8 @@ var selectByChildIdQuery = multiline(function() {/*
  * @param  {Function} callback [description]
  * args: err, result
  */
-function selectByChildId(nid, callback) {
-  connection.query(selectByChildIdQuery, [nid], function(err, result) {
+function selectByChildId(nid, uid, callback) {
+  connection.query(selectByChildIdQuery, [nid, uid], function(err, result) {
     err ? callback(err) : callback(null, result[0]);
   });
 }
@@ -84,7 +79,6 @@ var selectFileImagesQuery = multiline(function () {/*
 }
 
 exports.selectByParentId = selectByParentId;
-exports.selectByUserId = selectByUserId;
 exports.selectByChildId = selectByChildId;
 exports.insertDirectory = insertDirectory;
 exports.selectFileImages = selectFileImages;
