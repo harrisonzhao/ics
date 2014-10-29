@@ -10,11 +10,14 @@ var flickrWrappers = require('lib/flickr/signedWrappers');
 
 //post
 //req must provide currentDirId, dirName 
+//currentDirId might be null if it's root directory
 function makeDirectory(req, res, next) {
-  if (!(req.body.currentDirId && req.body.dirName)) {
+  if (!(req.body.dirName)) {
     return next(new Error('Missing some fields'));
   }
-  req.body.currentDirId = parseInt(req.body.currentDirId);
+  if (req.body.currentDirId) {
+    req.body.currentDirId = parseInt(req.body.currentDirId);
+  }
   Nodes.insertDirectory(
     req.body.currentDirId,
     req.user.idUser,
@@ -27,14 +30,18 @@ function makeDirectory(req, res, next) {
 //get
 //gets all files in a given directory
 //req must provide dirId
-function changeDirectory(req, res, next) {
+//otherwise serve root directory
+function getDirectory(req, res, next) {
   if (!req.query.dirId) {
-    return next(new Error('Missing some query params'));
+    Nodes.selectRootDirectory(req.user.idUser, function(err, results) {
+      err ? next(err) : res.send(results);
+    });
+  } else {
+    req.query.dirId = parseInt(req.query.dirId);
+    Nodes.selectByParentId(req.query.dirId, function(err, results) {
+      err ? next(err) : res.send(results);
+    });
   }
-  req.query.dirId = parseInt(req.query.dirId);
-  Nodes.selectByParentId(req.query.dirId, function(err, result) {
-    err ? next(err) : res.send(result);
-  });
 }
 
 //req must have the following in body
@@ -115,14 +122,22 @@ function getUploadFileData(req, res, next) {
   if (!(req.query.title)) {
     return next(new Error('Missing some params'));
   }
-  FlickrAccounts.selectBest(req.user.idUser, function(err, result) {
-    if (err) { return next(err); }
-    res.send(flickrWrappers.upload(
-      req.user.apiKey,
-      req.user.apiKeySecret,
-      result.accessToken,
-      result.accessTokenSecret,
-      req.query.title));
+  async.waterfall(
+  [
+    function(callback) {
+      FlickrAccounts.selectBest(req.user.idUser, callback); 
+    },
+    function(accountInfo, callback) {
+      callback(null, flickrWrappers.upload(
+        req.user.apiKey,
+        req.user.apiKeySecret,
+        accountInfo.accessToken,
+        accountInfo.accessTokenSecret,
+        req.query.title));
+    }
+  ],
+  function(err, info) {
+    err ? next(err) : res.send(info);
   });
 }
 
@@ -131,7 +146,7 @@ function deleteNode(req, res, next) {
 }
 
 exports.makeDirectory = makeDirectory;
-exports.changeDirectory = changeDirectory;
+exports.getDirectory = getDirectory;
 exports.createFile = createFile;
 exports.getDownloadFileUrls = getDownloadFileUrls;
 exports.getUploadFileData = getUploadFileData;

@@ -18,18 +18,18 @@ function selectByParentId(nid, callback) {
   });
 }
 
-var selectByUserIdQuery = multiline(function() {/*
+var selectRootDirectoryQuery = multiline(function() {/*
   select * from Nodes where idOwner = ? AND ISNULL(idParent);
 */});
 
 /**
- * [selectByUserId Gets the root directory contents for a user]
- * @param  {[type]}   id       [description]
+ * [selectRootDirectory Gets the root directory contents for a user]
+ * @param  {[type]}   uid       [description]
  * @param  {Function} callback [description]
  * args: err, result
  */
-function selectByUserId(uid, callback) {
-  connection.query(selectByUserIdQuery, [uid], function(err, result) {
+function selectRootDirectory(uid, callback) {
+  connection.query(selectRootDirectoryQuery, [uid], function(err, result) {
     err ? callback(err) : callback(null, result);
   });
 }
@@ -94,7 +94,7 @@ function deleteNode(nid, callback) {
 }
 
 exports.selectByParentId = selectByParentId;
-exports.selectByUserId = selectByUserId;
+exports.selectRootDirectory = selectRootDirectory;
 exports.selectByChildId = selectByChildId;
 exports.insertDirectory = insertDirectory;
 exports.insertFile = insertFile;

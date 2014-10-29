@@ -93,3 +93,8 @@ https://www.flickr.com/services/api/flickr.photos.getSizes.html
 
 file-reader stream 
 https://github.com/maxogden/filereader-stream
+
+
+https://github.com/arian/pngjs
+
+https://github.com/mudcube/PNG-Storage

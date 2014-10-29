@@ -36,16 +36,14 @@ exports.signup = function(req, res, next) {
 
 exports.getUserInfo = function(req, res) {
   res.send({
-    email: req.user.email,
-    firstName: req.user.firstName,
-    lastName: req.user.lastName
+    email: req.user.email
   });
 }
 
-exports.setCookieAndRender = function(req, res) {
+exports.setCookieAndRenderIndex = function(req, res) {
   if(req.user) {
     res.cookie('user', JSON.stringify({
-      
+      email: req.user.email
     }));
   }
   res.render('index.html');

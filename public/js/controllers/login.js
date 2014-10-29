@@ -3,21 +3,16 @@
 var login = angular.module('controllers.login', ['services.auth']);
 
 function loginCtrl($scope, $location, Auth) {
-  $scope.login = function(form) {
+  $scope.login = function() {
     Auth.login({
       email: $scope.user.email,
       password: $scope.user.password
     },
     function(err) {
-      $scope.errors = {};
-
-      if (!err) {
-        $location.path('/');
+      if (err) {
+        $scope.error = err;
       } else {
-        angular.forEach(err, function(error, field) {
-          form[field].$setValidity('db', false);
-          $scope.errors[field] = error;
-        });
+        $location.path('/');
       }
 
     });

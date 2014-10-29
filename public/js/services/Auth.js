@@ -21,6 +21,7 @@ function Auth($location, $rootScope, $cookieStore, Session, User) {
 
   //cookie store 'user' is set with res.cookie from node server
   $rootScope.currentUser = $cookieStore.get('user') || null;
+  if ($rootScope.currentUser) { $rootScope.currentUser.dirPath = [null]; }
   $cookieStore.remove('user');
 
   return {
@@ -37,6 +38,7 @@ function Auth($location, $rootScope, $cookieStore, Session, User) {
       //post email and password to server
       Session.save({}, user, function(user) { //success
         $rootScope.currentUser = user;
+        $rootScope.currentUser.dirPath = [null];
         callback(null);
       }, function(err) {  //failure
         callback(err.data);
@@ -65,6 +67,7 @@ function Auth($location, $rootScope, $cookieStore, Session, User) {
       callback = callback || angular.noop;
       User.save({}, userInfo, function(user) {
         $rootScope.currentUser = user;
+        $rootScope.currentUser.dirPath = [null];
         callback(null);
       }, function(err) {
         callback(err.data);
@@ -72,8 +75,10 @@ function Auth($location, $rootScope, $cookieStore, Session, User) {
     },
 
     currentUser: function() {
-      Session.get({}, function(user) {
+      User.get({}, function(user) {
         $rootScope.currentUser = user;
+        $rootScope.currentUser.dirPath = [null];
+        $location.path('/');
       });
     }
 

@@ -15,10 +15,15 @@ app.post('/auth/user', auth.signup);
 app.delete('/auth/session', auth.checkLoggedIn, auth.logout);
 app.post('/auth/session', auth.login);
 
-//create a file
-//download(read) a file
-//update a file (replace old file)
-//delete a file
+var fs = require('controllers/filesystem');
+app.post('/fs/directory', auth.checkLoggedIn, fs.makeDirectory);
+app.get('/fs/directory', auth.checkLoggedIn, fs.getDirectory);
+app.post('/fs/upload', auth.checkLoggedIn, fs.createFile);
+app.get('/fs/upload', auth.checkLoggedIn, fs.getDownloadFileUrls);
+app.get('/fs/download', auth.checkLoggedIn, fs.getUploadFileData);
+//delete controller has not been done yet
+app.delete('/fs/delete', auth.checkLoggedIn, fs.deleteNode);
+//TODO update?
 
 
 // var options = {
