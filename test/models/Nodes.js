@@ -40,15 +40,6 @@ function insertDirectory(callback) {
 	});
 }
 
-function selectFileImages(callback) {
-  Nodes.selectFileImages(3, function(err, result) {
-    if (err) { return callback(err); }
-    result.length.should.equal(1);
-    result[0].idImg.should.equal('123');
-    callback(null);
-  });
-}
-
 describe('Nodes model', function () {
   it('nodes tests', 
     function(done) {
@@ -57,8 +48,7 @@ describe('Nodes model', function () {
         selectByParentId,
         selectByParentIdNull,
         selectByChildId,
-        insertDirectory,
-        selectFileImages
+        insertDirectory
       ],
       function (err) {
         if (err) { console.log(err); }

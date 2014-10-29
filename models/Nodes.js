@@ -1,6 +1,5 @@
 'use strict';
 var multiline = require('multiline');
-var bcrypt = require('bcryptjs');
 var connection = require('config/db');
 
 var selectByParentIdQuery = multiline(function() {/*
@@ -9,14 +8,8 @@ var selectByParentIdQuery = multiline(function() {/*
 
 var selectByParentIdNullQuery = multiline(function() {/*
   select * from Nodes where idOwner = ? AND ISNULL(idParent);
-*/});
+ */});
 
-/**
- * [selectByParent Gets all subfiles of the parent]
- * @param  {[type]}   id       [description]
- * @param  {Function} callback [description]
- * args: err, result
- */
 function selectByParentId(nid, uid, callback) {
 	if(nid != null){
 	  connection.query(selectByParentIdQuery, [nid, uid], function(err, result) {
@@ -64,21 +57,35 @@ function insertDirectory(idParent, idOwner, name, callback) {
     });
 }
 
-var selectFileImagesQuery = multiline(function () {/*
-	select * from Images WHERE idNode = ?;
+var insertFileQuery = multiline(function () {/*
+  insert into Nodes (idParent, idOwner, isDirectory, name)
+  values(?, ?, 0, ?);
 */});
 
-/**
- * [getFileImages Get File Images]
- * args: err, result
- */
- function selectFileImages(nid, callback) {
-  connection.query(selectFileImagesQuery, [nid], function(err, result) {
-    err ? callback(err) : callback(null, result);
-  });
+//might want to create a trigger to assert that the directory actually exists
+//images is a list of images with info needed for database
+//directoryId is directory id of directory node is in
+//fileMetadata is object containing the fields
+//extension, idOwner, totalBytes
+function insertFile(idParent, idOwner, name, callback) {
+  connection.query(
+    insertFileQuery,
+    [idParent, idOwner, name], 
+    function(err, result) {
+      err ? callback(err) : callback(null, result.insertId);
+    }); 
+}
+
+var deleteNodeQuery = multiline(function () {/*
+  delete from Nodes where idNode = ?;
+*/});
+
+function deleteNode(nid, callback) {
+  connection.query(deleteNodeQuery, [nid], callback);
 }
 
 exports.selectByParentId = selectByParentId;
 exports.selectByChildId = selectByChildId;
 exports.insertDirectory = insertDirectory;
-exports.selectFileImages = selectFileImages;
+exports.insertFile = insertFile;
+exports.deleteNode = deleteNode;
