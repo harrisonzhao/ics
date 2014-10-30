@@ -1,24 +1,34 @@
 'use strict';
 
-var login = angular.module('controllers.login', ['services.auth']);
+var fs = angular.module('controllers.fs', ['services.vfs', 'fileSystem']);
 
-function loginCtrl($scope, $location, Auth) {
-  $scope.login = function() {
-    Auth.login({
-      email: $scope.user.email,
-      password: $scope.user.password
-    },
-    function(err) {
-      if (err) {
-        $scope.error = err;
-      } else {
-        $location.path('/');
-      }
-
-    });
+function fsCtrl($rootScope, $scope, VirtualFs, fileSystem) {
+  $scope.upload = function() {
+    
   };
-  
+
+  $scope.download = function() {
+
+  };
+
+  $scope.delete = function() {
+
+  };
+
+  $scope.changeDirectory = function() {
+
+  };
+
+  $scope.makeDirectory = function() {
+
+  };
 }
 
-//Auth from services.auth
-login.controller('LoginCtrl', ['$scope', '$location', 'Auth', loginCtrl]);
+fs.controller('fsCtrl', 
+  [
+    '$rootScope',
+    '$scope',
+    'VirtualFs',
+    'fileSystem',
+    fsCtrl
+  ]);
