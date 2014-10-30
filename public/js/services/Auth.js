@@ -78,7 +78,7 @@ function Auth($location, $rootScope, $cookieStore, Session, User) {
       User.get({}, function(user) {
         $rootScope.currentUser = user;
         $rootScope.currentUser.dirPath = [null];
-        $location.path('/');
+        $location.path('/'); //maybe different path
       });
     }
 

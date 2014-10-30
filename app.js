@@ -15,7 +15,7 @@ app.post('/auth/user', auth.signup);
 app.delete('/auth/session', auth.checkLoggedIn, auth.logout);
 app.post('/auth/session', auth.login);
 
-var fs = require('controllers/filesystem');
+var fs = require('controllers/filesystem/exports');
 app.post('/fs/directory', auth.checkLoggedIn, fs.makeDirectory);
 app.get('/fs/directory', auth.checkLoggedIn, fs.getDirectory);
 app.post('/fs/upload', auth.checkLoggedIn, fs.createFile);
@@ -136,8 +136,9 @@ Object.keys(photoOptions).forEach(function(prop) {
 */
 
 
-/*
+
 //GET IMAGE WITH AUTH STUFF
+/*
 var request = require('request');
 var formQueryObj = require('lib/flickr/generateSignedQueries').getImageSizes;
 var options = { 
@@ -146,7 +147,7 @@ var options = {
   access_token: '72157647421924547-33f5e8fee2329c42',
   access_token_secret: 'd0e63b4b168ed94d'
 }
-var fs = require('fs');
+//var fs = require('fs');
 //first arg is photo options
 var flickrURL = formQueryObj({photo_id: '15315111257'}, options);
 //must tack on the photo
@@ -178,6 +179,8 @@ request.get(flickrURL, function(error, response, body) {
             return console.log("could not parse body as JSON: " + body);
           }
         }
+        console.log(body)
+        console.log(body.sizes);
         console.log(body.sizes.size[11]);
         //processResult(false, body);
       });

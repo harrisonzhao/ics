@@ -1,7 +1,7 @@
 'use strict';
 /*global async*/
 
-var virtualfs = angular.module('services.vfs', ['fileSystem']);
+var virtualfs = angular.module('services.vfs', ['services.flickrRequest']);
 
 function directoryFactory($resource) {
   return $resource('/fs/directory');
@@ -18,7 +18,12 @@ function downloadFactory($resource) {
 }
 virtualfs.factory('Download', ['$resource', downloadFactory]);
 
-function VirtualFs($rootScope, Directory, Upload, Download, fileSystem) {
+function deleteFactory($resource) {
+  return $resource('/fs/delete');
+}
+virtualfs.factory('Delete', ['$resource', deleteFactory]);
+
+function VirtualFs(Directory, Upload, Download, Delete, FlickrRequest) {
   return {
     makeDirectory: function(dirName, callback) {
       Directory.$save({}, {dirName: dirName}, function(directoryId) {
@@ -37,47 +42,81 @@ function VirtualFs($rootScope, Directory, Upload, Download, fileSystem) {
     },
 
     //images: array of images containing the following info per image
-    //imgNum, idImg, height, width, bytes, accessToken
+    //imgNum, height, width, bytes, content (actual image content as png)
     //metadata: idParent, name, totalBytes, extension
+    //currently need all images in ram (probably not good idea long-run)
+    //CURRENTLY ONLY SUPPORT ONLY 1 element in images
     createFile: function(images, metadata, callback) {
+      //lol :D
+      var image = images[0];
       async.waterfall(
       [
         function(callback) {
-
+          Upload.$get({title: metadata.name}, function(data) {
+            callback(null, data);
+          }, function(err) {
+            callback(err.data);
+          });
         },
-        function(callback) {
-
+        function(postInfo, callback) {
+          postInfo.formData.photo = image.content;
+          FlickrRequest.upload(
+            postInfo.flickrURL,
+            postInfo.formData,
+            function(err, idImg) {
+              if (err) { return callback(err); }
+              callback(null, idImg, postInfo.formData.access_token);
+            });
+        },
+        function(imageId, accessToken, callback) {
+          Upload.$save({}, {
+            images: [{
+              imgNum: image.imgNum,
+              idImg: imageId,
+              height: image.height,
+              width: image.width,
+              bytes: image.bytes,
+              accessToken: accessToken
+            }],
+            metadata: metadata
+          }, function(idNode) {
+            callback(null, idNode);
+          }, function(err) {
+            callback(err.data);
+          });
         }
       ],
-      function(err) {
-
+      function(err, idNode) {
+        callback(err, idNode);
       });
     },
 
     downloadFile: function(idNode, callback) {
       Download.$get({idNode: idNode}, function(url) {
-
+        FlickrRequest.download(url, callback);
       }, function(err) {
         callback(err.data);
       }); 
     },
 
-    uploadFilePart: function() {
-
+    delete: function(idNode, callback) {
+      Delete.$delete({}, {idNode: idNode}, function() {
+        callback(null);
+      }, function(err) {
+        callback(err.data);
+      });
     }
 
-    //for each filePart uploadFilePart
-    //createFile
   };
 }
 
 virtualfs.factory(
   'VirtualFs', 
   [
-    '$rootScope',
     'Directory',
     'Upload',
     'Download',
-    'fileSystem', //from vendor/angular-filesystem
-    virtualfs
+    'Delete',
+    'FlickrRequest',
+    VirtualFs
   ]);

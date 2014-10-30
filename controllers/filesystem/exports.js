@@ -52,6 +52,7 @@ function createFile(req, res, next) {
   if (!(req.body.images instanceof Array && req.body.metadata)) {
     return next(new Error('Missing some fields'));
   }
+  req.body.metadata.idParent = req.body.metadata.idParent || null;
   req.body.images = req.body.images.map(function(image) {
     return {
       imgNum: parseInt(image.imgNum),
@@ -74,6 +75,8 @@ function createFile(req, res, next) {
 
 //GET
 //must provide idNode
+//sends the following
+//
 function getDownloadFileUrls(req, res, next) {
   if (!(req.query.idNode)) {
     return next(new Error('Missing some params'));
@@ -118,6 +121,8 @@ function getDownloadFileUrls(req, res, next) {
 //must provide title
 //called once for every image
 //if multiple images, called multiple times
+//info contains: flickrURL and formData
+//formData contains accessToken as access_token
 function getUploadFileData(req, res, next) {
   if (!(req.query.title)) {
     return next(new Error('Missing some params'));
@@ -141,8 +146,9 @@ function getUploadFileData(req, res, next) {
   });
 }
 
+//POST
+//need idNode for delete
 function deleteNode(req, res, next) {
-  //what do over here??
 }
 
 exports.makeDirectory = makeDirectory;

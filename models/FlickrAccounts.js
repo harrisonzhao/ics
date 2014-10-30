@@ -2,6 +2,7 @@
 var async = require('async');
 var multiline = require('multiline');
 var connection = require('config/db');
+var trillionMinusTwoHundredMil = 999800000000;
 
 var createQuery = multiline(function() {/*
   insert into FlickrAccounts (
@@ -29,13 +30,9 @@ function create(accessToken, accessTokenSecret, idUser, callback) {
 }
 
 var selectBestQuery = multiline(function() {/*
-  select accessToken, accessTokenSecret 
+  select accessToken, accessTokenSecret, min(bytesUsed) AS bytes
   from FlickrAccounts
-  where bytesUsed = (
-    select min(bytesUsed)
-    from FlickrAccounts
-    where idUser = ?
-  ) LIMIT 1;
+  where idUser = ?;
 */});
 /**
  * [selectBest description]
@@ -45,7 +42,14 @@ var selectBestQuery = multiline(function() {/*
  */
 function selectBest(idUser, callback) {
   connection.query(selectBestQuery, [idUser], function(err, result) {
-    err ? callback(err) : callback(null, result[0]);
+    if(err) { return callback(err); }
+    if(!result) { return callback(new Error('No accounts linked!')); }
+    if(result.bytes > trillionMinusTwoHundredMil) {
+      return callback(new Error(
+        'Exceeded maximum storage on all accounts! Please create a new account.'
+      ));
+    }
+    callback(null, result)
   });
 }
 

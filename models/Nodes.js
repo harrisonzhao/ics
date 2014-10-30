@@ -11,7 +11,7 @@ var selectByParentIdNullQuery = multiline(function() {/*
  */});
 
 function selectByParentId(nid, uid, callback) {
-	if(nid != null){
+	if(nid !== null){
 	  connection.query(selectByParentIdQuery, [nid, uid], function(err, result) {
 	    err ? callback(err) : callback(null, result);
 	  });
