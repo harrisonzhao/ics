@@ -8,23 +8,18 @@
 <body>
 <script type="text/javascript">
 
-'use strict';
-
-var async = require('async');
-var png = require('PNGStorage');
-
 var demoEncode = function() {
 	var image = document.querySelector('#image');
 	var data0 = document.querySelector('#data0');
 	var data1 = document.querySelector('#data1');
-	data1.value = png.encode(data0.value);
+	data1.value = PNGStorage.encode(data0.value);
 };
 
 var demoDecode = function() {
 	var image = document.querySelector('#image');
 	var data0 = document.querySelector('#data0');
 	var data1 = document.querySelector('#data1');
-	png.decode(data1.value, function(data) {
+	PNGStorage.decode(data1.value, function(data) {
 		data0.value = data;	
 	});
 };
