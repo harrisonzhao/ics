@@ -46,6 +46,7 @@ function VirtualFs(Directory, Upload, Download, Delete, FlickrRequest) {
     //metadata: idParent, name, totalBytes, extension
     //currently need all images in ram (probably not good idea long-run)
     //CURRENTLY ONLY SUPPORT ONLY 1 element in images
+    //callback args: err, result
     createFile: function(images, metadata, callback) {
       //lol :D
       var image = images[0];

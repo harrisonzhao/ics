@@ -106,7 +106,7 @@ var options = {
 var fs = require('fs');
 //first arg is photo options
 var queryObj = uploadQuery({
-  title: 'testxfd0',
+  title: 'fuckingshit1',
   is_public: 0,
   is_friend: 0,
   is_family: 0,
@@ -114,7 +114,7 @@ var queryObj = uploadQuery({
 }, options);
 var photoOptions = queryObj.formData;
 //must tack on the photo
-photoOptions.photo = fs.createReadStream('./public/img/img008.jpg');
+photoOptions.photo = fs.createReadStream('./public/img/hi.png');
 var flickrURL = queryObj.flickrURL;
 
 //THE ACTUAL POST REQUEST
@@ -127,6 +127,7 @@ var req = request.post(flickrURL, function(error, response, body) {
     data = parseInt(body.split("<photoid>")[1].split("</photoid>")[0], 10);
     console.log(data);
   }
+  console.log(response);
 });
 var form = req.form();
 Object.keys(photoOptions).forEach(function(prop) {
