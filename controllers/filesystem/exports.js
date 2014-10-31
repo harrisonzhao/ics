@@ -90,7 +90,7 @@ function getDownloadFileData(req, res, next) {
       Nodes.selectById(req.query.idNode, function(err, node) {
         if(err) { callback(err); }
         fileName = node.name;
-        if(!node.isDirectory) {callback(new Error('node is a directory!'));}
+        if(node.isDirectory) {callback(new Error('node is a directory!'));}
         callback(null);
       });
     },

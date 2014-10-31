@@ -47,6 +47,8 @@ function VirtualFs(Directory, Upload, Download, Delete, FlickrRequest) {
     //currently need all images in ram (probably not good idea long-run)
     //CURRENTLY ONLY SUPPORT ONLY 1 element in images
     //callback args: err, result
+    //err is error string
+    //result is idNode of added node
     createFile: function(images, metadata, callback) {
       //lol :D
       var image = images[0];
@@ -85,20 +87,38 @@ function VirtualFs(Directory, Upload, Download, Delete, FlickrRequest) {
           });
         }
       ],
-      function(err, idNode) {
-        callback(err, idNode);
-      });
+      callback);
     },
 
     //callback args:err, result
-    //result is an object of image content and title
+    //err is an error string
+    //result is an object of image content and fileName
     downloadFile: function(idNode, callback) {
-      //info will contain url and name
-      Download.$get({idNode: idNode}, function(info) {
-        FlickrRequest.download(url, callback);
-      }, function(err) {
-        callback(err.data);
-      }); 
+      async.waterfall(
+      [
+        function(callback) {
+          Download.$get({idNode: idNode}, function(info) {
+            callback(null, info);
+          }, function(err) {
+            callback(err.data);
+          });
+        },
+        //info will contain array getUrls and string name
+        function(info, callback) {
+          //since only supporting 1 image
+          //result will be the full size image
+          FlickrRequest.download(info.getUrls[0], function(err, result) {
+
+            if(err) { return callback(err); }
+            callback(null, {
+              fileName: info.fileName,
+              content: result
+            });
+
+          });
+        }
+      ],
+      callback);
     },
 
     delete: function(idNode, callback) {
