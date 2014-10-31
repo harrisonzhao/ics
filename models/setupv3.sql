@@ -41,19 +41,13 @@ CREATE TABLE IF NOT EXISTS Nodes (
   idParent INT NULL,
   idOwner INT NOT NULL,
   isDirectory BOOL NOT NULL,
-  name VARCHAR(45) NOT NULL,
+  name VARCHAR(255) NOT NULL,
   PRIMARY KEY (idNode)
 );
 
 CREATE INDEX ownerIndx ON Nodes(idOwner) USING BTREE;
 
 DROP TABLE IF EXISTS Files;
-CREATE TABLE IF NOT EXISTS Files (
-  idNode INT NOT NULL,
-  extension VARCHAR(5) NULL,
-  totalBytes BIGINT NOT NULL, #the bytes taken up by the file, could be big
-  PRIMARY KEY (idNode)
-);
 
 #bytes is bytes that the png image takes up
 DROP TABLE IF EXISTS Images;
@@ -61,8 +55,6 @@ CREATE TABLE IF NOT EXISTS Images (
   idNode INT NOT NULL,
   imgNum INT NOT NULL,
   idImg VARCHAR(45) UNIQUE NOT NULL,
-  height INT NOT NULL,
-  width INT NOT NULL,
   bytes INT NOT NULL, #the bytes taken up by the png, max 200 * 10^6
   accessToken VARCHAR(34) NOT NULL, #foreign key from FlickrAccounts
   PRIMARY KEY (idNode, imgnum)
@@ -97,11 +89,8 @@ DELIMITER $$
 CREATE TRIGGER BeforeNodeDelete BEFORE DELETE ON Nodes
 	FOR EACH ROW
 	BEGIN
-		DELETE FROM Files
-        WHERE idNode = OLD.idNode;
-        
-        DELETE FROM Images
-        WHERE idNode = OLD.idNode;
+    DELETE FROM Images
+    WHERE idNode = OLD.idNode;
 	END;
 $$
 DELIMITER ;
@@ -137,13 +126,9 @@ INSERT INTO Nodes(idOwner, idParent, name, isDirectory)
 VALUES (1, 1, 'the', 1);
 
 # Add file
-START TRANSACTION;
 INSERT INTO Nodes(idOwner, idParent, name, isDirectory)
 VALUES(1, 2, 'fuck', 0);
 
-INSERT INTO Files(idNode, extension, totalBytes)
-VALUES((SELECT idNode FROM Nodes ORDER BY idNode DESC LIMIT 1), 'dave', 529);
-COMMIT;
 ##
 
 # Add an account

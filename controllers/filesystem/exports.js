@@ -46,7 +46,7 @@ function getDirectory(req, res, next) {
 
 //req must have the following in body
 //images: array of images containing the following info per image
-//imgNum, idImg, height, width, bytes, accessToken
+//imgNum, idImg, height, accessToken
 //metadata: idParent, name, totalBytes, extension
 function createFile(req, res, next) {
   if (!(req.body.images instanceof Array && req.body.metadata)) {
@@ -57,8 +57,6 @@ function createFile(req, res, next) {
     return {
       imgNum: parseInt(image.imgNum),
       idImg: image.idImg,
-      height: parseInt(image.height),
-      width: parseInt(image.width),
       bytes: parseInt(image.bytes),
       accessToken: image.accessToken
     };
@@ -75,17 +73,27 @@ function createFile(req, res, next) {
 
 //GET
 //must provide idNode
-//sends the following
-//
-function getDownloadFileUrls(req, res, next) {
+//sends the following object
+//fileName is filename of node
+//getUrls is array or get requestable urls to get the images
+function getDownloadFileData(req, res, next) {
+  req.query.idNode = parseInt(req.query.idNode);
   if (!(req.query.idNode)) {
     return next(new Error('Missing some params'));
   }
-  req.query.idNode = parseInt(req.query.idNode);
   var images;
+  var fileName;
   var accessTokenSecretPairs;
   async.watefall(
   [
+    function(callback) {
+      Nodes.selectById(req.query.idNode, function(err, node) {
+        if(err) { callback(err); }
+        fileName = node.name;
+        if(!node.isDirectory) {callback(new Error('node is a directory!'));}
+        callback(null);
+      });
+    },
     function(callback) {
       Images.selectByNodeId(req.query.idNode, function(err, results) {
         if(err) { return callback(err); }
@@ -113,7 +121,7 @@ function getDownloadFileUrls(req, res, next) {
     }
   ],
   function(err, results) {
-    err ? next(err) : res.send(results);
+    err ? next(err) : res.send({fileName: fileName, getUrls: results });
   });
 }
 
@@ -149,11 +157,18 @@ function getUploadFileData(req, res, next) {
 //POST
 //need idNode for delete
 function deleteNode(req, res, next) {
+  req.body.idNode = parseInt(req.body.idNode);
+  if(!req.body.idNode) {
+    return next(new Error('no directory or file specified!'));
+  }
+  Nodes.deleteNode(req.body.idNode, function(err) {
+    err ? next(err) : res.sendStatus(200); 
+  });
 }
 
 exports.makeDirectory = makeDirectory;
 exports.getDirectory = getDirectory;
 exports.createFile = createFile;
-exports.getDownloadFileUrls = getDownloadFileUrls;
+exports.getDownloadFileData = getDownloadFileData;
 exports.getUploadFileData = getUploadFileData;
 exports.deleteNode = deleteNode;

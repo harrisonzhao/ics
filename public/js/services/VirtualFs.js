@@ -42,7 +42,7 @@ function VirtualFs(Directory, Upload, Download, Delete, FlickrRequest) {
     },
 
     //images: array of images containing the following info per image
-    //imgNum, height, width, bytes, content (actual image content as png)
+    //imgNum, bytes, content (actual image content as png base64 encoded)
     //metadata: idParent, name, totalBytes, extension
     //currently need all images in ram (probably not good idea long-run)
     //CURRENTLY ONLY SUPPORT ONLY 1 element in images
@@ -74,8 +74,6 @@ function VirtualFs(Directory, Upload, Download, Delete, FlickrRequest) {
             images: [{
               imgNum: image.imgNum,
               idImg: imageId,
-              height: image.height,
-              width: image.width,
               bytes: image.bytes,
               accessToken: accessToken
             }],
@@ -92,8 +90,11 @@ function VirtualFs(Directory, Upload, Download, Delete, FlickrRequest) {
       });
     },
 
+    //callback args:err, result
+    //result is an object of image content and title
     downloadFile: function(idNode, callback) {
-      Download.$get({idNode: idNode}, function(url) {
+      //info will contain url and name
+      Download.$get({idNode: idNode}, function(info) {
         FlickrRequest.download(url, callback);
       }, function(err) {
         callback(err.data);

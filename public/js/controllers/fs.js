@@ -15,7 +15,11 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage) {
   $scope.upload = function() {
     var image = PNGStorage.encode($scope.file);
     VirtualFs.upload(
-      [image],
+      [{
+        imgNum: 0,
+        bytes: image.length,
+        content: image
+      }],
       {
         idParent: $rootScope.currentUser.dirPath[
           $rootScope.currentUser.dirPath.length - 1] || null,

@@ -17,12 +17,12 @@ function selectByNodeId(nid, callback) {
 }
 
 var createQuery = multiline(function () {/*
-  insert into Images(imgNum, idImg, height, width, bytes, accessToken)
-  values(?, ?, ?, ?, ?, ?);
+  insert into Images(imgNum, idImg, bytes, accessToken)
+  values(?, ?, ?, ?);
 */});
 /**
  * @param  {object}   metadata
- * must contain fields: imgNum, idNum, height, width, bytes, accessToken
+ * must contain fields: imgNum, idNum, bytes, accessToken
  * @param  {Function} callback
  * args: err, id of inserted
  */
@@ -32,8 +32,6 @@ function create(metadata, callback) {
     [
       metadata.imgNum,
       metadata.idNum,
-      metadata.height,
-      metadata.width,
       metadata.bytes,
       metadata.accessToken
     ], 
