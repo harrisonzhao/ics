@@ -63,7 +63,7 @@ app.run(function ($rootScope, $location, Auth) {
       Auth.currentUser();
     }
     if (currentUser && 
-      (['/','/login','/logout','/signup'].indexOf($location.path()) !== -1)) {
+      (['/','/login','/signup'].indexOf($location.path()) !== -1)) {
       $location.path('/fs');
     }
   });

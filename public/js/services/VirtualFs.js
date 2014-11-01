@@ -46,9 +46,6 @@ function VirtualFs(Directory, Upload, Download, Delete, FlickrRequest, $http) {
       }, function(err) {
         callback(err.data);
       });
-      /*$http.get('/fs/directory').success(function(nodes) {
-        callback(null, nodes);
-      });*/
     },
 
     //images: array of images containing the following info per image
@@ -65,7 +62,7 @@ function VirtualFs(Directory, Upload, Download, Delete, FlickrRequest, $http) {
       async.waterfall(
       [
         function(callback) {
-          Upload.$get({title: metadata.name}, function(data) {
+          Upload.get({title: metadata.name}, function(data) {
             callback(null, data);
           }, function(err) {
             callback(err.data);
