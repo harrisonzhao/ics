@@ -54,7 +54,7 @@ app.delete('/fs/delete', auth.checkLoggedIn, fs.deleteNode);
 /**
  * handles the errors when next(err) is called
  */
-var errorHandler = require('controllers/errorHandler').errorHandler;
+var errorHandler = require('controllers/errorhandler').errorHandler;
 app.use(errorHandler);
 /*app.post('/auth/user', function(req, res) {
   console.log(req.body);
