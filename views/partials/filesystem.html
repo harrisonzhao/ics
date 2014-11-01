@@ -7,23 +7,21 @@
         <table class="table table-striped table-bordered">
             <thead>
                 <tr>
-                     <th sortable-header col="name">Name</th>
-                     <th sortable-header col="id">idNode</th>
-                     <th sortable-header col="isd">isDirectory</th>
+                     <th sortable-header col="name">Type</th>
+                     <th sortable-header col="id">Name</th>
+                     <th sortable-header col="isd">Select</th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="node in nodes" ng-click="clickNode(node.idNode, node.name, node.isDirectory)">
-                    <td ng-click="$event.stopPropagation()">
-                        <input type="checkbox" ng-model="node.clicked"
-                            ng-true-value="1" ng-false-value="0">
-                    </td>
-                    <td>{{ node.name }}</td>
-                    <td>{{ node.idNode }}</td>
-                    <td>{{ node.isDirectory }}</td>
                     <td>
                         <img ng-show="node.isDirectory" src="img/directory.png">
                         <img ng-show="!node.isDirectory" src="img/file.png">
+                    </td>
+                    <td>{{ node.name }}</td>
+                    <td ng-click="$event.stopPropagation()">
+                        <input type="checkbox" ng-model="node.clicked"
+                            ng-true-value="1" ng-false-value="0">
                     </td>
                 </tr>
             </tbody>
