@@ -21,7 +21,7 @@ function Auth($location, $rootScope, $cookieStore, Session, User) {
   var rootDirObj = {id: null, name: 'ICS'};
   //cookie store 'user' is set with res.cookie from node server
   $rootScope.currentUser = $cookieStore.get('user') || null;
-  if ($rootScope.currentUser) { $rootScope.currentUser.dirPath = [rootDirObj]; }
+  if ($rootScope.currentUser) {$rootScope.currentUser.currentDir = rootDirObj;}
   $cookieStore.remove('user');
 
   return {
@@ -38,7 +38,7 @@ function Auth($location, $rootScope, $cookieStore, Session, User) {
       //post email and password to server
       Session.save({}, user, function(user) { //success
         $rootScope.currentUser = user;
-        $rootScope.currentUser.dirPath = [rootDirObj];
+        $rootScope.currentUser.currentDir = rootDirObj;
         callback(null);
       }, function(err) {  //failure
         callback(err.data);
@@ -67,7 +67,7 @@ function Auth($location, $rootScope, $cookieStore, Session, User) {
       callback = callback || angular.noop;
       User.save({}, userInfo, function(user) {
         $rootScope.currentUser = user;
-        $rootScope.currentUser.dirPath = [rootDirObj];
+        $rootScope.currentUser.currentDir = rootDirObj;
         callback(null);
       }, function(err) {
         callback(err.data);
@@ -78,7 +78,7 @@ function Auth($location, $rootScope, $cookieStore, Session, User) {
     currentUser: function() {
       User.get({}, function(user) {
         $rootScope.currentUser = user;
-        $rootScope.currentUser.dirPath = [rootDirObj];
+        $rootScope.currentUser.currentDir = rootDirObj;
       });
     }
 

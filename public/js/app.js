@@ -11,11 +11,14 @@ var app = angular.module('infiniteCloudStorage', [
   'ui.bootstrap',
   'controllers.login',
   'controllers.signup',
-  'controllers.front'
-  //'controllers.fs'
+  'controllers.front',
+  'controllers.fs'
 ]);
 
-function configApp($routeProvider, $locationProvider) {
+function configApp($httpProvider, $routeProvider, $locationProvider) {
+  $httpProvider.defaults.useXDomain = true;
+  $httpProvider.defaults.withCredentials = true;
+  delete $httpProvider.defaults.headers.common['X-Requested-With'];
   $routeProvider
     /*.when('/', {
       templateUrl: 'partials/main.html',
@@ -33,10 +36,10 @@ function configApp($routeProvider, $locationProvider) {
       templateUrl: 'partials/signup.html',
       controller: 'SignupCtrl'
     })
-    .when('/fs', {
-      templateUrl: 'partials/filesystem.html',
-      controller: 'fsCtrl'
-    })
+    // .when('/fs', {
+    //   templateUrl: 'partials/filesystem.html',
+    //   controller: 'FsCtrl'
+    // })
     .otherwise({
       redirectTo: '/'
     });
@@ -44,6 +47,7 @@ function configApp($routeProvider, $locationProvider) {
 }
 
 app.config([
+  '$httpProvider',
   '$routeProvider', 
   '$locationProvider', 
   configApp
@@ -59,6 +63,10 @@ app.run(function ($rootScope, $location, Auth) {
       (['/','/login','/logout','/signup'].indexOf($location.path()) === -1)) {
       Auth.currentUser();
     }
+    /*if (currentUser && 
+      (['/','/login','/logout','/signup'].indexOf($location.path()) !== -1)) {
+      $location.path('/fs');
+    }*/
   });
 
   // On catching 401 errors, redirect to the login page.

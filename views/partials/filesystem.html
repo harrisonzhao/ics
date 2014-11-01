@@ -1,1 +1,24 @@
-<div>hello world!</div>
+<div class="container">
+    <scrollable-table watch="visibleProjects">
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                     <th sortable-header col="facility">Facility</th>
+                     <th sortable-header col="code">Unit code</th>
+                     <th sortable-header col="cost">Cost</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="node in nodes">
+                    <td>{{ node.name }}</td>
+                    <td>{{ node.idNode }}</td>
+                    <td>{{ node.isDirectory }}</td>        
+                </tr>
+            </tbody>
+        </table>
+    </scrollable-table>
+<!--     <div>
+        <label>Select a facility:</label>
+        <select ng-model="selected" ng-options="f for f in facilities"></select>
+    </div> -->
+</div>
