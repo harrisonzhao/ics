@@ -3,8 +3,8 @@
 var fs = angular.module('controllers.fs', [
   'services.vfs',
   'vendor.services.PNGStorage',
-  'vendor.services.SaveFile'
-  ]);
+  'vendor.services.SaveFile',
+  'directives.fileDropzone']);
 
 var cmp = function(a, b) {
     if (a > b) { return +1; }
@@ -20,16 +20,21 @@ var sortNodes = function(nodes) {
 
 //gotta make the title the non png file??
 function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
+  $scope.files = [];
+
+  //for make directory
+  $scope.newDirName = 'New Directory Name';
+
   //for ng-repeat  
   $scope.nodes = [];
   $scope.currDirName = $rootScope.currentUser.dirPath[
     $rootScope.currentUser.dirPath.length - 1].name;
   //prevent multiple clicks
-  var clicked = false;
+  var cdInProgress = false;
 
   var changeDirectory = function(idNode, name, isChild) {
-    if(clicked) { return; }
-    clicked = true;
+    if(cdInProgress) { return; }
+    cdInProgress = true;
     //must handle case of multiple clicks in short span of time,
     //can't include something included once already
     if(isChild) {
@@ -42,11 +47,11 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
     }
 
     VirtualFs.getDirectory(idNode, function(err, nodes) {
-      if(err) { clicked = false; return console.log(err); }
+      if(err) { cdInProgress = false; return console.log(err); }
       $scope.currDirName = $rootScope.currentUser.dirPath[
         $rootScope.currentUser.dirPath.length - 1].name;
       $scope.nodes = nodes;
-      clicked = false;
+      cdInProgress = false;
     });
   };
 
@@ -69,33 +74,30 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
     });
   };
 
-  //uses $rootScope.currentUser.currentDir to determine idParent(parent node id)
-  //^ contains an object with fields: id and name
-  //to be in conjunction with dropzone directive
-  //ex:
-  //dropzone="upload()"
   //assumes the existence of $scope.file and $scope.fileName
+  //$files: an array of files selected, each file has name, size, and type.
   $scope.upload = function() {
-    var image = PNGStorage.encode($scope.file);
+    var file = $scope.files.shift();
+    console.log(file);
+    file.file = PNGStorage.encode(file.file);
     VirtualFs.upload(
       [{
         imgNum: 0,
-        bytes: image.length,
-        content: image
+        bytes: file.length,
+        content: file.file
       }],
       {
-        idParent: $rootScope.currentUser.dirPath[
-          $rootScope.currentUser.dirPath.length - 1].id || null,
-        name: $scope.fileName,
-        totalBytes: image.length,
-        extension: $scope.fileName.split('.').pop()
+        idParent: file.idParent,
+        name: file.fileName,
+        totalBytes: file.file.length,
+        extension: file.fileName.split('.').pop()
       },
       function(err, idNode) {
         if(err) { return console.log(err); }
         $scope.nodes.push({
           idNode: idNode,
           isDirectory: false,
-          name: $scope.fileName
+          name: file.fileName
         });
         sortNodes();
         //somehow add the resulting thing to list of files
@@ -108,7 +110,7 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
     });
   };
 
-  $scope.deleteClicked = function(){
+  $scope.deleteClicked = function() {
     var toDelete = [];
     for(var i=0; i<$scope.nodes.length; i++){
       var clicked = $scope.nodes[i].clicked;
@@ -121,9 +123,7 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
     $scope.nodes = $scope.nodes.filter(function(element){
       return !(element.clicked == 1);
     });
-  }
-
-  $scope.newDirName = 'newDirName';
+  };
 
   $scope.makeDirectory = function() {
     var dirName = $scope.newDirName;
@@ -144,7 +144,7 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
     } else {
       download(idNode);
     }
-  }
+  };
 
   $scope.cdParent = function() {
     if($rootScope.currentUser.dirPath.length > 1) {
@@ -155,7 +155,7 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
           $rootScope.currentUser.dirPath.length - 2].name,
         false);
     }
-  }
+  };
 
   //initialize with root directory
   changeDirectory(

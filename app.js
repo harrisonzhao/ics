@@ -161,6 +161,7 @@ var flickrURL = formQueryObj({photo_id: '15315111257'}, options);
 
 //THE ACTUAL GET REQUEST
 //must attach stuff to the form
+console.log(flickrURL);
 request.get(flickrURL, function(error, response, body) {
         if(!response) {
           error = "HTTP Error: no response for url [" + flickrURL + "]";
@@ -191,7 +192,6 @@ request.get(flickrURL, function(error, response, body) {
         //processResult(false, body);
       });
 */
-
 
 
 //auth and uploading with api (server side)

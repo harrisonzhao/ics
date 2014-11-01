@@ -1,9 +1,9 @@
 //dropzone directive for uploading files
-//modifies the local scope's file and fileName attributes
+//modifies the local scope's files array
 //
 var dropzone = angular.module('directives.fileDropzone', []);
 
-function Dropzone() {
+function Dropzone($rootScope) {
   return {
     restrict: 'A',
 
@@ -13,8 +13,10 @@ function Dropzone() {
     },
 
     link: function(scope, element, attrs) {
+      console.log('hell!!!!o');
       var checkSize, processDragOverOrEnter;
       processDragOverOrEnter = function(event) {
+        console.log('in here');
         if (event !== null) {
           event.preventDefault();
         }
@@ -22,6 +24,7 @@ function Dropzone() {
         return false;
       };
       checkSize = function(size) {
+        console.log(size);
         var _ref;
         if (((_ref = attrs.maxFileSize) === (void 0) || _ref === '') || 
             (size / 1024) / 1024 < attrs.maxFileSize) {
@@ -36,16 +39,24 @@ function Dropzone() {
       element.bind('dragenter', processDragOverOrEnter);
 
       return element.bind('drop', function(event) {
+        var currDirId = $rootScope.currentUser.dirPath[
+          $rootScope.currentUser.dirPath.length - 1].id;
         var file, name, reader, size;
         if (event !== null) {
+          event.stopPropagation();
           event.preventDefault();
         }
         reader = new FileReader();
         reader.onload = function(evt) {
           if (checkSize(size)) {
-            scope.file = evt.target.result;
-            scope.fileName = name;
-            scope.$apply(attrs.dropzone);
+            return scope.$apply(function() {
+              scope.files.push({
+                idParent: currDirId,
+                file: evt.target.result,
+                fileName: name
+              });
+              scope.upload();
+            });
           }
         };
         file = event.dataTransfer.files[0];
@@ -59,4 +70,4 @@ function Dropzone() {
   };
 }
 
-dropzone.directive('dropzone', Dropzone);
+dropzone.directive('dropzone', ['$rootScope', Dropzone]);
