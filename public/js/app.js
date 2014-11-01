@@ -17,7 +17,6 @@ var app = angular.module('infiniteCloudStorage', [
 
 function configApp($httpProvider, $routeProvider, $locationProvider) {
   $httpProvider.defaults.useXDomain = true;
-  $httpProvider.defaults.withCredentials = true;
   delete $httpProvider.defaults.headers.common['X-Requested-With'];
   $routeProvider
     /*.when('/', {
