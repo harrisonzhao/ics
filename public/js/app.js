@@ -10,7 +10,8 @@ var app = angular.module('infiniteCloudStorage', [
   'http-auth-interceptor',
   'ui.bootstrap',
   'controllers.login',
-  'controllers.signup'
+  'controllers.signup',
+  'controllers.front'
   //'controllers.fs'
 ]);
 
@@ -20,6 +21,10 @@ function configApp($routeProvider, $locationProvider) {
       templateUrl: 'partials/main.html',
       controller: 'MainCtrl'
     })*/
+    .when('/', {
+      templateUrl: 'partials/landing.html',
+      controller: 'FrontCtrl'
+    })
     .when('/login', {
       templateUrl: 'partials/login.html',
       controller: 'LoginCtrl'

@@ -39,7 +39,7 @@ var config = {
     app.use(session({
       secret: settings.secrets.sessionSecret,
       key: 'sid', 
-      //cookie: { secure: true }, //GOTTA IMPLEMENT HTTPS FOR IT TO WORK!
+      cookie: { secure: true }, //GOTTA IMPLEMENT HTTPS FOR IT TO WORK!
       store: new SessionStore(settings.secrets.mysqlConfigs)
     }));
     app.use(flash());
