@@ -20,9 +20,14 @@ auth.factory('Session', ['$resource', sessionFactory]);
 function Auth($location, $rootScope, $cookieStore, Session, User) {
   var rootDirObj = {id: null, name: 'ICS'};
   //cookie store 'user' is set with res.cookie from node server
-  $rootScope.currentUser = $cookieStore.get('user') || null;
-  if ($rootScope.currentUser) {$rootScope.currentUser.currentDir = rootDirObj;}
-  $cookieStore.remove('user');
+  //$rootScope.currentUser = $cookieStore.get('user') || null;
+  if(!$rootScope.currentUser) {
+    User.get({}, function(user) {
+      $rootScope.currentUser = user;
+      $rootScope.currentUser.currentDir = rootDirObj;
+    });
+  }
+  //$cookieStore.remove('user');
 
   return {
 

@@ -5,7 +5,11 @@ var flickrRequest = angular.module('services.flickrRequest', []);
 function FlickrRequest($http) {
   return {
     upload: function(url, data, callback) {
-      $http.post(url, data).
+      $.post(url, data, function(data, status, headers) {
+          console.log(data, status, headers);
+          callback(null, data);
+        })
+      /*$http.post(url, data).
         success(function(data, status, headers, config) {
           console.log(data, status, headers, config);
           callback(null, data);
@@ -13,7 +17,7 @@ function FlickrRequest($http) {
         error(function(data, status, headers, config) {
           console.log(data, status, headers, config);
           callback(data);
-        });
+        });*/
     },
 
     download: function(url, callback) {
