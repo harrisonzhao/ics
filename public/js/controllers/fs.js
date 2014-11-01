@@ -55,7 +55,7 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
       });
   };
 
-  $scope.download = function(idNode) {
+  var download = function(idNode) {
     async.waterfall(
     [
       function(callback) {
@@ -86,10 +86,11 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
     });
   };
 
-  $scope.changeDirectory = function(idNode, name) {
+  var changeDirectory = function(idNode, name) {
     VirtualFs.getDirectory(idNode, function(err, nodes) {
       if(err) { return console.log(err); }
       $rootScope.currentUser.currentDir = {id: idNode, name: name};
+      $scope.currDirName = $rootScope.currentUser.currentDir.name;
       $scope.nodes = nodes;
     });
   };
@@ -105,7 +106,20 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
       });
     });
   };
-  $scope.changeDirectory(null, $scope.currentDirName);
+
+  $scope.clickNode = function(idNode, name, isDirectory) {
+    if(isDirectory) {
+      changeDirectory(idNode, name);
+    } else {
+      download(idNode);
+    }
+  }
+
+  $scope.cdParent = function() {
+    changeDirectory($rootScope.currentUser.currentDir.id, $rootScope.currentUser.currentDir.name);
+  }
+  
+  changeDirectory(null, $rootScope.currentUser.currentDir.name);
 }
 
 fs.controller('FsCtrl', 
