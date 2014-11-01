@@ -19,4 +19,8 @@ function signupCtrl($scope, $location, Auth) {
   }
 }
 
-signup.controller('SignupCtrl', ['$scope', '$location', 'Auth', signupCtrl]);
+signup.controller('SignupCtrl', [
+  '$scope',
+  '$location',
+  'Auth',
+  signupCtrl]);

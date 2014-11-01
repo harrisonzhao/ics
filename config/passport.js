@@ -14,6 +14,7 @@ function localLoginVerifyCallback(email, password, done) {
       return done(null, false, new Error('Email is not registered.')); 
     }
     if (Users.comparePassword(password, result.passwordHash)) {
+      console.log(result);
       done(null, result); 
     } else {
       done(null, false, new Error('Password is incorrect.'));

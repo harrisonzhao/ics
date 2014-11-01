@@ -21,4 +21,8 @@ function loginCtrl($scope, $location, Auth) {
 }
 
 //Auth from services.auth
-login.controller('LoginCtrl', ['$scope', '$location', 'Auth', loginCtrl]);
+login.controller('LoginCtrl', [
+  '$scope',
+  '$location',
+  'Auth',
+  loginCtrl]);
