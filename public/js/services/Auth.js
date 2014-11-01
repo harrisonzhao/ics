@@ -20,6 +20,15 @@ auth.factory('Session', ['$resource', sessionFactory]);
 function Auth($location, $rootScope, $cookieStore, Session, User) {
   var rootDirObj = {id: null, name: 'Root'};
 
+  if (!$rootScope.currentUser && 
+    (['/','/login','/signup'].indexOf($location.path()) !== -1)) {
+
+    User.get({}, function(user) {
+      $rootScope.currentUser = user;
+      $rootScope.currentUser.dirPath = [rootDirObj];
+    });
+  
+  }
   return {
 
     /**
@@ -32,9 +41,9 @@ function Auth($location, $rootScope, $cookieStore, Session, User) {
     login: function(user, callback) {
       callback = callback || angular.noop;
       //post email and password to server
-      Session.$save({}, user, function(user) { //success
+      Session.save({}, user, function(user) { //success
         $rootScope.currentUser = user;
-        $rootScope.currentUser.currentDir = rootDirObj;
+        $rootScope.currentUser.dirPath = [rootDirObj];
         callback(null);
       }, function(err) {  //failure
         callback(err.data);
@@ -43,7 +52,7 @@ function Auth($location, $rootScope, $cookieStore, Session, User) {
 
     logout: function(callback) {
       callback = callback || angular.noop;
-      Session.$delete({}, {}, function() {
+      Session.delete({}, {}, function() {
         $rootScope.currentUser = null;
         callback();
       }, function(err) {
@@ -61,9 +70,9 @@ function Auth($location, $rootScope, $cookieStore, Session, User) {
      */
     createUser: function(userInfo, callback) {
       callback = callback || angular.noop;
-      User.$save({}, userInfo, function(user) {
+      User.save({}, userInfo, function(user) {
         $rootScope.currentUser = user;
-        $rootScope.currentUser.currentDir = rootDirObj;
+        $rootScope.currentUser.dirPath = [rootDirObj];
         callback(null);
       }, function(err) {
         callback(err.data);
@@ -74,7 +83,7 @@ function Auth($location, $rootScope, $cookieStore, Session, User) {
     currentUser: function() {
       User.get({}, function(user) {
         $rootScope.currentUser = user;
-        $rootScope.currentUser.currentDir = rootDirObj;
+        $rootScope.currentUser.dirPath = [rootDirObj];
       });
     }
 

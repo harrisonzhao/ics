@@ -18,41 +18,41 @@ var sortNodes = function(nodes) {
   });
 };
 
+var isChildNode = function(nodes, idNode) {
+  return nodes.map(function(n) {return n.idNode}).indexOf(idNode) !== -1;
+};
+
 //gotta make the title the non png file??
 function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
   //for ng-repeat  
-  $scope.nodes = [];//[{name: 'dave', idNode:1, isDirectory:1}, {name: 'katz', idNode:3, isDirectory:0}];
-  $scope.currDirName = $rootScope.currentUser.currentDir.name;
-  //uses $rootScope.currentUser.currentDir to determine idParent(parent node id)
-  //^ contains an object with fields: id and name
-  //to be in conjunction with dropzone directive
-  //ex:
-  //dropzone="upload()"
-  //assumes the existence of $scope.file and $scope.fileName
-  $scope.upload = function() {
-    var image = PNGStorage.encode($scope.file);
-    VirtualFs.upload(
-      [{
-        imgNum: 0,
-        bytes: image.length,
-        content: image
-      }],
-      {
-        idParent: $rootScope.currentUser.currentDir.id || null,
-        name: $scope.fileName,
-        totalBytes: image.length,
-        extension: $scope.fileName.split('.').pop()
-      },
-      function(err, idNode) {
-        if(err) { return console.log(err); }
-        $scope.nodes.push({
-          idNode: idNode,
-          isDirectory: false,
-          name: $scope.fileName
-        });
-        sortNodes();
-        //somehow add the resulting thing to list of files
+  $scope.nodes = [];
+  $scope.currDirName = $rootScope.currentUser.dirPath[
+    $rootScope.currentUser.dirPath.length - 1].name;
+  //prevent multiple clicks
+  var clicked = false;
+
+  var changeDirectory = function(idNode, name, isChild) {
+    if(clicked) { return; }
+    clicked = true;
+    //must handle case of multiple clicks in short span of time,
+    //can't include something included once already
+    if(isChild) {
+      $rootScope.currentUser.dirPath.push({
+        id: idNode,
+        name: name
       });
+    } else if($rootScope.currentUser.dirPath.length > 1) {
+      $rootScope.currentUser.dirPath.pop();
+    }
+
+    VirtualFs.getDirectory(idNode, function(err, nodes) {
+      if(err) { clicked = false; return console.log(err); }
+      $scope.currDirName = $rootScope.currentUser.dirPath[
+        $rootScope.currentUser.dirPath.length - 1].name;
+      $scope.nodes = nodes;
+      clicked = false;
+      console.log($rootScope.currentUser.dirPath);
+    });
   };
 
   var download = function(idNode) {
@@ -74,6 +74,39 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
     });
   };
 
+  //uses $rootScope.currentUser.currentDir to determine idParent(parent node id)
+  //^ contains an object with fields: id and name
+  //to be in conjunction with dropzone directive
+  //ex:
+  //dropzone="upload()"
+  //assumes the existence of $scope.file and $scope.fileName
+  $scope.upload = function() {
+    var image = PNGStorage.encode($scope.file);
+    VirtualFs.upload(
+      [{
+        imgNum: 0,
+        bytes: image.length,
+        content: image
+      }],
+      {
+        idParent: $rootScope.currentUser.dirPath[
+          $rootScope.currentUser.dirPath.length - 1].id || null,
+        name: $scope.fileName,
+        totalBytes: image.length,
+        extension: $scope.fileName.split('.').pop()
+      },
+      function(err, idNode) {
+        if(err) { return console.log(err); }
+        $scope.nodes.push({
+          idNode: idNode,
+          isDirectory: false,
+          name: $scope.fileName
+        });
+        sortNodes();
+        //somehow add the resulting thing to list of files
+      });
+  };
+
   $scope.delete = function(idNode) {
     VirtualFs.delete(idNode, function(err) {
       if(err) { return console.log(err); }
@@ -83,15 +116,6 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
       if (deleteIndex > -1) {
         $scope.nodes.splice(idNode, 1);
       }
-    });
-  };
-
-  var changeDirectory = function(idNode, name) {
-    VirtualFs.getDirectory(idNode, function(err, nodes) {
-      if(err) { return console.log(err); }
-      $rootScope.currentUser.currentDir = {id: idNode, name: name};
-      $scope.currDirName = $rootScope.currentUser.currentDir.name;
-      $scope.nodes = nodes;
     });
   };
 
@@ -109,17 +133,26 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
 
   $scope.clickNode = function(idNode, name, isDirectory) {
     if(isDirectory) {
-      changeDirectory(idNode, name);
+      changeDirectory(idNode, name, true);
     } else {
       download(idNode);
     }
   }
 
   $scope.cdParent = function() {
-    changeDirectory($rootScope.currentUser.currentDir.id, $rootScope.currentUser.currentDir.name);
+    if($rootScope.currentUser.dirPath.length > 1) {
+      changeDirectory(
+        $rootScope.currentUser.dirPath[
+          $rootScope.currentUser.dirPath.length - 2].id, 
+        $rootScope.currentUser.dirPath[
+          $rootScope.currentUser.dirPath.length - 2].name);
+    }
   }
   
-  changeDirectory(null, $rootScope.currentUser.currentDir.name);
+  changeDirectory(
+    null,
+    $rootScope.currentUser.dirPath[0].name,
+    false);
 }
 
 fs.controller('FsCtrl', 
