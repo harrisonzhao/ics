@@ -3,11 +3,13 @@ var multiline = require('multiline');
 var connection = require('config/db');
 
 var selectByParentIdQuery = multiline(function() {/*
-  select * from Nodes where idParent = ? AND idOwner = ?;
+  select * from Nodes where idParent = ? AND idOwner = ?
+  order by isDirectory DESC, name ASC;
 */});
 
 var selectByParentIdNullQuery = multiline(function() {/*
-  select * from Nodes where idOwner = ? AND ISNULL(idParent);
+  select * from Nodes where idOwner = ? AND ISNULL(idParent)
+  order by isDirectory DESC, name ASC;
  */});
 
 function selectByParentId(nid, uid, callback) {
