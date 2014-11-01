@@ -39,7 +39,7 @@ var config = {
     app.use(session({
       secret: settings.secrets.sessionSecret,
       key: 'sid', 
-      cookie: { secure: true },
+      //cookie: { secure: true },
       store: new SessionStore(settings.secrets.mysqlConfigs)
     }));
     app.use(flash());

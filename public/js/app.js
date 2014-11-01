@@ -20,6 +20,10 @@ function configApp($routeProvider, $locationProvider) {
       templateUrl: 'partials/main.html',
       controller: 'MainCtrl'
     })*/
+    .when('/landing', {
+      templateUrl: 'partials/landing.html',
+      controller: 'LoginCtrl'
+    })
     .when('/login', {
       templateUrl: 'partials/login.html',
       controller: 'LoginCtrl'
