@@ -13,7 +13,6 @@ function Dropzone($rootScope) {
     },
 
     link: function(scope, element, attrs) {
-      console.log('hell!!!!o');
       var checkSize, processDragOverOrEnter;
       processDragOverOrEnter = function(event) {
         console.log('in here');

@@ -1,9 +1,35 @@
 'use strict';
 /*global flickrUpload*/
+/*global async*/
 //need to figure out what data looks like from responses!!!!
-var flickrRequest = angular.module('services.flickrRequest', []);
+var flickrRequest = angular.module('services.flickrRequest', [
+  'vendor.services.PNGStorage']);
 
-function FlickrRequest($http) {
+function dataURLToBlob(dataURL) {
+  var BASE64_MARKER = ';base64,';
+  if (dataURL.indexOf(BASE64_MARKER) == -1) {
+    var parts = dataURL.split(',');
+    var contentType = parts[0].split(':')[1];
+    var raw = decodeURIComponent(parts[1]);
+
+    return new Blob([raw], {type: contentType});
+  }
+
+  var parts = dataURL.split(BASE64_MARKER);
+  var contentType = parts[0].split(':')[1];
+  var raw = window.atob(parts[1]);
+  var rawLength = raw.length;
+
+  var uInt8Array = new Uint8Array(rawLength);
+
+  for (var i = 0; i < rawLength; ++i) {
+    uInt8Array[i] = raw.charCodeAt(i);
+  }
+
+  return new Blob([uInt8Array], {type: contentType});
+}
+
+function FlickrRequest($http, PNGStorage) {
   return {
     //data is all fields of post request excluding photo
     //photo is a base64 string
@@ -18,36 +44,47 @@ function FlickrRequest($http) {
       }
     },
 
+    //gets the base64 representation of png
+    //only works on firefox for now i guess
     download: function(url, callback) {
-      //Utils.handleURLRequest('GET', url, callback);
-      // $http.get(url).
-      //   success(function(data, status, headers, config) {
-      //     console.log(data, status, headers, config);
-      //     callback(null, data);
-      //   }).
-      //   error(function(data, status, headers, config) {
-      //     console.log(data, status, headers, config);
-      //     callback(data);
-      //   });
-
-      var blah = $http.get(url);
-      blah.success(function(data, status, headers, config) {
-        data = data.substring(14,data.length-14-1) + '}}';
-        //console.log(data);
-        var a = JSON.parse(data);
-        var orig = a.sizes.size[a.sizes.size.length-1]
-        var url = orig.source;
-        var img = $http.get(url);
-        img.success(function(data, status, headers, config) {
-          callback(data);
-        }).
-        error(function(data, status, headers, config) {
-          callback(data);
-        });
-      }).
-      error(function(data, status, headers, config) {
-        console.log('error bitch');
+      async.waterfall(
+      [
+        function(callback) {
+          $http.get(url)
+            .success(function(data) {
+              data = data.substring(14,data.length-14-1) + '}}';
+              data = JSON.parse(data);
+              var original = data.sizes.size[data.sizes.size.length-1];
+              var url = original.source;
+              callback(null, url);
+            })
+            .error(function() {
+              callback('Could not download data!');
+            });
+        },
+        function(callback) {
+          $http.get(url)
+            .success(function(data) {
+              callback(null, btoa(data));
+            })
+            .error(function() {
+              callback('Could not download data!');
+            });
+        },
+        function(content, callback) {
+          PNGStorage.decode(content, function(data) {
+            callback(null, data);
+          });
+        },
+        function(decoded, callback) {
+          var fileAsBlob = dataURLToBlob(decoded);
+          callback(null, fileAsBlob);
+        }
+      ],
+      function(err, result) {
+        callback(err, result);
       });
+
     },
 
     delete: function(url, data, callback) {
@@ -64,4 +101,4 @@ function FlickrRequest($http) {
   };
 }
 
-flickrRequest.factory('FlickrRequest', ['$http', FlickrRequest]);
+flickrRequest.factory('FlickrRequest', ['$http', 'PNGStorage', FlickrRequest]);

@@ -64,13 +64,13 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
       //result contains fields content and fileName
       function(result, callback) {
         PNGStorage.decode(result.content, function(data) {
-          callback(null, data, result.fileName);
+          callback(null, data.content, data.filename);
         });
-      }
+      },
     ],
-    function(err, dataURLpng, fileName) {
+    function(err, data, fileName) {
       if(err) { return console.log(err); }
-      SaveFile.save(dataURLpng, fileName);
+      SaveFile.save(data, fileName);
     });
   };
 
