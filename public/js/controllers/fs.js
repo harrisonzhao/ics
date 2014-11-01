@@ -21,7 +21,7 @@ var sortNodes = function(nodes) {
 //gotta make the title the non png file??
 function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
   //for ng-repeat  
-  $scope.nodes = [];
+  $scope.nodes = [];//[{name: 'dave', idNode:1, isDirectory:1}, {name: 'katz', idNode:3, isDirectory:0}];
   $scope.currDirName = $rootScope.currentUser.currentDir.name;
   //uses $rootScope.currentUser.currentDir to determine idParent(parent node id)
   //^ contains an object with fields: id and name
@@ -105,7 +105,7 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
       });
     });
   };
-  //$scope.changeDirectory(null);
+  $scope.changeDirectory(null, $scope.currentDirName);
 }
 
 fs.controller('FsCtrl', 

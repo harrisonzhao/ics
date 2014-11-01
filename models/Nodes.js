@@ -17,8 +17,7 @@ function selectByParentId(nid, uid, callback) {
 	  connection.query(selectByParentIdQuery, [nid, uid], function(err, result) {
 	    err ? callback(err) : callback(null, result);
 	  });
-	}
-	else{
+	} else{
 		connection.query(selectByParentIdNullQuery, [uid], function(err, result) {
 	    err ? callback(err) : callback(null, result);
 	  });

@@ -35,10 +35,10 @@ function configApp($httpProvider, $routeProvider, $locationProvider) {
       templateUrl: 'partials/signup.html',
       controller: 'SignupCtrl'
     })
-    // .when('/fs', {
-    //   templateUrl: 'partials/filesystem.html',
-    //   controller: 'FsCtrl'
-    // })
+    .when('/fs', {
+      templateUrl: 'partials/filesystem.html',
+      controller: 'FsCtrl'
+    })
     .otherwise({
       redirectTo: '/'
     });

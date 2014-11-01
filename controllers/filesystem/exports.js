@@ -33,8 +33,8 @@ function makeDirectory(req, res, next) {
 //otherwise serve root directory
 function getDirectory(req, res, next) {
   req.query.dirId = parseInt(req.query.dirId) || null;
-  Nodes.selectByParentId(req.query.dirId, function(err, results) {
-    err ? next(err) : res.send(results);
+  Nodes.selectByParentId(null, req.query.dirId, function(err, results) {
+    err ? next(err) : res.send({data: results});
   });
 }
 
