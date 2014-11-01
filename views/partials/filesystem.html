@@ -1,15 +1,16 @@
 <div class="container">
+    <div ng-click="cdParent()">{{currDirName}}</div>
     <scrollable-table watch="visibleProjects">
         <table class="table table-striped table-bordered">
             <thead>
                 <tr>
-                     <th sortable-header col="facility">Facility</th>
-                     <th sortable-header col="code">Unit code</th>
-                     <th sortable-header col="cost">Cost</th>
+                     <th sortable-header col="name">Name</th>
+                     <th sortable-header col="id">idNode</th>
+                     <th sortable-header col="isd">isDirectory</th>
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="node in nodes">
+                <tr ng-repeat="node in nodes" ng-click="clickNode(node.idNode, node.name, node.isDirectory)">
                     <td>{{ node.name }}</td>
                     <td>{{ node.idNode }}</td>
                     <td>{{ node.isDirectory }}</td>        
