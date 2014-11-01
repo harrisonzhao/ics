@@ -105,8 +105,7 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
       });
     });
   };
-  
-  $scope.changeDirectory(null);
+  $scope.changeDirectory(null, $scope.currentDirName);
 }
 
 fs.controller('FsCtrl', 

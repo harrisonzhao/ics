@@ -87,7 +87,7 @@ function Auth($location, $rootScope, $cookieStore, Session, User) {
       });
     }
 
-  }
+  };
 }
 
 auth.factory(
