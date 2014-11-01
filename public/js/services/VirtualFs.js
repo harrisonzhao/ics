@@ -41,8 +41,8 @@ function VirtualFs(Directory, Upload, Download, Delete, FlickrRequest, $http) {
     },
 
     getDirectory: function(dirId, callback) {
-      Directory.get({dirId: dirId}, function(nodes) {
-        callback(null, nodes);
+      Directory.get({dirId: dirId}, function(data) {
+        callback(null, data.nodes);
       }, function(err) {
         callback(err.data);
       });

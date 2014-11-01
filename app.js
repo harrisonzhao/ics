@@ -14,6 +14,7 @@ app.get('/auth/user', auth.checkLoggedIn, auth.getUserInfo);
 app.post('/auth/user', auth.signup);
 app.delete('/auth/session', auth.checkLoggedIn, auth.logout);
 app.post('/auth/session', auth.login);
+app.get('/logout', auth.logout);
 
 var fs = require('controllers/filesystem/exports');
 app.post('/fs/directory', auth.checkLoggedIn, fs.makeDirectory);
