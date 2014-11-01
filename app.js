@@ -114,6 +114,7 @@ var queryObj = uploadQuery({
 }, options);
 var photoOptions = queryObj.formData;
 //must tack on the photo
+console.log(queryObj);
 photoOptions.photo = fs.createReadStream('./public/img/hi.png');
 var flickrURL = queryObj.flickrURL;
 
@@ -135,6 +136,7 @@ Object.keys(photoOptions).forEach(function(prop) {
 });
 //end block
 */
+
 
 
 

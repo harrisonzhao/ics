@@ -22,7 +22,7 @@ function configApp($routeProvider, $locationProvider) {
       controller: 'MainCtrl'
     })*/
     .when('/', {
-      templateUrl: 'partials/landing.html',
+      templateUrl: 'partials/front.html',
       controller: 'FrontCtrl'
     })
     .when('/login', {
