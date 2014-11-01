@@ -18,16 +18,7 @@ function sessionFactory($resource) {
 auth.factory('Session', ['$resource', sessionFactory]);
 
 function Auth($location, $rootScope, $cookieStore, Session, User) {
-  var rootDirObj = {id: null, name: 'ICS'};
-  //cookie store 'user' is set with res.cookie from node server
-  //$rootScope.currentUser = $cookieStore.get('user') || null;
-  if(!$rootScope.currentUser) {
-    User.get({}, function(user) {
-      $rootScope.currentUser = user;
-      $rootScope.currentUser.currentDir = rootDirObj;
-    });
-  }
-  //$cookieStore.remove('user');
+  var rootDirObj = {id: null, name: 'Root'};
 
   return {
 
@@ -41,7 +32,7 @@ function Auth($location, $rootScope, $cookieStore, Session, User) {
     login: function(user, callback) {
       callback = callback || angular.noop;
       //post email and password to server
-      Session.save({}, user, function(user) { //success
+      Session.$save({}, user, function(user) { //success
         $rootScope.currentUser = user;
         $rootScope.currentUser.currentDir = rootDirObj;
         callback(null);
@@ -52,7 +43,7 @@ function Auth($location, $rootScope, $cookieStore, Session, User) {
 
     logout: function(callback) {
       callback = callback || angular.noop;
-      Session.delete({}, {}, function() {
+      Session.$delete({}, {}, function() {
         $rootScope.currentUser = null;
         callback();
       }, function(err) {
@@ -70,7 +61,7 @@ function Auth($location, $rootScope, $cookieStore, Session, User) {
      */
     createUser: function(userInfo, callback) {
       callback = callback || angular.noop;
-      User.save({}, userInfo, function(user) {
+      User.$save({}, userInfo, function(user) {
         $rootScope.currentUser = user;
         $rootScope.currentUser.currentDir = rootDirObj;
         callback(null);
