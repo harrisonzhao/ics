@@ -1,7 +1,7 @@
 .DS_Store
 *.swp
 *.swo
-.sass-chache/
+.sass-cache/
 node_modules/
 data/
 data/flickr/

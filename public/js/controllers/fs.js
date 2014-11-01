@@ -6,15 +6,25 @@ var fs = angular.module('controllers.fs', [
   'vendor.services.SaveFile'
   ]);
 
+var cmp = function(a, b) {
+    if (a > b) { return +1; }
+    if (a < b) { return -1; }
+    return 0;
+}
+
+var sortNodes = function(nodes) {
+  nodes = nodes.sort(function(a, b) {
+    return cmp(a.isDirectory,b.isDirectory) || cmp(a.name,b.name);
+  });
+};
+
 //gotta make the title the non png file??
 function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
-  //probably need to store an array of shit somewhere to ng-repeat
-  //like
-  
+  //for ng-repeat  
   $scope.nodes = [];
-  //still need initialization tho
 
   //uses $rootScope.currentUser.dirPath to determine idParent (parent node id)
+  //^ contains an object with fields: id and name
   //to be in conjunction with dropzone directive
   //ex:
   //dropzone="upload()"
@@ -29,13 +39,19 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
       }],
       {
         idParent: $rootScope.currentUser.dirPath[
-          $rootScope.currentUser.dirPath.length - 1] || null,
+          $rootScope.currentUser.dirPath.length - 1].id || null,
         name: $scope.fileName,
         totalBytes: image.length,
         extension: $scope.fileName.split('.').pop()
       },
       function(err, idNode) {
         if(err) { return console.log(err); }
+        $scope.nodes.push({
+          idNode: idNode,
+          isDirectory: false,
+          name: $scope.fileName
+        });
+        sortNodes();
         //somehow add the resulting thing to list of files
       });
   };
@@ -54,7 +70,6 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
       }
     ],
     function(err, dataURLpng, fileName) {
-      //handle err if err
       if(err) { return console.log(err); }
       SaveFile.save(dataURLpng, fileName);
     });
@@ -63,7 +78,12 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
   $scope.delete = function(idNode) {
     VirtualFs.delete(idNode, function(err) {
       if(err) { return console.log(err); }
-      //else remove it from view
+      var deleteIndex = $scope.nodes.map(function(node) {
+        return node.idNode;}
+      ).indexOf(idNode);
+      if (deleteIndex > -1) {
+        $scope.nodes.splice(idNode, 1);
+      }
     });
   };
 
@@ -71,16 +91,24 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
     VirtualFs.getDirectory(idNode, function(err, nodes) {
       if(err) { return console.log(err); }
       $rootScope.currentUser.dirPath.push(idNode);
-      //display the nodes
+      $scope.nodes = nodes;
     });
   };
 
   $scope.makeDirectory = function(dirName) {
-    VirtualFs.makeDirectory(dirName, function(err, idDirectory) {
+    var currentDirId = $rootScope.currentUser.dirPath[
+      $rootScope.currentUser.dirPath.length - 1].id;
+    VirtualFs.makeDirectory(dirName, currentDirId, function(err, idDirectory) {
       if(err) { return console.log(err); }
-      //add the directory id and name to list of stuff
+      $scope.nodes.push({
+        idNode: idDirectory,
+        isDirectory: true,
+        name: dirName
+      });
     });
   };
+
+  $scope.changeDirectory(null);
 }
 
 fs.controller('fsCtrl', 

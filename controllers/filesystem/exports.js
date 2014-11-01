@@ -32,16 +32,10 @@ function makeDirectory(req, res, next) {
 //req must provide dirId
 //otherwise serve root directory
 function getDirectory(req, res, next) {
-  if (!req.query.dirId) {
-    Nodes.selectRootDirectory(req.user.idUser, function(err, results) {
-      err ? next(err) : res.send(results);
-    });
-  } else {
-    req.query.dirId = parseInt(req.query.dirId);
-    Nodes.selectByParentId(req.query.dirId, function(err, results) {
-      err ? next(err) : res.send(results);
-    });
-  }
+  req.query.dirId = parseInt(req.query.dirId) || null;
+  Nodes.selectByParentId(req.query.dirId, function(err, results) {
+    err ? next(err) : res.send(results);
+  });
 }
 
 //req must have the following in body

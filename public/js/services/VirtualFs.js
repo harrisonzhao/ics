@@ -25,12 +25,19 @@ virtualfs.factory('Delete', ['$resource', deleteFactory]);
 
 function VirtualFs(Directory, Upload, Download, Delete, FlickrRequest) {
   return {
-    makeDirectory: function(dirName, callback) {
-      Directory.$save({}, {dirName: dirName}, function(directoryId) {
-        callback(null, directoryId);
-      }, function(err) {
-        callback(err.data);
-      });
+    makeDirectory: function(dirName, currentDirId, callback) {
+      Directory.$save(
+        {}, 
+        {
+          dirName: dirName,
+          currentDirId: currentDirId
+        }, 
+        function(directoryId) {
+          callback(null, directoryId);
+        }, 
+        function(err) {
+          callback(err.data);
+        });
     },
 
     getDirectory: function(dirId, callback) {

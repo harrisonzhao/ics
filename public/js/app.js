@@ -10,7 +10,8 @@ var app = angular.module('infiniteCloudStorage', [
   'http-auth-interceptor',
   'ui.bootstrap',
   'controllers.login',
-  'controllers.signup'
+  'controllers.signup',
+  'controllers.fsCtrl'
 ]);
 
 function configApp($routeProvider, $locationProvider) {
@@ -26,6 +27,10 @@ function configApp($routeProvider, $locationProvider) {
     .when('/signup', {
       templateUrl: 'partials/signup.html',
       controller: 'SignupCtrl'
+    })
+    .when('/fs', {
+      templateUrl: 'partials/filesystem.html',
+      controller: 'fsCtrl'
     })
     .otherwise({
       redirectTo: '/'
