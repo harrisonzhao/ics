@@ -135,8 +135,8 @@ VALUES(1, 2, 'fuck', 0);
 INSERT INTO FlickrAccounts (accessToken, accessTokenSecret, idUser) VALUES ('a', 'b', 1);
 
 # Add an image
-INSERT INTO Images(idNode, imgNum, idImg, height, width, bytes, accessToken) 
-           VALUES (3, 1, '123', 10, 11, 100, 'a');
+INSERT INTO Images(idNode, imgNum, idImg, bytes, accessToken) 
+           VALUES (3, 1, '123', 100, 'a');
 
 # Recursively delete a directory
 /*

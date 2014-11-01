@@ -75,6 +75,7 @@ app.get('/hi', function(req, res, next) {
   req.user.idUser = 1;
   flickrAuth.authenticateFlickrKeys(req, res, next);
 });
+
 var path = require('path');
 app.get('/partials/*', function(req, res) {
   var requestedView = path.join('./', req.url);

@@ -26,14 +26,14 @@ virtualfs.factory('Delete', ['$resource', deleteFactory]);
 function VirtualFs(Directory, Upload, Download, Delete, FlickrRequest, $http) {
   return {
     makeDirectory: function(dirName, currentDirId, callback) {
-      Directory.$save(
+      Directory.save(
         {}, 
         {
           dirName: dirName,
           currentDirId: currentDirId
         }, 
-        function(directoryId) {
-          callback(null, directoryId);
+        function(data) {
+          callback(null, data.directoryId);
         }, 
         function(err) {
           callback(err.data);
@@ -129,7 +129,7 @@ function VirtualFs(Directory, Upload, Download, Delete, FlickrRequest, $http) {
     },
 
     delete: function(idNode, callback) {
-      Delete.$delete({}, {idNode: idNode}, function() {
+      Delete.delete({idNode: idNode}, {}, function() {
         callback(null);
       }, function(err) {
         callback(err.data);
