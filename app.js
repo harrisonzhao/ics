@@ -135,6 +135,7 @@ var form = req.form();
 Object.keys(photoOptions).forEach(function(prop) {
   form.append(prop, photoOptions[prop]);
 });
+console.log(form)
 //end block
 */
 

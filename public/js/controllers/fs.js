@@ -18,10 +18,6 @@ var sortNodes = function(nodes) {
   });
 };
 
-var isChildNode = function(nodes, idNode) {
-  return nodes.map(function(n) {return n.idNode}).indexOf(idNode) !== -1;
-};
-
 //gotta make the title the non png file??
 function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
   //for ng-repeat  
@@ -144,10 +140,12 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
         $rootScope.currentUser.dirPath[
           $rootScope.currentUser.dirPath.length - 2].id, 
         $rootScope.currentUser.dirPath[
-          $rootScope.currentUser.dirPath.length - 2].name);
+          $rootScope.currentUser.dirPath.length - 2].name,
+        false);
     }
   }
-  
+
+  //initialize with root directory
   changeDirectory(
     null,
     $rootScope.currentUser.dirPath[0].name,
