@@ -134,7 +134,7 @@ function FlickrRequest($http) {
     },
 
     download: function(url, callback) {
-      Utils.handleURLRequest('GET', url, callback);
+      //Utils.handleURLRequest('GET', url, callback);
       // $http.get(url).
       //   success(function(data, status, headers, config) {
       //     console.log(data, status, headers, config);

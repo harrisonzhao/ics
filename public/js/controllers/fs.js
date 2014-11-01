@@ -102,25 +102,37 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
       });
   };
 
-  $scope.delete = function(idNode) {
+  var deleteNode = function(idNode) {
     VirtualFs.delete(idNode, function(err) {
       if(err) { return console.log(err); }
-      var deleteIndex = $scope.nodes.map(function(node) {
-        return node.idNode;}
-      ).indexOf(idNode);
-      if (deleteIndex > -1) {
-        $scope.nodes.splice(idNode, 1);
-      }
     });
   };
 
-  $scope.makeDirectory = function(dirName) {
-    var currentDirId = $rootScope.currentUser.currentDir.id;
+  $scope.deleteClicked = function(){
+    var toDelete = [];
+    for(var i=0; i<$scope.nodes.length; i++){
+      var clicked = $scope.nodes[i].clicked;
+      if(clicked == 1){
+        deleteNode($scope.nodes[i].idNode);
+        toDelete.push(i);
+      }
+    }
+
+    $scope.nodes = $scope.nodes.filter(function(element){
+      return !(element.clicked == 1);
+    });
+  }
+
+  $scope.newDirName = 'newDirName';
+
+  $scope.makeDirectory = function() {
+    var dirName = $scope.newDirName;
+    var currentDirId = $rootScope.currentUser.dirPath[$rootScope.currentUser.dirPath.length - 1].id;
     VirtualFs.makeDirectory(dirName, currentDirId, function(err, idDirectory) {
       if(err) { return console.log(err); }
       $scope.nodes.push({
         idNode: idDirectory,
-        isDirectory: true,
+        isDirectory: 1,
         name: dirName
       });
     });

@@ -23,7 +23,7 @@ function makeDirectory(req, res, next) {
     req.user.idUser,
     req.body.dirName,
     function(err, id) {
-      err ? next(err) : res.send(id);
+      err ? next(err) : res.send({directoryId: id});
     }); 
 }
 
@@ -151,11 +151,11 @@ function getUploadFileData(req, res, next) {
 //POST
 //need idNode for delete
 function deleteNode(req, res, next) {
-  req.body.idNode = parseInt(req.body.idNode);
-  if(!req.body.idNode) {
+  req.query.idNode = parseInt(req.query.idNode);
+  if(!req.query.idNode) {
     return next(new Error('no directory or file specified!'));
   }
-  Nodes.deleteNode(req.body.idNode, function(err) {
+  Nodes.deleteNode(req.query.idNode, function(err) {
     err ? next(err) : res.sendStatus(200); 
   });
 }

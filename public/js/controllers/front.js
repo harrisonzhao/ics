@@ -3,7 +3,7 @@
 var login = angular.module('controllers.front', []);
 
 function Front() {
-
+  
 }
 
 //Auth from services.auth
