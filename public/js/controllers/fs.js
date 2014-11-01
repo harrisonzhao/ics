@@ -22,8 +22,8 @@ var sortNodes = function(nodes) {
 function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
   //for ng-repeat  
   $scope.nodes = [];
-
-  //uses $rootScope.currentUser.dirPath to determine idParent (parent node id)
+  $scope.currDirName = $rootScope.currentUser.currentDir.name;
+  //uses $rootScope.currentUser.currentDir to determine idParent(parent node id)
   //^ contains an object with fields: id and name
   //to be in conjunction with dropzone directive
   //ex:
@@ -38,8 +38,7 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
         content: image
       }],
       {
-        idParent: $rootScope.currentUser.dirPath[
-          $rootScope.currentUser.dirPath.length - 1].id || null,
+        idParent: $rootScope.currentUser.currentDir.id || null,
         name: $scope.fileName,
         totalBytes: image.length,
         extension: $scope.fileName.split('.').pop()
@@ -87,17 +86,16 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
     });
   };
 
-  $scope.changeDirectory = function(idNode) {
+  $scope.changeDirectory = function(idNode, name) {
     VirtualFs.getDirectory(idNode, function(err, nodes) {
       if(err) { return console.log(err); }
-      $rootScope.currentUser.dirPath.push(idNode);
+      $rootScope.currentUser.currentDir = {id: idNode, name: name};
       $scope.nodes = nodes;
     });
   };
 
   $scope.makeDirectory = function(dirName) {
-    var currentDirId = $rootScope.currentUser.dirPath[
-      $rootScope.currentUser.dirPath.length - 1].id;
+    var currentDirId = $rootScope.currentUser.currentDir.id;
     VirtualFs.makeDirectory(dirName, currentDirId, function(err, idDirectory) {
       if(err) { return console.log(err); }
       $scope.nodes.push({
@@ -107,11 +105,10 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
       });
     });
   };
-
-  $scope.changeDirectory(null);
+  //$scope.changeDirectory(null);
 }
 
-fs.controller('fsCtrl', 
+fs.controller('FsCtrl', 
   [
     '$rootScope',
     '$scope',
