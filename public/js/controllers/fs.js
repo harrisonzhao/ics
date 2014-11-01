@@ -51,7 +51,6 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
         $rootScope.currentUser.dirPath.length - 1].name;
       $scope.nodes = nodes;
       clicked = false;
-      console.log($rootScope.currentUser.dirPath);
     });
   };
 
