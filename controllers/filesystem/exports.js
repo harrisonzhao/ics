@@ -43,6 +43,7 @@ function getDirectory(req, res, next) {
 //imgNum, idImg, height, accessToken
 //metadata: idParent, name, totalBytes, extension
 function createFile(req, res, next) {
+  console.log('helllllo');
   if (!(req.body.images instanceof Array && req.body.metadata)) {
     return next(new Error('Missing some fields'));
   }
@@ -55,11 +56,11 @@ function createFile(req, res, next) {
       accessToken: image.accessToken
     };
   });
-
+  console.log('still ok')
   fsCreateFile(
     req.body.images, 
     req.body.metadata, 
-    req.user, 
+    req.user.idUser, 
     function(err, idNode) {
       err ? next(err) : res.send(idNode);
     });

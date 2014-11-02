@@ -1,10 +1,12 @@
 <div class="container">
-    <div class="dropzone" file-name="imageFileName" data-max-file-size="200">
+    <form ng-submit="upload()">
+        <input type="file" ng-file-select="onFileSelect($files)" />
+        <input type="submit" />
+    </form>
     <div ng-click="cdParent()">{{currDirName}}</div>
     <div ng-click="makeDirectory()">Create a directory</div>
     <input ng-model="newDirName">
     <div ng-click="deleteClicked()">Delete selected</div>
-    <input type="file" id="files" name="files[]" multiple />
     <output id="list"></output>
     <scrollable-table watch="visibleProjects">
         <table class="table table-striped table-bordered">

@@ -34,9 +34,9 @@ function FlickrRequest($http, PNGStorage) {
     //data is all fields of post request excluding photo
     //photo is a base64 string
     upload: function(url, data, photo, callback) {
-      var binary = photo.replace(/^data:image\/(png|jpg);base64,/, '');
+      var binary = photo.substring(photo.indexOf('base64,') + 7);
       binary = atob(binary);
-      var photoId = flickrUpload.post(data, url, binary, callback);
+      var photoId = flickrUpload.post(data, url, binary);
       if(photoId !== 'error') {
         callback(null, photoId);
       } else {

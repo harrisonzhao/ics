@@ -4,7 +4,7 @@ var fs = angular.module('controllers.fs', [
   'services.vfs',
   'vendor.services.PNGStorage',
   'vendor.services.SaveFile',
-  'directives.fileDropzone']);
+  'angularFileUpload']);
 
 var cmp = function(a, b) {
     if (a > b) { return +1; }
@@ -74,34 +74,67 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
     });
   };
 
+/*var UploadController = function ($scope, fileReader) {
+     
+    $scope.readFile = function () {            
+        fileReader.readAsDataUrl($scope.file, $scope)
+                  .then(function(result) {
+                        $scope.imageSrc = result;
+                    });
+    };
+};*/
   //assumes the existence of $scope.file and $scope.fileName
   //$files: an array of files selected, each file has name, size, and type.
   $scope.upload = function() {
-    var file = $scope.files.shift();
-    console.log(file);
-    file.file = PNGStorage.encode(file.file);
-    VirtualFs.upload(
+    var checkSize = function(size) {
+      var _ref;
+      if (((_ref = 200) === (void 0) || _ref === '') || 
+          (size / 1024) / 1024 < 200) {
+        return true;
+      } else {
+        alert('File must be smaller than ' + 200 + ' MB');
+        return false;
+      }
+    };
+    if (!checkSize($scope.uploadFileSize)) {
+      return;
+    }
+
+    var file = $scope.uploadFile;
+    var fileName = $scope.uploadFileName;
+    file = PNGStorage.encode(file);
+    VirtualFs.createFile(
       [{
         imgNum: 0,
-        bytes: file.length,
-        content: file.file
+        bytes: $scope.uploadFileSize,
+        content: $scope.uploadFile
       }],
       {
-        idParent: file.idParent,
-        name: file.fileName,
-        totalBytes: file.file.length,
-        extension: file.fileName.split('.').pop()
+        idParent: $rootScope.currentUser.dirPath[
+          $rootScope.currentUser.dirPath.length - 1].id,
+        name: fileName,
+        totalBytes: $scope.uploadFileSize,
+        extension: $scope.uploadFileName.split('.').pop()
       },
       function(err, idNode) {
         if(err) { return console.log(err); }
         $scope.nodes.push({
           idNode: idNode,
           isDirectory: false,
-          name: file.fileName
+          name: fileName
         });
-        sortNodes();
-        //somehow add the resulting thing to list of files
       });
+  };
+
+  $scope.onFileSelect = function($files) {
+    var file = $files[0];
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      return $scope.uploadFile = e.target.result;
+    };
+    $scope.uploadFileName = file.name;
+    $scope.uploadFileSize = file.size;
+    return reader.readAsDataURL(file);
   };
 
   var deleteNode = function(idNode) {

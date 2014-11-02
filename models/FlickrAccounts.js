@@ -43,13 +43,13 @@ var selectBestQuery = multiline(function() {/*
 function selectBest(idUser, callback) {
   connection.query(selectBestQuery, [idUser], function(err, result) {
     if(err) { return callback(err); }
-    if(!result) { return callback(new Error('No accounts linked!')); }
+    if(!result[0]) { return callback(new Error('No accounts linked!')); }
     if(result.bytes > trillionMinusTwoHundredMil) {
       return callback(new Error(
         'Exceeded maximum storage on all accounts! Please create a new account.'
       ));
     }
-    callback(null, result)
+    callback(null, result[0])
   });
 }
 
