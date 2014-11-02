@@ -38,10 +38,10 @@ function Reader($q) {
 
     var readAsDataURL = function (file, scope) {
         var deferred = $q.defer();
-         
         var reader = getReader(deferred, scope);         
         reader.readAsDataURL(file);
-         
+               console.log(file);
+               console.log('hwlerealhsajlga');
         return deferred.promise;
     };
 

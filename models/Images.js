@@ -31,7 +31,7 @@ function create(metadata, callback) {
     createQuery, 
     [
       metadata.imgNum,
-      metadata.idNum,
+      metadata.idImg,
       metadata.bytes,
       metadata.accessToken
     ], 

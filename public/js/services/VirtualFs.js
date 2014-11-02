@@ -69,17 +69,18 @@ function VirtualFs(Directory, Upload, Download, Delete, FlickrRequest) {
           });
         },
         function(postInfo, callback) {
-          postInfo.formData.photo = image.content;
           FlickrRequest.upload(
             postInfo.flickrURL,
             postInfo.formData,
+            image.content,
             function(err, idImg) {
               if (err) { return callback(err); }
               callback(null, idImg, postInfo.formData.access_token);
             });
         },
         function(imageId, accessToken, callback) {
-          Upload.$save({}, {
+          alert(imageId);
+          Upload.save({}, {
             images: [{
               imgNum: image.imgNum,
               idImg: imageId,
