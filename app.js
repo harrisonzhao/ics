@@ -16,16 +16,20 @@ app.delete('/auth/session', auth.checkLoggedIn, auth.logout);
 app.post('/auth/session', auth.login);
 app.get('/logout', auth.logout);
 
-var fs = require('controllers/filesystem/exports');
-app.post('/fs/directory', auth.checkLoggedIn, fs.makeDirectory);
-app.get('/fs/directory', auth.checkLoggedIn, fs.getDirectory);
-app.post('/fs/upload', auth.checkLoggedIn, fs.createFile);
-app.get('/fs/upload', auth.checkLoggedIn, fs.getUploadFileData);
-app.get('/fs/download', auth.checkLoggedIn, fs.getDownloadFileData);
-//ghetto delete, does not free flickr memory
-app.delete('/fs/delete', auth.checkLoggedIn, fs.deleteNode);
-//TODO update?
+var vfs = require('controllers/filesystem/exports');
+app.post('/fs/directory', auth.checkLoggedIn, vfs.makeDirectory);
+app.get('/fs/directory', auth.checkLoggedIn, vfs.getDirectory);
+app.post('/fs/upload', auth.checkLoggedIn, vfs.createFile);
+app.get('/fs/upload', auth.checkLoggedIn, vfs.getUploadFileData);
+app.get('/fs/download', auth.checkLoggedIn, vfs.getDownloadFileData);
+app.delete('/fs/delete', auth.checkLoggedIn, vfs.deleteNode);
+app.get('/fs/png', auth.checkLoggedIn, vfs.getBase64Png);
 
+var flickrAuth = require('controllers/flickrAuth/auth');
+app.get('/auth/flickr', auth.checkLoggedIn,
+  flickrAuth.authenticateFlickrAccount);
+app.get('/auth/flickr/callback', auth.checkLoggedIn,
+  flickrAuth.flickrApiCallback);
 
 // var options = {
 //     api_key: '45a330b4bcbe145c9b8a7e53dfe21c56',
@@ -47,23 +51,13 @@ app.delete('/fs/delete', auth.checkLoggedIn, fs.deleteNode);
 //   console.log('whaaaaa');
 // });
 
-// app.all('*', auth.checkLoggedIn);
-// app.get('/profile', staticPages.renderProfile);
-
-// app.get('*', staticPages.serve404);
-
-/**
- * handles the errors when next(err) is called
- */
-var errorHandler = require('controllers/errorhandler').errorHandler;
-app.use(errorHandler);
 /*app.post('/auth/user', function(req, res) {
   console.log(req.body);
 });
 app.post('/auth/session', function(req, res) {
   console.log(req.body);
 })*/
-var flickrAuth = require('./controllers/flickrAuth/auth');
+/*var flickrAuth = require('./controllers/flickrAuth/auth');
 app.get('/auth/flickr/callback', function(req, res) {
   req.user = {};
   req.user.idUser = 1;
@@ -75,6 +69,12 @@ app.get('/hi', function(req, res, next) {
   req.user.idUser = 1;
   flickrAuth.authenticateFlickrKeys(req, res, next);
 });
+*/
+
+// app.all('*', auth.checkLoggedIn);
+// app.get('/profile', staticPages.renderProfile);
+
+// app.get('*', staticPages.serve404);
 
 var path = require('path');
 app.get('/partials/*', function(req, res) {
@@ -90,8 +90,44 @@ app.get('/*', function(req, res) {
   res.render('index.html');
 });
 
+/**
+ * handles the errors when next(err) is called
+ */
+var errorHandler = require('controllers/errorhandler').errorHandler;
+app.use(errorHandler);
+
 app.listen(configs.settings.secrets.port);
 console.log('listening on port ' + configs.settings.secrets.port);
+
+// var loadBase64Image = function (url, callback) {
+//   // Required 'request' module
+//   var request = require('request');
+
+//   // Make request to our image url
+//   request({url: url, encoding:'base64'}, function (err, res, body) {
+//     if (!err && res.statusCode == 200) {
+//       // So as encoding set to null then request body became Buffer object
+//       var base64prefix = 'data:' + res.headers['content-type'] + ';base64,';
+//       if (typeof callback == 'function') {
+//           callback(body, base64prefix);
+//       }
+//     } else {
+//       throw new Error('Can not download image');
+//     }
+//   });
+// };
+
+// var noiseUrl = 'https://farm6.staticflickr.com/5599/15503191910_23af3cf817_o.png';
+// loadBase64Image(noiseUrl, function(image, prefix) {
+//   console.log(prefix + image);
+// });
+//var request = require('request');
+//var fs = require('fs');
+/*
+app.get('/data', function(req, res) {
+  var noiseUrl = 'https://farm6.staticflickr.com/5599/15503191910_23af3cf817_o.png';
+  request.get(noiseUrl).pipe(res);
+});*/
 
 /*
 /////////////////

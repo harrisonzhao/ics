@@ -5,6 +5,11 @@
 var flickrRequest = angular.module('services.flickrRequest', [
   'vendor.services.PNGStorage']);
 
+function downloadPng($resource) {
+  return $resource('/fs/png');
+}
+flickrRequest.factory('DownloadPng', ['$resource', downloadPng]);
+
 function dataURLToBlob(dataURL) {
   var BASE64_MARKER = ';base64,';
   if (dataURL.indexOf(BASE64_MARKER) == -1) {
@@ -29,7 +34,7 @@ function dataURLToBlob(dataURL) {
   return new Blob([uInt8Array], {type: contentType});
 }
 
-function FlickrRequest($http, PNGStorage) {
+function FlickrRequest($http, PNGStorage, PNGStorage) {
   return {
     //data is all fields of post request excluding photo
     //photo is a base64 string
@@ -45,7 +50,6 @@ function FlickrRequest($http, PNGStorage) {
     },
 
     //gets the base64 representation of png
-    //only works on firefox for now i guess
     download: function(url, callback) {
       async.waterfall(
       [
@@ -55,23 +59,18 @@ function FlickrRequest($http, PNGStorage) {
               data = data.substring(14,data.length-14-1) + '}}';
               data = JSON.parse(data);
               var original = data.sizes.size[data.sizes.size.length-1];
-              var url2 = original.source;
-              callback(null, url2);
+              callback(null, original.source);
             })
             .error(function() {
               callback('Could not download data!');
             });
         },
-        function(url2, callback) {
-          console.log(url2);
-          $http.get(url2)
-            .success(function(data) {
-              //var modified = btoa(data);
-              callback(null, data);
-            })
-            .error(function() {
-              callback('Could not download data!');
-            });
+        function(sourceUrl, callback) {
+          PNGStorage.get({url: sourceUrl}, function(data) {
+            callback(null, data);
+          }, function(err) {
+            callback(err.data);
+          });
         },
         function(content, callback) {
           console.log(content);
@@ -105,4 +104,5 @@ function FlickrRequest($http, PNGStorage) {
   };
 }
 
-flickrRequest.factory('FlickrRequest', ['$http', 'PNGStorage', FlickrRequest]);
+flickrRequest.factory('FlickrRequest', [
+  '$http', 'PNGStorage', 'DownloadPng', FlickrRequest]);

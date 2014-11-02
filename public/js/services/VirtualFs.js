@@ -113,7 +113,7 @@ function VirtualFs(Directory, Upload, Download, Delete, FlickrRequest) {
         //info will contain array getUrls and string name
         function(info, callback) {
           //since only supporting 1 image
-          //result will be the full size image
+          //result will be the full size file image
           FlickrRequest.download(info.getUrls[0], function(err, result) {
 
             if(err) { return callback(err); }

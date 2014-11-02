@@ -7,6 +7,7 @@ var Nodes = require('models/Nodes');
 var Images = require('models/Images');
 var fsCreateFile = require('lib/fsModel/createFile');
 var flickrWrappers = require('lib/flickr/signedWrappers');
+var loadBase64Image = require('lib/utils/loadBase64Image');
 
 //post
 //req must provide currentDirId, dirName 
@@ -70,7 +71,6 @@ function createFile(req, res, next) {
 //fileName is filename of node
 //getUrls is array or get requestable urls to get the images
 function getDownloadFileData(req, res, next) {
-  console.log(req.query.idNode);
   req.query.idNode = parseInt(req.query.idNode);
   if (!(req.query.idNode)) {
     return next(new Error('Missing some params'));
@@ -121,6 +121,17 @@ function getDownloadFileData(req, res, next) {
 }
 
 //GET
+//must provide req.url
+function getBase64Png(req, res, next) {
+  if(!req.params.url) {
+    next(new Error('Did not provide valid url!'));
+  }
+  loadBase64Image(req.params.url, function(err, base64image) {
+    err ? next(err) : res.send(base64image);
+  });
+}
+
+//GET
 //must provide title
 //called once for every image
 //if multiple images, called multiple times
@@ -165,5 +176,6 @@ exports.makeDirectory = makeDirectory;
 exports.getDirectory = getDirectory;
 exports.createFile = createFile;
 exports.getDownloadFileData = getDownloadFileData;
+exports.getBase64Png = getBase64Png;
 exports.getUploadFileData = getUploadFileData;
 exports.deleteNode = deleteNode;

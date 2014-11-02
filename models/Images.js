@@ -37,7 +37,6 @@ function create(metadata, callback) {
       metadata.accessToken
     ], 
     function(err, result) {
-      if (err) { console.log('FUQQQQQ');}
       err ? callback(err) : callback(null, result.insertId);
     });
 }
