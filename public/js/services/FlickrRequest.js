@@ -34,7 +34,7 @@ function dataURLToBlob(dataURL) {
   return new Blob([uInt8Array], {type: contentType});
 }
 
-function FlickrRequest($http, PNGStorage, PNGStorage) {
+function FlickrRequest($http, PNGStorage, DownloadPng) {
   return {
     //data is all fields of post request excluding photo
     //photo is a base64 string
@@ -66,20 +66,19 @@ function FlickrRequest($http, PNGStorage, PNGStorage) {
             });
         },
         function(sourceUrl, callback) {
-          PNGStorage.get({url: sourceUrl}, function(data) {
+          DownloadPng.get({url: sourceUrl}, function(data) {
             callback(null, data);
           }, function(err) {
             callback(err.data);
           });
         },
         function(content, callback) {
-          console.log(content);
+          content = content.prefix + content.body;
           PNGStorage.decode(content, function(data) {
             callback(null, data);
           });
         },
         function(decoded, callback) {
-          console.log(decoded);
           var fileAsBlob = dataURLToBlob(decoded);
           callback(null, fileAsBlob);
         }

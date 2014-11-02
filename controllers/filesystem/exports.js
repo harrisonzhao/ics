@@ -123,11 +123,15 @@ function getDownloadFileData(req, res, next) {
 //GET
 //must provide req.url
 function getBase64Png(req, res, next) {
-  if(!req.params.url) {
-    next(new Error('Did not provide valid url!'));
+  console.log(req.query.url);
+  if(!req.query.url) {
+    return next(new Error('Did not provide valid url!'));
   }
-  loadBase64Image(req.params.url, function(err, base64image) {
-    err ? next(err) : res.send(base64image);
+  loadBase64Image(req.query.url, function(err, base64prefix, body) {
+    err ? next(err) : res.send({
+      prefix: base64prefix,
+      body: body
+    });
   });
 }
 

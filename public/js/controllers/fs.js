@@ -1,22 +1,9 @@
 'use strict';
-/*global async*/
 var fs = angular.module('controllers.fs', [
   'services.vfs',
   'vendor.services.PNGStorage',
   'vendor.services.SaveFile',
   'angularFileUpload']);
-
-var cmp = function(a, b) {
-    if (a > b) { return +1; }
-    if (a < b) { return -1; }
-    return 0;
-}
-
-var sortNodes = function(nodes) {
-  nodes = nodes.sort(function(a, b) {
-    return cmp(a.isDirectory,b.isDirectory) || cmp(a.name,b.name);
-  });
-};
 
 //gotta make the title the non png file??
 function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
@@ -56,21 +43,10 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
   };
 
   var download = function(idNode) {
-    async.waterfall(
-    [
-      function(callback) {
-        VirtualFs.downloadFile(idNode, callback);
-      },
-      //result contains fields content and fileName
-      function(result, callback) {
-        PNGStorage.decode(result.content, function(data) {
-          callback(null, data.content, data.filename);
-        });
-      },
-    ],
-    function(err, data, fileName) {
+    //result contains fileName and content fields
+    VirtualFs.downloadFile(idNode, function(err, result) {
       if(err) { return console.log(err); }
-      SaveFile.save(data, fileName);
+      SaveFile.save(result.content, result.fileName);
     });
   };
 
