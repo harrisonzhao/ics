@@ -20,8 +20,8 @@ var fs = require('controllers/filesystem/exports');
 app.post('/fs/directory', auth.checkLoggedIn, fs.makeDirectory);
 app.get('/fs/directory', auth.checkLoggedIn, fs.getDirectory);
 app.post('/fs/upload', auth.checkLoggedIn, fs.createFile);
-app.get('/fs/upload', auth.checkLoggedIn, fs.getDownloadFileData);
-app.get('/fs/download', auth.checkLoggedIn, fs.getUploadFileData);
+app.get('/fs/upload', auth.checkLoggedIn, fs.getUploadFileData);
+app.get('/fs/download', auth.checkLoggedIn, fs.getDownloadFileData);
 //ghetto delete, does not free flickr memory
 app.delete('/fs/delete', auth.checkLoggedIn, fs.deleteNode);
 //TODO update?

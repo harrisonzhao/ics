@@ -36,7 +36,9 @@ var selectByIdQuery = multiline(function() {/*
  */
 function selectById(nid, uid, callback) {
   connection.query(selectByIdQuery, [nid, uid], function(err, result) {
-    err ? callback(err) : callback(null, result[0]);
+    if(err) { return callback(err); }
+    if(!result[0]) { return callback('No entry for node'); }
+    callback(null, result[0]);
   });
 }
 
@@ -86,7 +88,7 @@ function deleteNode(nid, callback) {
 }
 
 exports.selectByParentId = selectByParentId;
-exports.selectByChildId = selectById;
+exports.selectById = selectById;
 exports.insertDirectory = insertDirectory;
 exports.insertFile = insertFile;
 exports.deleteNode = deleteNode;

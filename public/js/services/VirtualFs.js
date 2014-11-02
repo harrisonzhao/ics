@@ -104,7 +104,7 @@ function VirtualFs(Directory, Upload, Download, Delete, FlickrRequest) {
       async.waterfall(
       [
         function(callback) {
-          Download.$get({idNode: idNode}, function(info) {
+          Download.get({idNode: idNode}, function(info) {
             callback(null, info);
           }, function(err) {
             callback(err.data);

@@ -86,7 +86,7 @@ var selectSecretByTokenQuery = multiline(function() {/*
   where accessToken = ?;
 */});
 
-function selectSecretByTokenQuery(token, callback) {
+function selectSecretByToken(token, callback) {
   connection.query(selectSecretByTokenQuery, [token], function(err, result) {
     err ? callback(err) : callback(null, result[0]);
   });
@@ -97,7 +97,7 @@ function getAccessTokenSecretPairs(tokens, callback) {
     tokens,
     {}, 
     function(memo, token, callback) {
-      selectSecretByTokenQuery(token, function(err, result) {
+      selectSecretByToken(token, function(err, result) {
         if(err) { return callback(err); }
         memo[token] = result;
         callback(null, memo);
