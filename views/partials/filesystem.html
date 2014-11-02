@@ -1,5 +1,5 @@
 <div class="container">
-    <div class="dropzone" file-name="imageFileName" data-max-file-size="200">
+    <div file-input="file" on-change="readFileAndUpload()"></div>
     <div ng-click="cdParent()">{{currDirName}}</div>
     <div ng-click="makeDirectory()">Create a directory</div>
     <input ng-model="newDirName">

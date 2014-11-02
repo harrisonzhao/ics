@@ -4,7 +4,8 @@ var fs = angular.module('controllers.fs', [
   'services.vfs',
   'vendor.services.PNGStorage',
   'vendor.services.SaveFile',
-  'directives.fileDropzone']);
+  'vendor.directives.uploadButton',
+  'vendor.services.fileReader']);
 
 var cmp = function(a, b) {
     if (a > b) { return +1; }
@@ -19,7 +20,7 @@ var sortNodes = function(nodes) {
 };
 
 //gotta make the title the non png file??
-function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
+function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile, fileReader) {
   $scope.files = [];
 
   //for make directory
@@ -74,16 +75,23 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
     });
   };
 
+/*var UploadController = function ($scope, fileReader) {
+     
+    $scope.readFile = function () {            
+        fileReader.readAsDataUrl($scope.file, $scope)
+                  .then(function(result) {
+                        $scope.imageSrc = result;
+                    });
+    };
+};*/
   //assumes the existence of $scope.file and $scope.fileName
   //$files: an array of files selected, each file has name, size, and type.
-  $scope.upload = function() {
-    var file = $scope.files.shift();
-    console.log(file);
+  $scope.upload = function(file) {
     file.file = PNGStorage.encode(file.file);
     VirtualFs.upload(
       [{
         imgNum: 0,
-        bytes: file.length,
+        bytes: file.file.length,
         content: file.file
       }],
       {
@@ -103,6 +111,32 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
         //somehow add the resulting thing to list of files
       });
   };
+
+  $scope.readFileAndUpload = function() {
+    var checkSize = function(size) {
+      var _ref;
+      if (((_ref = 200) === (void 0) || _ref === '') || 
+          (size / 1024) / 1024 < 200) {
+        return true;
+      } else {
+        alert('File must be smaller than ' + 200 + ' MB');
+        return false;
+      }
+    };
+    if (!checkSize($scope.file.size)) {
+      return;
+    }
+    var currDirId = $rootScope.currentUser.dirPath[
+      $rootScope.currentUser.dirPath.length - 1].id;
+    fileReader.readAsDataUrl($scope.file, $scope)
+      .then(function(result) {
+        $scope.upload({
+          file: result,
+          idParent: currDirId,
+          fileName: $scope.file.name
+        });
+      });
+  }
 
   var deleteNode = function(idNode) {
     VirtualFs.delete(idNode, function(err) {
@@ -171,5 +205,6 @@ fs.controller('FsCtrl',
     'VirtualFs',
     'PNGStorage',
     'SaveFile',
+    'fileReader',
     fsCtrl
   ]);
