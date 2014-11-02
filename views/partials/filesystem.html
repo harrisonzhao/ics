@@ -3,7 +3,7 @@
         <input type="file" ng-file-select="onFileSelect($files)" />
         <input type="submit" />
     </form>
-    <div ng-click="cdParent()">{{currDirName}}</div>
+    <div class="currdir" ng-click="cdParent()">{{currDirName}}</div>
     <div ng-click="makeDirectory()">Create a directory</div>
     <input ng-model="newDirName">
     <div ng-click="deleteClicked()">Delete selected</div>

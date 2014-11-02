@@ -55,29 +55,32 @@ function FlickrRequest($http, PNGStorage) {
               data = data.substring(14,data.length-14-1) + '}}';
               data = JSON.parse(data);
               var original = data.sizes.size[data.sizes.size.length-1];
-              var url = original.source;
-              callback(null, url);
+              var url2 = original.source;
+              callback(null, url2);
             })
             .error(function() {
               callback('Could not download data!');
             });
         },
-        function(callback) {
-          $http.get(url)
+        function(url2, callback) {
+          console.log(url2);
+          $http.get(url2)
             .success(function(data) {
-              callback(null, btoa(data));
+              //var modified = btoa(data);
+              callback(null, data);
             })
             .error(function() {
               callback('Could not download data!');
             });
         },
         function(content, callback) {
+          console.log(content);
           PNGStorage.decode(content, function(data) {
             callback(null, data);
           });
         },
         function(decoded, callback) {
-          //console.log(decoded);
+          console.log(decoded);
           var fileAsBlob = dataURLToBlob(decoded);
           callback(null, fileAsBlob);
         }
