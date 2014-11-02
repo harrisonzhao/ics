@@ -9,7 +9,7 @@ var createQuery = multiline(function() {/*
     accessToken,
     accessTokenSecret,
     idUser
-  ) values (?, ?, ?, ?);
+  ) values (?, ?, ?);
 */});
 /**
  * [create description]

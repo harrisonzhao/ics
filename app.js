@@ -83,10 +83,6 @@ app.get('/partials/*', function(req, res) {
 });
 
 app.get('/*', function(req, res) {
-  if(req.user) {
-    res.cookie('user', JSON.stringify(req.user.user_info));
-  }
-
   res.render('index.html');
 });
 

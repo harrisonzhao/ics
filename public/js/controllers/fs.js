@@ -3,10 +3,11 @@ var fs = angular.module('controllers.fs', [
   'services.vfs',
   'vendor.services.PNGStorage',
   'vendor.services.SaveFile',
-  'angularFileUpload']);
+  'angularFileUpload',
+  'services.auth']);
 
 //gotta make the title the non png file??
-function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
+function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile, Auth) {
   $scope.files = [];
 
   //for make directory
@@ -167,6 +168,10 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
     }
   };
 
+  $scope.logout = function() {
+    Auth.logout();
+  }
+  
   //initialize with root directory
   changeDirectory(
     null,
@@ -181,5 +186,6 @@ fs.controller('FsCtrl',
     'VirtualFs',
     'PNGStorage',
     'SaveFile',
+    'Auth',
     fsCtrl
   ]);

@@ -10,12 +10,8 @@ var tempOptionsStore = {};
 
 //must have authentication
 function flickrApiCallback(req, res) {
-  if (tempOptionsStore[req.user.idUser] !== undefined &&
-      req.query.oauth_token && req.query.oauth_verifier) {
-    tempOptionsStore[req.user.idUser].exchange(req.query);
-    //redirect back to main page
-    res.redirect('/');
-  }
+  tempOptionsStore[req.user.idUser].exchange(req.query);
+  res.redirect('/');
 }
 
 function authenticateFlickrAccount(req, res, next) {
@@ -28,7 +24,7 @@ function authenticateFlickrAccount(req, res, next) {
     secret: req.user.apiKeySecret,
     permissions: 'delete',
     silent: true,
-    callback: 'http://127.0.0.1:3000/auth/flickr/callback'
+    callback: 'http://localhost:3000/auth/flickr/callback'
   };
   async.waterfall(
   [

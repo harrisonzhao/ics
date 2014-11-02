@@ -116,27 +116,27 @@ DELIMITER ;
 # Insert some shit
 
 # Add user
-INSERT INTO Users(apiKey, apiKeySecret, email, passwordHash)
-VALUES ('45a330b4bcbe145c9b8a7e53dfe21c56', 'e175d4c4458c0e0f', 'wing@xhao.com', 'pw');
+-- INSERT INTO Users(apiKey, apiKeySecret, email, passwordHash)
+-- VALUES ('45a330b4bcbe145c9b8a7e53dfe21c56', 'e175d4c4458c0e0f', 'wing@xhao.com', 'pw');
 
-INSERT INTO FlickrAccounts(accessToken, accessTokenSecret, bytesUsed, idUser)
-VALUES ('72157647421924547-33f5e8fee2329c42','d0e63b4b168ed94d',0,1);
+-- INSERT INTO FlickrAccounts(accessToken, accessTokenSecret, bytesUsed, idUser)
+-- VALUES ('72157647421924547-33f5e8fee2329c42','d0e63b4b168ed94d',0,1);
 
 # Add directorys
-INSERT INTO Nodes(idOwner, idParent, name, isDirectory)
-VALUES (1, null, 'wat', 1);
-INSERT INTO Nodes(idOwner, idParent, name, isDirectory)
-VALUES (1, 1, 'the', 1);
+-- INSERT INTO Nodes(idOwner, idParent, name, isDirectory)
+-- VALUES (1, null, 'wat', 1);
+-- INSERT INTO Nodes(idOwner, idParent, name, isDirectory)
+-- VALUES (1, 1, 'the', 1);
 
 # Add file
-INSERT INTO Nodes(idOwner, idParent, name, isDirectory)
-VALUES(1, 2, 'fuck', 0);
+-- INSERT INTO Nodes(idOwner, idParent, name, isDirectory)
+-- VALUES(1, 2, 'fuck', 0);
 
 ##
 
 # Add an image
-INSERT INTO Images(idNode, imgNum, idImg, bytes, accessToken) 
-  VALUES (3, 1, '15685157702', 14101, '72157647421924547-33f5e8fee2329c42');
+-- INSERT INTO Images(idNode, imgNum, idImg, bytes, accessToken) 
+--   VALUES (3, 1, '15685157702', 14101, '72157647421924547-33f5e8fee2329c42');
 
 # Recursively delete a directory
 /*
@@ -151,7 +151,7 @@ COMMIT;
 
 #select * from Nodes where idOwner = 1 AND ISNULL(idParent)
 
-select * from Nodes;
+-- select * from Nodes;
 
 /*
 # Get all images for a file.

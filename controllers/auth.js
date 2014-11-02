@@ -10,7 +10,7 @@ exports.checkLoggedIn = function(req, res, next) {
 
 exports.logout = function(req, res) {
   req.logout();
-  res.send(200);
+  res.sendStatus(200);
 }
 
 function authenticateCallback(req, res, next, err, user, info) {

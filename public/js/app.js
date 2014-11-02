@@ -39,6 +39,8 @@ function configApp($httpProvider, $routeProvider, $locationProvider) {
       templateUrl: 'partials/filesystem.html',
       controller: 'FsCtrl'
     })
+    .when('/auth/flickr', {
+    })
     .otherwise({
       redirectTo: '/'
     });
@@ -63,7 +65,7 @@ app.run(function ($rootScope, $location, Auth) {
       Auth.currentUser();
     }
     if (currentUser && 
-      (['/login','/signup'].indexOf($location.path()) !== -1)) {
+      (['/', '/login', '/signup', '/auth/flickr'].indexOf($location.path()) !== -1)) {
       $location.path('/fs');
     }
   });
