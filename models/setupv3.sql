@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS Images (
   idImg VARCHAR(45) UNIQUE NOT NULL,
   bytes INT NOT NULL, #the bytes taken up by the png, max 200 * 10^6
   accessToken VARCHAR(34) NOT NULL, #foreign key from FlickrAccounts
-  PRIMARY KEY (idNode, imgnum)
+  PRIMARY KEY (idNode, imgNum)
 );
 
 DROP TRIGGER IF EXISTS BeforeImageInsert;
