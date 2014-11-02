@@ -71,6 +71,7 @@ function createFile(req, res, next) {
 //fileName is filename of node
 //getUrls is array or get requestable urls to get the images
 function getDownloadFileData(req, res, next) {
+  console.log(req.query.idNode);
   req.query.idNode = parseInt(req.query.idNode);
   if (!(req.query.idNode)) {
     return next(new Error('Missing some params'));
@@ -78,10 +79,10 @@ function getDownloadFileData(req, res, next) {
   var images;
   var fileName;
   var accessTokenSecretPairs;
-  async.watefall(
+  async.waterfall(
   [
     function(callback) {
-      Nodes.selectById(req.query.idNode, function(err, node) {
+      Nodes.selectById(req.query.idNode, req.user.idUser, function(err, node) {
         if(err) { callback(err); }
         fileName = node.name;
         if(node.isDirectory) {callback(new Error('node is a directory!'));}

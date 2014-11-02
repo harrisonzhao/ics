@@ -117,7 +117,10 @@ DELIMITER ;
 
 # Add user
 INSERT INTO Users(apiKey, apiKeySecret, email, passwordHash)
-VALUES ('a', 'b', 'wing@xhao.com', 'pw');
+VALUES ('45a330b4bcbe145c9b8a7e53dfe21c56', 'e175d4c4458c0e0f', 'wing@xhao.com', 'pw');
+
+INSERT INTO FlickrAccounts(accessToken, accessTokenSecret, bytesUsed, idUser)
+VALUES ('72157647421924547-33f5e8fee2329c42','d0e63b4b168ed94d',0,1);
 
 # Add directorys
 INSERT INTO Nodes(idOwner, idParent, name, isDirectory)
@@ -136,7 +139,7 @@ INSERT INTO FlickrAccounts (accessToken, accessTokenSecret, idUser) VALUES ('a',
 
 # Add an image
 INSERT INTO Images(idNode, imgNum, idImg, bytes, accessToken) 
-           VALUES (3, 1, '123', 100, 'a');
+  VALUES (3, 1, '15114919787', 14101, 'a');
 
 # Recursively delete a directory
 /*
