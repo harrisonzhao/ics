@@ -50,6 +50,7 @@ function FlickrRequest($http, PNGStorage) {
       async.waterfall(
       [
         function(callback) {
+          console.log(url);
           $http.get(url)
             .success(function(data) {
               data = data.substring(14,data.length-14-1) + '}}';
@@ -62,7 +63,7 @@ function FlickrRequest($http, PNGStorage) {
               callback('Could not download data!');
             });
         },
-        function(callback) {
+        function(url, callback) {
           $http.get(url)
             .success(function(data) {
               callback(null, btoa(data));
