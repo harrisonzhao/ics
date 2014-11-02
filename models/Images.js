@@ -17,12 +17,12 @@ function selectByNodeId(nid, callback) {
 }
 
 var createQuery = multiline(function () {/*
-  insert into Images(imgNum, idImg, bytes, accessToken)
-  values(?, ?, ?, ?);
+  insert into Images(idNode, imgNum, idImg, bytes, accessToken)
+  values(?, ?, ?, ?, ?);
 */});
 /**
  * @param  {object}   metadata
- * must contain fields: imgNum, idNum, bytes, accessToken
+ * must contain fields: idNode, imgNum, idNum, bytes, accessToken
  * @param  {Function} callback
  * args: err, id of inserted
  */
@@ -30,12 +30,14 @@ function create(metadata, callback) {
   connection.query(
     createQuery, 
     [
+      metadata.idNode,
       metadata.imgNum,
       metadata.idImg,
       metadata.bytes,
       metadata.accessToken
     ], 
     function(err, result) {
+      if (err) { console.log('FUQQQQQ');}
       err ? callback(err) : callback(null, result.insertId);
     });
 }
