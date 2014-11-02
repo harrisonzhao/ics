@@ -65,7 +65,7 @@ function FlickrRequest($http, PNGStorage) {
         function(url, callback) {
           $http.get(url)
             .success(function(data) {
-              data = btoa(data);
+              //data = btoa(data);
               callback(null, data);
             })
             .error(function() {
@@ -78,6 +78,7 @@ function FlickrRequest($http, PNGStorage) {
           });
         },
         function(decoded, callback) {
+          //console.log(decoded);
           var fileAsBlob = dataURLToBlob(decoded);
           console.log(fileAsBlob);
           callback(null, fileAsBlob);

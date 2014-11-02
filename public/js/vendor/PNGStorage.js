@@ -20,6 +20,7 @@ function pngstore() {
   var PNGStorage = {};
   PNGStorage.decode = function (data, callback) {//nihilogic canvas decompressor
     if (!data.length) {return; }
+    //console.log(data);
     var canvas = document.createElement('canvas');
     var ctx = canvas.getContext('2d');
     var image = new Image();
