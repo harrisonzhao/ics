@@ -9,8 +9,37 @@ $icon-font-path: "/bower_components/sass-bootstrap/fonts/";
     padding: 0.2em 0;
 }
 
-.currdir {
-    color: #FF0000;
+.checkbox {
+    text-align: center;
+}
+
+.file {
+  float: left;
+}
+
+.parent {
+  float: left;
+  width: 200px; height: 50px; background: #00FFFF;
+  margin-right: 80px;
+}
+
+.parentname {
+  margin-top: 16px;
+  text-align: center;
+  font-size: 15px;
+}
+
+.mkdir {
+  float: left;
+}
+
+.upload {
+  float: left;
+  margin-left: 168px;
+}
+
+.table {
+  float: left;
 }
 
 body {
