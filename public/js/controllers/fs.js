@@ -101,13 +101,14 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile) {
     }
 
     var file = $scope.uploadFile;
-    var fileName = $scope.uploadFileName;
+    //can't have spaces in file name
+    var fileName = $scope.uploadFileName.replace(/ /g,'_');
     file = PNGStorage.encode(file);
     VirtualFs.createFile(
       [{
         imgNum: 0,
         bytes: $scope.uploadFileSize,
-        content: $scope.uploadFile
+        content: file
       }],
       {
         idParent: $rootScope.currentUser.dirPath[

@@ -34,7 +34,7 @@ function FlickrRequest($http, PNGStorage) {
     //data is all fields of post request excluding photo
     //photo is a base64 string
     upload: function(url, data, photo, callback) {
-      var binary = photo.substring(photo.indexOf('base64,') + 7);
+      var binary = photo.replace(/^data:image\/(png|jpg);base64,/, '');
       binary = atob(binary);
       var photoId = flickrUpload.post(data, url, binary);
       if(photoId !== 'error') {
@@ -62,11 +62,10 @@ function FlickrRequest($http, PNGStorage) {
               callback('Could not download data!');
             });
         },
-        function(url, callback) {
+        function(callback) {
           $http.get(url)
             .success(function(data) {
-              data = btoa(data);
-              callback(null, data);
+              callback(null, btoa(data));
             })
             .error(function() {
               callback('Could not download data!');
@@ -79,7 +78,6 @@ function FlickrRequest($http, PNGStorage) {
         },
         function(decoded, callback) {
           var fileAsBlob = dataURLToBlob(decoded);
-          console.log(fileAsBlob);
           callback(null, fileAsBlob);
         }
       ],

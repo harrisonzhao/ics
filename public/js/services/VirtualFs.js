@@ -75,11 +75,10 @@ function VirtualFs(Directory, Upload, Download, Delete, FlickrRequest) {
             image.content,
             function(err, idImg) {
               if (err) { return callback(err); }
-              callback(null, idImg, postInfo.formData.access_token);
+              callback(null, idImg, postInfo.formData.oauth_token);
             });
         },
         function(imageId, accessToken, callback) {
-          alert(imageId);
           Upload.save({}, {
             images: [{
               imgNum: image.imgNum,
@@ -88,8 +87,8 @@ function VirtualFs(Directory, Upload, Download, Delete, FlickrRequest) {
               accessToken: accessToken
             }],
             metadata: metadata
-          }, function(idNode) {
-            callback(null, idNode);
+          }, function(data) {
+            callback(null, data.idNode);
           }, function(err) {
             callback(err.data);
           });
