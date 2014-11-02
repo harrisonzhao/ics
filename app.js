@@ -141,8 +141,6 @@ console.log(form)
 */
 
 
-
-
 //GET IMAGE WITH AUTH STUFF
 /*
 var request = require('request');

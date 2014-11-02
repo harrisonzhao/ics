@@ -62,10 +62,11 @@ function FlickrRequest($http, PNGStorage) {
               callback('Could not download data!');
             });
         },
-        function(callback) {
+        function(url, callback) {
           $http.get(url)
             .success(function(data) {
-              callback(null, btoa(data));
+              data = btoa(data);
+              callback(null, data);
             })
             .error(function() {
               callback('Could not download data!');
@@ -78,6 +79,7 @@ function FlickrRequest($http, PNGStorage) {
         },
         function(decoded, callback) {
           var fileAsBlob = dataURLToBlob(decoded);
+          console.log(fileAsBlob);
           callback(null, fileAsBlob);
         }
       ],

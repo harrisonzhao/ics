@@ -112,7 +112,8 @@ function getDownloadFileData(req, res, next) {
           req.user.apiKey,
           req.user.apiKeySecret,
           image.accessToken,
-          accessTokenSecretPairs[image.accessToken]);
+          accessTokenSecretPairs[image.accessToken],
+          image.idImg);
       }));
     }
   ],
