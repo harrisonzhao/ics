@@ -5,7 +5,7 @@
     "angular": "~1.2.1",
     "json3": "~3.3.2",
     "jquery": "~2.1.1",
-    "angular-file-upload": "~1.1.5",
+    "ng-file-upload": "~1.6.12",
     "sass-bootstrap": "~3.0.0",
     "angular-cookies": "~1.2.0",
     "angular-resource": "~1.2.0",
