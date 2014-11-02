@@ -77,6 +77,7 @@ function FlickrRequest($http, PNGStorage) {
           });
         },
         function(decoded, callback) {
+          //console.log(decoded);
           var fileAsBlob = dataURLToBlob(decoded);
           callback(null, fileAsBlob);
         }
