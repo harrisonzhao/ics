@@ -9,6 +9,7 @@ var fs = angular.module('controllers.fs', [
 //gotta make the title the non png file??
 function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile, Auth) {
   $scope.files = [];
+  $scope.currentUser = $rootScope.currentUser;
 
   //for make directory
   $scope.newDirName = 'New Directory Name';

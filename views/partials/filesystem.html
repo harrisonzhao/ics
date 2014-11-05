@@ -1,5 +1,30 @@
 <div class="container">
-    <table>
+
+    <div class="nav navbar-nav pull-right">
+        <ul class="nav navbar-nav" ng-show="currentUser">
+            <li>
+                <form class="navbar-form" ng-submit="upload()">
+                    <input type="submit" value="Upload Selected File"/>
+                    <input class="file" type="file" ng-file-select="onFileSelect($files)" />
+                </form>
+            </li>
+            <li>
+                <div class="navbar-form">
+                    <input ng-model="newDirName">
+                    <button type="button" ng-click="makeDirectory()">Create</button>
+                </div>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle"> {{ currentUser.email }} <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/auth/flickr">Add More Flickr Accounts</a></li>
+                    <li><a ng-click="logout()">Logout</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+<!--     <table>
         <th>
     <div class:"upload">
         <form ng-submit="upload()">
@@ -20,7 +45,7 @@
 <th>
         <div class="logout" ng-click="logout()"><button type="button">Logout</button></div>
     </th>
-    </table>
+    </table> -->
     <scrollable-table class="table" watch="visibleProjects">
         <table class="table table-striped table-bordered">
             <thead>
