@@ -15,9 +15,9 @@
                 </div>
             </li>
             <li class="dropdown">
-                <a class="dropdown-toggle"> {{ currentUser.email }} <b class="caret"></b></a>
+                <a class="dropdown-toggle"><span ng-bind="currentUser.email"></span><b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                    <li><a href="/auth/flickr">Add More Flickr Accounts</a></li>
+                    <li><a ng-click="addAccount()">Add More Flickr Accounts</a></li>
                     <li><a ng-click="logout()">Logout</a></li>
                 </ul>
             </li>

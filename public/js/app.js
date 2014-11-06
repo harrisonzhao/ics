@@ -15,9 +15,7 @@ var app = angular.module('infiniteCloudStorage', [
   'controllers.fs'
 ]);
 
-function configApp($httpProvider, $routeProvider, $locationProvider) {
-  $httpProvider.defaults.useXDomain = true;
-  delete $httpProvider.defaults.headers.common['X-Requested-With'];
+function configApp($routeProvider, $locationProvider) {
   $routeProvider
     /*.when('/', {
       templateUrl: 'partials/main.html',
@@ -48,7 +46,6 @@ function configApp($httpProvider, $routeProvider, $locationProvider) {
 }
 
 app.config([
-  '$httpProvider',
   '$routeProvider', 
   '$locationProvider', 
   configApp
@@ -65,7 +62,7 @@ app.run(function ($rootScope, $location, Auth) {
       Auth.currentUser();
     }
     if (currentUser && 
-      (['/', '/login', '/signup', '/auth/flickr'].indexOf($location.path()) !== -1)) {
+      (['/', '/login', '/signup'].indexOf($location.path()) !== -1)) {
       $location.path('/fs');
     }
   });

@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS Users (
   apiKey VARCHAR(45) NOT NULL,        #length is exactly 32
   apiKeySecret VARCHAR(16) NOT NULL,  #length is exactly 16
   email VARCHAR(254) NOT NULL UNIQUE, #max email length is 254 chars
+  numAccounts INT NOT NULL DEFAULT 0,
   passwordHash VARCHAR(60) NOT NULL,
   PRIMARY KEY (idUser)
 );
@@ -59,6 +60,18 @@ CREATE TABLE IF NOT EXISTS Images (
   accessToken VARCHAR(34) NOT NULL, #foreign key from FlickrAccounts
   PRIMARY KEY (idNode, imgNum)
 );
+
+DROP TRIGGER IF EXISTS BeforeFlickrAccountInsert;
+DELIMITER $$
+CREATE TRIGGER BeforeFlickrAccountInsert BEFORE INSERT ON FlickrAccounts
+  FOR EACH ROW 
+  BEGIN
+    UPDATE Users
+    SET numAccounts = numAccounts + 1
+    WHERE idUser = NEW.idUser;
+  END;
+$$
+DELIMITER ;
 
 DROP TRIGGER IF EXISTS BeforeImageInsert;
 DELIMITER $$

@@ -17,6 +17,7 @@ function flickrApiCallback(req, res) {
 function authenticateFlickrAccount(req, res, next) {
   //must temporarily store flickr options
   if (tempOptionsStore[req.user.idUser]) {
+    delete tempOptionsStore[req.user.idUser];
     return next(new Error('cannot authenticate at this time!'));
   }
   tempOptionsStore[req.user.idUser] = {

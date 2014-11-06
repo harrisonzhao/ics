@@ -26,6 +26,9 @@ app.delete('/fs/delete', auth.checkLoggedIn, vfs.deleteNode);
 app.get('/fs/png', auth.checkLoggedIn, vfs.getBase64Png);
 
 var flickrAuth = require('controllers/flickrAuth/auth');
+app.get('/a/flickr', function(req, res) {
+  res.redirect('/auth/flickr');
+});
 app.get('/auth/flickr', auth.checkLoggedIn,
   flickrAuth.authenticateFlickrAccount);
 app.get('/auth/flickr/callback', auth.checkLoggedIn,

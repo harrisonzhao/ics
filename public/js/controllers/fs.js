@@ -52,19 +52,14 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile, Auth) {
     });
   };
 
-/*var UploadController = function ($scope, fileReader) {
-     
-    $scope.readFile = function () {            
-        fileReader.readAsDataUrl($scope.file, $scope)
-                  .then(function(result) {
-                        $scope.imageSrc = result;
-                    });
-    };
-};*/
-  //assumes the existence of $scope.file and $scope.fileName
+  //assumes the existence of $scope.uploadFile and $scope.uploadFileName
   //$files: an array of files selected, each file has name, size, and type.
   $scope.upload = function() {
     var checkSize = function(size) {
+      if (size < 550) {
+        alert('File must be larger than ' + 600 + ' bytes');
+        return false;
+      }
       var _ref;
       if (((_ref = 200) === (void 0) || _ref === '') || 
           (size / 1024) / 1024 < 200) {
@@ -168,6 +163,10 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile, Auth) {
         false);
     }
   };
+
+  $scope.addAccount = function() {
+    $.get('/a/flickr');
+  }
 
   $scope.logout = function() {
     Auth.logout();

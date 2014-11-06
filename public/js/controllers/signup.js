@@ -13,7 +13,8 @@ function signupCtrl($scope, $location, Auth) {
       if (err) {
         $scope.error = err;
       } else {
-        $location.path('/auth/flickr');
+        $.get('/a/flickr');
+        $location.path('/');
       }
     });
   }
