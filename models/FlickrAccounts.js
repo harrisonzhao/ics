@@ -30,9 +30,11 @@ function create(accessToken, accessTokenSecret, idUser, callback) {
 }
 
 var selectBestQuery = multiline(function() {/*
-  select accessToken, accessTokenSecret, min(bytesUsed) AS bytes
+  select accessToken, accessTokenSecret, bytesUsed
   from FlickrAccounts
-  where idUser = ?;
+  where idUser = ?
+  order by bytesUsed asc
+  LIMIT 1;
 */});
 /**
  * [selectBest description]
@@ -44,7 +46,7 @@ function selectBest(idUser, callback) {
   connection.query(selectBestQuery, [idUser], function(err, result) {
     if(err) { return callback(err); }
     if(!result[0]) { return callback(new Error('No accounts linked!')); }
-    if(result.bytes > trillionMinusTwoHundredMil) {
+    if(result[0].bytesUsed > trillionMinusTwoHundredMil) {
       return callback(new Error(
         'Exceeded maximum storage on all accounts! Please create a new account.'
       ));
