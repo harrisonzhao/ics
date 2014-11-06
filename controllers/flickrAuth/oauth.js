@@ -36,7 +36,7 @@ exports.authenticate = function(req, res, next) {
     req.user.apiKey,
     req.user.apiKeySecret,
     '1.0',
-    'http://localhost:3000/auth/flickr/callback',
+    'http://infcs.cloudapp.net/auth/flickr/callback',
     'HMAC-SHA1');
   oauth.getOAuthRequestToken(function(error, oauth_token, oauth_token_secret) {
     if(error) {
