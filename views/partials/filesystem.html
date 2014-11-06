@@ -17,6 +17,7 @@
             <li class="dropdown">
                 <a class="dropdown-toggle"><span ng-bind="currentUser.email"></span><b class="caret"></b></a>
                 <ul class="dropdown-menu">
+                    <li><a>Total Storage: {{currentUser.numAccounts}} TB</a></li>
                     <li><a ng-click="addAccount()">Add More Flickr Accounts</a></li>
                     <li><a ng-click="logout()">Logout</a></li>
                 </ul>
