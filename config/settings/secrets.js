@@ -1,6 +1,6 @@
 module.exports = {
   mysqlConfigs: {
-    host: 'infcs.cloudapp.net',
+    host: 'localhost',
     user: 'ics',
     password: 'suchrekt',
     database: 'infcs',
