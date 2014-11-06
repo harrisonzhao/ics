@@ -87,5 +87,4 @@ module.exports = function(passport) {
     passReqToCallback: true
   },
   localSignupVerifyCallback));
-
 };

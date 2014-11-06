@@ -165,7 +165,9 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile, Auth) {
   };
 
   $scope.addAccount = function() {
-    $.get('/a/flickr');
+    $.get('/auth/flickr', function(data) {
+      window.location = data;
+    });
   }
 
   $scope.logout = function() {

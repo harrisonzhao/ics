@@ -13,8 +13,9 @@ function signupCtrl($scope, $location, Auth) {
       if (err) {
         $scope.error = err;
       } else {
-        $.get('/a/flickr');
-        $location.path('/');
+        $.get('/auth/flickr', function(data) {
+          window.location = data;
+        });
       }
     });
   }
