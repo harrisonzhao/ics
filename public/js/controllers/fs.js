@@ -9,15 +9,14 @@ var fs = angular.module('controllers.fs', [
 //gotta make the title the non png file??
 function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile, Auth) {
   $scope.files = [];
-  $scope.currentUser = $rootScope.currentUser;
 
   //for make directory
   $scope.newDirName = 'New Directory Name';
 
   //for ng-repeat  
   $scope.nodes = [];
-  $scope.currDirName = $rootScope.currentUser.dirPath[
-    $rootScope.currentUser.dirPath.length - 1].name;
+  $scope.currDirName = $rootScope.dirPath[
+    $rootScope.dirPath.length - 1].name;
   //prevent multiple clicks
   var cdInProgress = false;
 
@@ -27,18 +26,18 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile, Auth) {
     //must handle case of multiple clicks in short span of time,
     //can't include something included once already
     if(isChild) {
-      $rootScope.currentUser.dirPath.push({
+      $rootScope.dirPath.push({
         id: idNode,
         name: name
       });
-    } else if($rootScope.currentUser.dirPath.length > 1) {
-      $rootScope.currentUser.dirPath.pop();
+    } else if($rootScope.dirPath.length > 1) {
+      $rootScope.dirPath.pop();
     }
 
     VirtualFs.getDirectory(idNode, function(err, nodes) {
       if(err) { cdInProgress = false; return console.log(err); }
-      $scope.currDirName = $rootScope.currentUser.dirPath[
-        $rootScope.currentUser.dirPath.length - 1].name;
+      $scope.currDirName = $rootScope.dirPath[
+        $rootScope.dirPath.length - 1].name;
       $scope.nodes = nodes;
       cdInProgress = false;
     });
@@ -84,8 +83,8 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile, Auth) {
         content: file
       }],
       {
-        idParent: $rootScope.currentUser.dirPath[
-          $rootScope.currentUser.dirPath.length - 1].id,
+        idParent: $rootScope.dirPath[
+          $rootScope.dirPath.length - 1].id,
         name: fileName,
         totalBytes: $scope.uploadFileSize,
         extension: $scope.uploadFileName.split('.').pop()
@@ -134,7 +133,7 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile, Auth) {
 
   $scope.makeDirectory = function() {
     var dirName = $scope.newDirName;
-    var currentDirId = $rootScope.currentUser.dirPath[$rootScope.currentUser.dirPath.length - 1].id;
+    var currentDirId = $rootScope.dirPath[$rootScope.dirPath.length - 1].id;
     VirtualFs.makeDirectory(dirName, currentDirId, function(err, idDirectory) {
       if(err) { return console.log(err); }
       $scope.nodes.push({
@@ -154,12 +153,12 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile, Auth) {
   };
 
   $scope.cdParent = function() {
-    if($rootScope.currentUser.dirPath.length > 1) {
+    if($rootScope.dirPath.length > 1) {
       changeDirectory(
-        $rootScope.currentUser.dirPath[
-          $rootScope.currentUser.dirPath.length - 2].id, 
-        $rootScope.currentUser.dirPath[
-          $rootScope.currentUser.dirPath.length - 2].name,
+        $rootScope.dirPath[
+          $rootScope.dirPath.length - 2].id, 
+        $rootScope.dirPath[
+          $rootScope.dirPath.length - 2].name,
         false);
     }
   };
@@ -177,8 +176,9 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile, Auth) {
   //initialize with root directory
   changeDirectory(
     null,
-    $rootScope.currentUser.dirPath[0].name,
+    $rootScope.dirPath[0].name,
     false);
+  $scope.currentUser = $rootScope.currentUser;
 }
 
 fs.controller('FsCtrl', 
