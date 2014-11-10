@@ -177,10 +177,16 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile, Auth) {
   }
   
   //initialize with root directory
-  changeDirectory(
-    null,
-    $scope.currDirName,
-    false);
+  var getRootDir = function() {
+    if(cdInProgress) { return; }
+    cdInProgress = true;
+    VirtualFs.getDirectory(null, function(err, nodes) {
+      if(err) { cdInProgress = false; return console.log(err); }
+      $scope.nodes = nodes;
+      cdInProgress = false;
+    });
+  };
+  getRootDir();
 }
 
 fs.controller('FsCtrl', 
