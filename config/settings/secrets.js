@@ -1,7 +1,7 @@
 //update accordingly
 module.exports = {
   mysqlConfigs: {
-    host: 'infcs.cloudapp.net',
+    host: 'localhost',
     user: 'ics',
     password: 'suchrekt',
     database: 'infcs',
@@ -10,5 +10,5 @@ module.exports = {
   sessionSecret: process.env.SESSION_SECRET || 'Custom session secret',
   host: process.env.HOST || 'localhost',
   port: process.env.PORT || 3000,
-  inetAddr: 'localhost:3000'
+  inetAddr: 'infcs.cloudapp.net'
 };
