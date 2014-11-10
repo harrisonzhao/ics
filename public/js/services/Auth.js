@@ -25,7 +25,7 @@ function Auth($location, $rootScope, $cookieStore, Session, User) {
 
     User.get({}, function(user) {
       $rootScope.currentUser = user;
-      $rootScope.currentUser.dirPath = [rootDirObj];
+      $rootScope.dirPath = [rootDirObj];
     });
   
   }
@@ -43,7 +43,7 @@ function Auth($location, $rootScope, $cookieStore, Session, User) {
       //post email and password to server
       Session.save({}, user, function(user) { //success
         $rootScope.currentUser = user;
-        $rootScope.currentUser.dirPath = [rootDirObj];
+        $rootScope.dirPath = [rootDirObj];
         callback(null);
       }, function(err) {  //failure
         callback(err.data);
@@ -72,7 +72,7 @@ function Auth($location, $rootScope, $cookieStore, Session, User) {
       callback = callback || angular.noop;
       User.save({}, userInfo, function(user) {
         $rootScope.currentUser = user;
-        $rootScope.currentUser.dirPath = [rootDirObj];
+        $rootScope.dirPath = [rootDirObj];
         callback(null);
       }, function(err) {
         callback(err.data);
@@ -83,7 +83,7 @@ function Auth($location, $rootScope, $cookieStore, Session, User) {
     currentUser: function() {
       User.get({}, function(user) {
         $rootScope.currentUser = user;
-        $rootScope.currentUser.dirPath = [rootDirObj];
+        $rootScope.dirPath = [rootDirObj];
       });
     }
 
