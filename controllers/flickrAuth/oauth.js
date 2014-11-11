@@ -7,25 +7,7 @@ var secrets = require('config/settings/secrets');
 var inetAddr = secrets.host + ':' + secrets.port;
 
 if (process.env.MODE === 'production') {
-  require('http').request({
-      hostname: 'fugal.net',
-      path: '/ip.cgi',
-      agent: false
-      }, function(res) {
-      if(res.statusCode !== 200) {
-          throw new Error('non-OK status: ' + res.statusCode);
-      }
-      res.setEncoding('utf-8');
-      var ipAddress = '';
-      res.on('data', function(chunk) { ipAddress += chunk; });
-      res.on('end', function() {
-          // ipAddress contains the external IP address
-          console.log('ip address: ' + ipAddress);
-          inetAddr = ipAddress;
-      });
-      }).on('error', function(err) {
-      throw err;
-  }).end();
+  inetAddr = 'infcs.cloudapp.net';
 }
 
 var tempOAuthStore = {};
