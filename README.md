@@ -7,6 +7,8 @@ Prerequisites
 
 Getting Started
 ---------------
+edit config/settings/secrets.js
+
 run these commands before starting server (only need to do once):
 
 npm install
@@ -61,43 +63,3 @@ File structure:
         partial2.html
 
 CRUD = Create Read Update Delete
-
-http://bgrins.github.io/filereader.js/
-
-For writing file to downloads:
-
-    window.webkitRequestFileSystem(window.TEMPORARY, 1024*1024, function(fs) {
-        fs.root.getFile('test.bin', {create: true}, function(fileEntry) {
-            fileEntry.createWriter(function(fileWriter) {
-                var arr = new Uint8Array(3);
-    
-                arr[0] = 97;
-                arr[1] = 98;
-                arr[2] = 99;
-    
-                var blob = new Blob([arr]);
-    
-                fileWriter.addEventListener("writeend", function() {
-                    // navigate to file, will download
-                    location.href = fileEntry.toURL();
-                }, false);
-    
-                fileWriter.write(blob);
-            }, function() {});
-        }, function() {});
-    }, function() {});
-
-
-access-control-allow-origin: 
-cross site http
-
-to get photos:
-https://www.flickr.com/services/api/flickr.photos.getSizes.html
-
-file-reader stream 
-https://github.com/maxogden/filereader-stream
-
-
-https://github.com/mudcube/PNG-Storage
-
-http://thiscouldbebetter.neocities.org/texteditor.html
