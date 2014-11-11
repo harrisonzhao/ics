@@ -15,10 +15,13 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile, Auth) {
 
   //for ng-repeat  
   $scope.nodes = [];
-  $scope.currDirName = $rootScope.dirPath[
-    $rootScope.dirPath.length - 1].name;
+  $scope.currDirName = $rootScope.dirPath ? 
+    $rootScope.dirPath[$rootScope.dirPath.length - 1].name :
+    'Root';
+
   //prevent multiple clicks
   var cdInProgress = false;
+  $scope.currentUser = $rootScope.currentUser;
 
   var changeDirectory = function(idNode, name, isChild) {
     if(cdInProgress) { return; }
@@ -174,11 +177,16 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile, Auth) {
   }
   
   //initialize with root directory
-  changeDirectory(
-    null,
-    $rootScope.dirPath[0].name,
-    false);
-  $scope.currentUser = $rootScope.currentUser;
+  var getRootDir = function() {
+    if(cdInProgress) { return; }
+    cdInProgress = true;
+    VirtualFs.getDirectory(null, function(err, nodes) {
+      if(err) { cdInProgress = false; return console.log(err); }
+      $scope.nodes = nodes;
+      cdInProgress = false;
+    });
+  };
+  getRootDir();
 }
 
 fs.controller('FsCtrl', 
