@@ -17,10 +17,6 @@ var app = angular.module('infiniteCloudStorage', [
 
 function configApp($routeProvider, $locationProvider) {
   $routeProvider
-    /*.when('/', {
-      templateUrl: 'partials/main.html',
-      controller: 'MainCtrl'
-    })*/
     .when('/', {
       templateUrl: 'partials/front.html',
       controller: 'FrontCtrl'
@@ -36,8 +32,6 @@ function configApp($routeProvider, $locationProvider) {
     .when('/fs', {
       templateUrl: 'partials/filesystem.html',
       controller: 'FsCtrl'
-    })
-    .when('/auth/flickr', {
     })
     .otherwise({
       redirectTo: '/'

@@ -14,10 +14,8 @@ function loginCtrl($scope, $location, Auth) {
       } else {
         $location.path('/');
       }
-
     });
   };
-  
 }
 
 //Auth from services.auth

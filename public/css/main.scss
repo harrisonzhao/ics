@@ -102,9 +102,12 @@ body {
 }
 .login-title {
   color: #555;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 400;
-  display: block;
+}
+.login-title-small {
+  @extend .login-title;
+  font-size: 18px;
 }
 .profile-img {
   width: 96px;
