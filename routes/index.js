@@ -3,5 +3,19 @@
 (require('rootpath')());
 
 module.exports = function(app) {
+  var path = require('path');
+  app.get('/partials/*', function(req, res) {
+    var requestedView = path.join('./', req.url);
+    res.render(requestedView);
+  });
 
-}
+  app.get('/*', function(req, res) {
+    res.render('index.html');
+  });
+
+  /**
+   * handles the errors when next(err) is called
+   */
+  var errorHandler = require('controllers/errorhandler').errorHandler;
+  app.use(errorHandler);
+};

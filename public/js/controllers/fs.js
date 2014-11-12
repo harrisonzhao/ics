@@ -4,10 +4,11 @@ var fs = angular.module('controllers.fs', [
   'vendor.services.PNGStorage',
   'vendor.services.SaveFile',
   'angularFileUpload',
+  'ngDialog',
   'services.auth']);
 
 //gotta make the title the non png file??
-function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile, Auth) {
+function fsCtrl($rootScope, $scope, ngDialog, VirtualFs, PNGStorage, SaveFile, Auth) {
   $scope.files = [];
 
   //for make directory
@@ -22,7 +23,7 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile, Auth) {
   //prevent multiple clicks
   var cdInProgress = false;
   $scope.currentUser = $rootScope.currentUser;
-
+  
   var changeDirectory = function(idNode, name, isChild) {
     if(cdInProgress) { return; }
     cdInProgress = true;
@@ -170,23 +171,36 @@ function fsCtrl($rootScope, $scope, VirtualFs, PNGStorage, SaveFile, Auth) {
     $.get('/auth/flickr', function(data) {
       window.location = data;
     });
-  }
+  };
 
   $scope.logout = function() {
     Auth.logout();
-  }
-  
+  };
+
+  $scope.openDialog = function() {
+    ngDialog.open({ 
+      template: 'dialog', //references id="dialog" element in filesystem.html
+      className: 'ngdialog-theme-default ngdialog-theme-custom'
+    });
+  };
+
   //initialize with root directory
   VirtualFs.getDirectory(null, function(err, nodes) {
     if(err) { return console.log(err); }
     $scope.nodes = nodes;
   });
+
+  //check if there's a Flickr Account attached, if not show dialog
+  if ($rootScope.currentUser && $rootScope.currentUser.numAccounts === 0) {
+    $scope.openDialog();
+  }
 }
 
 fs.controller('FsCtrl', 
   [
     '$rootScope',
     '$scope',
+    'ngDialog',
     'VirtualFs',
     'PNGStorage',
     'SaveFile',

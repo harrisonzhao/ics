@@ -15,38 +15,17 @@
                 </div>
             </li>
             <li class="dropdown">
-                <a class="dropdown-toggle"><span ng-bind="currentUser.email"></span><b class="caret"></b></a>
+                <a class="dropdown-toggle">{{currentUser.email}}<b class="caret"></b></a>
                 <ul class="dropdown-menu">
                     <li><a>Total Storage: {{currentUser.numAccounts}} TB</a></li>
                     <li><a ng-click="addAccount()">Add More Flickr Accounts</a></li>
+                    <li><a ng-click="openDialog()">How To Get More Storage?</a></li>
                     <li><a ng-click="logout()">Logout</a></li>
                 </ul>
             </li>
         </ul>
     </div>
 
-<!--     <table>
-        <th>
-    <div class:"upload">
-        <form ng-submit="upload()">
-            <input type="submit" />
-            <b>Upload Files</b>
-            <input class="file" type="file" ng-file-select="onFileSelect($files)" />
-        </form>
-    </div>
-</th>
-<th>
-    <div class="mkdir" ng-click="makeDirectory()">
-        <div>
-            <button type="button">Create directory</button>
-        </div>
-        <input ng-model="newDirName">
-    </div>
-</th>
-<th>
-        <div class="logout" ng-click="logout()"><button type="button">Logout</button></div>
-    </th>
-    </table> -->
     <scrollable-table class="table" watch="visibleProjects">
         <table class="table table-striped table-bordered">
             <thead>
@@ -73,4 +52,16 @@
             </tbody>
         </table>
     </scrollable-table>
+    <script type="text/ng-template" id="dialog">
+        <div class="ngdialog-message">
+            <h2>Achieving Infinite Storage</h2>
+            <ol class="mt">
+                <li>Log out of your currently logged in Flickr account.</li>
+                <li>Create a new <a href="https://www.flickr.com/signup/" target="_blank">Flickr</a> account.</li>
+                <li>Go to the dropdown menu in the top right corner.</li>
+                <li>Click: <b>Add More Flickr Accounts</b>.</li>
+                <li>Repeat from step 1 for even more storage.</li>
+            </ol>
+        </div>
+    </script>
 </div>
