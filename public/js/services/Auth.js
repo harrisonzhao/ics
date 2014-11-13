@@ -17,7 +17,7 @@ function sessionFactory($resource) {
 }
 auth.factory('Session', ['$resource', sessionFactory]);
 
-function Auth($location, $rootScope, $cookieStore, Session, User) {
+function Auth($rootScope, $cookieStore, Session, User) {
   return {
 
     /**
@@ -82,7 +82,6 @@ function Auth($location, $rootScope, $cookieStore, Session, User) {
 auth.factory(
   'Auth', 
   [
-    '$location',
     '$rootScope',
     '$cookieStore',
     'Session',
