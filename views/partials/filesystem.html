@@ -1,18 +1,18 @@
 <div class="container">
 
-    <div class="nav navbar-nav pull-right">
-        <ul class="nav navbar-nav" ng-show="currentUser">
+    <div class="nav navbar-nav navbar-default pull-right">
+        <ul class="nav navbar-nav">
             <li>
                 <form class="navbar-form" ng-submit="upload()">
-                    <input type="submit" value="Upload Selected File"/>
+                    <input class="btn btn-default" type="submit" value="Upload Selected File"/>
                     <input class="file" type="file" ng-file-select="onFileSelect($files)" />
                 </form>
             </li>
             <li>
-                <div class="navbar-form">
-                    <input ng-model="newDirName">
-                    <button type="button" ng-click="makeDirectory()">Create</button>
-                </div>
+                <form class="navbar-form">
+                    <input ng-model="newDirName" placeholder="New Directory Name">
+                    <button class="btn btn-default" type="button" ng-click="makeDirectory()">Create</button>
+                </form>
             </li>
             <li class="dropdown">
                 <a class="dropdown-toggle">{{currentUser.email}}<b class="caret"></b></a>
@@ -34,7 +34,7 @@
                         <button type="button">Delete Selected</button>
                     </th>
                     <th width=65 sortable-header col="id">Type</th>
-                    <th sortable-header ng-click="cdParent()" col="name">Go up (currently in {{currDirName}})</th>
+                    <th sortable-header ng-click="cdParent()" col="name">{{currDirName}} >> Go Up</th>
                 </tr>
             </thead>
             <tbody>

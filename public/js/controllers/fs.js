@@ -8,21 +8,20 @@ var fs = angular.module('controllers.fs', [
   'services.auth']);
 
 //gotta make the title the non png file??
-function fsCtrl($rootScope, $scope, ngDialog, VirtualFs, PNGStorage, SaveFile, Auth) {
+function fsCtrl($scope, ngDialog, VirtualFs, PNGStorage, SaveFile, Auth) {
   $scope.files = [];
+  var rootDirObj = {id: null, name: 'Root'};
+  $scope.dirPath = [rootDirObj];
 
   //for make directory
-  $scope.newDirName = 'New Directory Name';
+  //$scope.newDirName = 'New Directory Name';
 
   //for ng-repeat  
   $scope.nodes = [];
-  $scope.currDirName = $rootScope.dirPath ? 
-    $rootScope.dirPath[$rootScope.dirPath.length - 1].name :
-    'Root';
+  $scope.currDirName = $scope.dirPath[$scope.dirPath.length - 1].name;
 
   //prevent multiple clicks
   var cdInProgress = false;
-  $scope.currentUser = $rootScope.currentUser;
   
   var changeDirectory = function(idNode, name, isChild) {
     if(cdInProgress) { return; }
@@ -30,18 +29,18 @@ function fsCtrl($rootScope, $scope, ngDialog, VirtualFs, PNGStorage, SaveFile, A
     //must handle case of multiple clicks in short span of time,
     //can't include something included once already
     if(isChild) {
-      $rootScope.dirPath.push({
+      $scope.dirPath.push({
         id: idNode,
         name: name
       });
-    } else if($rootScope.dirPath.length > 1) {
-      $rootScope.dirPath.pop();
+    } else if($scope.dirPath.length > 1) {
+      $scope.dirPath.pop();
     }
 
     VirtualFs.getDirectory(idNode, function(err, nodes) {
       if(err) { cdInProgress = false; return console.log(err); }
-      $scope.currDirName = $rootScope.dirPath[
-        $rootScope.dirPath.length - 1].name;
+      $scope.currDirName = $scope.dirPath[
+        $scope.dirPath.length - 1].name;
       $scope.nodes = nodes;
       cdInProgress = false;
     });
@@ -87,8 +86,8 @@ function fsCtrl($rootScope, $scope, ngDialog, VirtualFs, PNGStorage, SaveFile, A
         content: file
       }],
       {
-        idParent: $rootScope.dirPath[
-          $rootScope.dirPath.length - 1].id,
+        idParent: $scope.dirPath[
+          $scope.dirPath.length - 1].id,
         name: fileName,
         totalBytes: $scope.uploadFileSize,
         extension: $scope.uploadFileName.split('.').pop()
@@ -137,7 +136,7 @@ function fsCtrl($rootScope, $scope, ngDialog, VirtualFs, PNGStorage, SaveFile, A
 
   $scope.makeDirectory = function() {
     var dirName = $scope.newDirName;
-    var currentDirId = $rootScope.dirPath[$rootScope.dirPath.length - 1].id;
+    var currentDirId = $scope.dirPath[$scope.dirPath.length - 1].id;
     VirtualFs.makeDirectory(dirName, currentDirId, function(err, idDirectory) {
       if(err) { return console.log(err); }
       $scope.nodes.push({
@@ -157,12 +156,12 @@ function fsCtrl($rootScope, $scope, ngDialog, VirtualFs, PNGStorage, SaveFile, A
   };
 
   $scope.cdParent = function() {
-    if($rootScope.dirPath.length > 1) {
+    if($scope.dirPath.length > 1) {
       changeDirectory(
-        $rootScope.dirPath[
-          $rootScope.dirPath.length - 2].id, 
-        $rootScope.dirPath[
-          $rootScope.dirPath.length - 2].name,
+        $scope.dirPath[
+          $scope.dirPath.length - 2].id, 
+        $scope.dirPath[
+          $scope.dirPath.length - 2].name,
         false);
     }
   };
@@ -184,21 +183,22 @@ function fsCtrl($rootScope, $scope, ngDialog, VirtualFs, PNGStorage, SaveFile, A
     });
   };
 
-  //initialize with root directory
-  VirtualFs.getDirectory(null, function(err, nodes) {
+  //get the user
+  Auth.currentUser(function(err, user) {
     if(err) { return console.log(err); }
-    $scope.nodes = nodes;
+    $scope.currentUser = user;
+    if (user.numAccounts === 0) {
+      //check if there's a Flickr Account attached, if not show dialog
+      $scope.openDialog();
+    }
   });
+  //initialize with root directory
+  changeDirectory(null, $scope.currDirName, false);
 
-  //check if there's a Flickr Account attached, if not show dialog
-  if ($rootScope.currentUser && $rootScope.currentUser.numAccounts === 0) {
-    $scope.openDialog();
-  }
 }
 
 fs.controller('FsCtrl', 
   [
-    '$rootScope',
     '$scope',
     'ngDialog',
     'VirtualFs',

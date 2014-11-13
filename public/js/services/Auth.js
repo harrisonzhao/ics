@@ -18,17 +18,6 @@ function sessionFactory($resource) {
 auth.factory('Session', ['$resource', sessionFactory]);
 
 function Auth($location, $rootScope, $cookieStore, Session, User) {
-  var rootDirObj = {id: null, name: 'Root'};
-
-  if (!$rootScope.currentUser && 
-    (['/','/login','/signup'].indexOf($location.path()) !== -1)) {
-
-    User.get({}, function(user) {
-      $rootScope.currentUser = user;
-      $rootScope.dirPath = [rootDirObj];
-    });
-  
-  }
   return {
 
     /**
@@ -43,7 +32,6 @@ function Auth($location, $rootScope, $cookieStore, Session, User) {
       //post email and password to server
       Session.save({}, user, function(user) { //success
         $rootScope.currentUser = user;
-        $rootScope.dirPath = [rootDirObj];
         callback(null);
       }, function(err) {  //failure
         callback(err.data);
@@ -72,7 +60,6 @@ function Auth($location, $rootScope, $cookieStore, Session, User) {
       callback = callback || angular.noop;
       User.save({}, userInfo, function(user) {
         $rootScope.currentUser = user;
-        $rootScope.dirPath = [rootDirObj];
         callback(null);
       }, function(err) {
         callback(err.data);
@@ -80,10 +67,12 @@ function Auth($location, $rootScope, $cookieStore, Session, User) {
     },
 
     //401 errors will be caught by a 401 error catcher in app.js
-    currentUser: function() {
+    currentUser: function(callback) {
       User.get({}, function(user) {
         $rootScope.currentUser = user;
-        $rootScope.dirPath = [rootDirObj];
+        if(callback) { callback(null, user); }
+      }, function(err) {
+        if (err && callback) { callback(err.data); }
       });
     }
 
