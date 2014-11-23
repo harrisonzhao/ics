@@ -68,6 +68,9 @@ function Auth($rootScope, $cookieStore, Session, User) {
 
     //401 errors will be caught by a 401 error catcher in app.js
     currentUser: function(callback) {
+      if ($rootScope.currentUser && $rootScope.currentUser.email) {
+        return callback(null, $rootScope.currentUser);
+      }
       User.get({}, function(user) {
         $rootScope.currentUser = user;
         if(callback) { callback(null, user); }

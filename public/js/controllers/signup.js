@@ -2,7 +2,11 @@
 
 var signup = angular.module('controllers.signup', ['ngDialog','services.auth']);
 
-function signupCtrl($scope, $location, ngDialog, Auth) {
+function signupCtrl($scope, $rootScope, $location, ngDialog, Auth) {
+  Auth.currentUser(function(err, result) {
+    if (result) { $location.path('/fs'); }
+  });
+
   $scope.register = function() {
     Auth.createUser({
       apiKey: $scope.user.apiKey,
@@ -30,6 +34,7 @@ function signupCtrl($scope, $location, ngDialog, Auth) {
 
 signup.controller('SignupCtrl', [
   '$scope',
+  '$rootScope',
   '$location',
   'ngDialog',
   'Auth',
