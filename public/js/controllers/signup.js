@@ -2,9 +2,9 @@
 
 var signup = angular.module('controllers.signup', ['ngDialog','services.auth']);
 
-function signupCtrl($scope, $rootScope, $location, ngDialog, Auth) {
-  Auth.currentUser(function(err, result) {
-    if (result) { $location.path('/fs'); }
+function signupCtrl($scope, $location, ngDialog, Auth) {
+  Auth.currentUser(function(err, user) {
+    if (user) { $location.path('/fs'); }
   });
 
   $scope.register = function() {
@@ -34,7 +34,6 @@ function signupCtrl($scope, $rootScope, $location, ngDialog, Auth) {
 
 signup.controller('SignupCtrl', [
   '$scope',
-  '$rootScope',
   '$location',
   'ngDialog',
   'Auth',

@@ -55,15 +55,13 @@ app.run(function ($rootScope, $location, Auth) {
       (['/','/login','/logout','/signup'].indexOf($location.path()) === -1)) {
       Auth.currentUser();
     }
-    if (currentUser && 
-      (['/', '/login', '/signup'].indexOf($location.path()) !== -1)) {
-      $location.path('/fs');
-    }
   });
 
   // On catching 401 errors, redirect to the login page.
   $rootScope.$on('event:auth-loginRequired', function() {
-    $location.path('/login');
+    if ($location.path() !== '/signup') {
+      $location.path('/login');
+    }
     return false;
   });
 });

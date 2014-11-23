@@ -2,7 +2,7 @@
 
 var login = angular.module('controllers.login', ['services.auth']);
 
-function loginCtrl($scope, $rootScope, $location, Auth) {
+function loginCtrl($scope, $location, Auth) {
   Auth.currentUser(function(err, result) {
     if (result) { $location.path('/fs'); }
   });
@@ -24,7 +24,6 @@ function loginCtrl($scope, $rootScope, $location, Auth) {
 //Auth from services.auth
 login.controller('LoginCtrl', [
   '$scope',
-  '$rootScope',
   '$location',
   'Auth',
   loginCtrl]);
