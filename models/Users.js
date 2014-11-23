@@ -4,8 +4,8 @@ var bcrypt = require('bcryptjs');
 var connection = require('config/db');
 
 function comparePassword(password, passwordHash) {
-  return password === passwordHash;
-  //return bcrypt.compareSync(password, passwordHash);
+  //return password === passwordHash;
+  return bcrypt.compareSync(password, passwordHash);
 }
 
 var createQuery = multiline(function() {/*
@@ -30,7 +30,7 @@ var createQuery = multiline(function() {/*
 function create(apiKey, apiKeySecret, email, password, callback) {
   connection.query(
     createQuery, 
-    [apiKey, apiKeySecret, email, password], //bcrypt.hashSync(password,8)], 
+    [apiKey, apiKeySecret, email, /*password],*/ bcrypt.hashSync(password,8)], 
     function(err, result) {
       err ? callback(err) : callback(null, result.insertId);
     });
