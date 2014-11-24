@@ -121,21 +121,6 @@ function getDownloadFileData(req, res, next) {
 }
 
 //GET
-//must provide req.url
-function getBase64Png(req, res, next) {
-  console.log(req.query.url);
-  if(!req.query.url) {
-    return next(new Error('Did not provide valid url!'));
-  }
-  loadBase64Image(req.query.url, function(err, base64prefix, body) {
-    err ? next(err) : res.send({
-      prefix: base64prefix,
-      body: body
-    });
-  });
-}
-
-//GET
 //must provide title
 //called once for every image
 //if multiple images, called multiple times
@@ -180,6 +165,5 @@ exports.makeDirectory = makeDirectory;
 exports.getDirectory = getDirectory;
 exports.createFile = createFile;
 exports.getDownloadFileData = getDownloadFileData;
-exports.getBase64Png = getBase64Png;
 exports.getUploadFileData = getUploadFileData;
 exports.deleteNode = deleteNode;

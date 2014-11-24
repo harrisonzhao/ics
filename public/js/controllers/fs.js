@@ -2,10 +2,10 @@
 var fs = angular.module('controllers.fs', [
   'services.vfs',
   'vendor.services.PNGStorage',
-  'vendor.services.SaveFile',
   'angularFileUpload',
   'ngDialog',
-  'services.auth']);
+  'services.auth',
+  'vendor.services.SaveFile']);
 
 //gotta make the title the non png file??
 function fsCtrl($scope, ngDialog, VirtualFs, PNGStorage, SaveFile, Auth) {
@@ -46,11 +46,11 @@ function fsCtrl($scope, ngDialog, VirtualFs, PNGStorage, SaveFile, Auth) {
     });
   };
 
-  var download = function(idNode) {
-    //result contains fileName and content fields
+  var download = function(idNode, name) {
+    //result contains binary data
     VirtualFs.downloadFile(idNode, function(err, result) {
       if(err) { return console.log(err); }
-      SaveFile.save(result.content, result.fileName);
+      SaveFile.save(result, name);
     });
   };
 
@@ -151,7 +151,7 @@ function fsCtrl($scope, ngDialog, VirtualFs, PNGStorage, SaveFile, Auth) {
     if(isDirectory) {
       changeDirectory(idNode, name, true);
     } else {
-      download(idNode);
+      download(idNode, name);
     }
   };
 

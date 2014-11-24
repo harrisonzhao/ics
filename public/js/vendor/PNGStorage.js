@@ -18,8 +18,10 @@ function pngstore() {
     return code;
   };
   var PNGStorage = {};
-  PNGStorage.decode = function (data, callback) {//nihilogic canvas decompressor
-    if (!data.length) {return; }
+  
+  //url is where to fetch data from
+  PNGStorage.decode = function (url, callback) {//nihilogic canvas decompressor
+    if (!url.length) {return; }
     //console.log(data);
     var canvas = document.createElement('canvas');
     var ctx = canvas.getContext('2d');
@@ -46,7 +48,8 @@ function pngstore() {
       if (callback) {callback(a);}
       document.body.removeChild(image);
     }
-    image.src = data;
+    image.crossOrigin ='anonymous'; //KEY LINE
+    image.src = url;
     return true;
   };
 

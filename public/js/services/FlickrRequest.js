@@ -5,11 +5,6 @@
 var flickrRequest = angular.module('services.flickrRequest', [
   'vendor.services.PNGStorage']);
 
-function downloadPng($resource) {
-  return $resource('/fs/png');
-}
-flickrRequest.factory('DownloadPng', ['$resource', downloadPng]);
-
 function dataURLToBlob(dataURL) {
   var BASE64_MARKER = ';base64,';
   if (dataURL.indexOf(BASE64_MARKER) == -1) {
@@ -34,7 +29,7 @@ function dataURLToBlob(dataURL) {
   return new Blob([uInt8Array], {type: contentType});
 }
 
-function FlickrRequest($http, PNGStorage, DownloadPng) {
+function FlickrRequest($http, PNGStorage) {
   return {
     //data is all fields of post request excluding photo
     //photo is a base64 string
@@ -50,6 +45,7 @@ function FlickrRequest($http, PNGStorage, DownloadPng) {
     },
 
     //gets the base64 representation of png
+    //converts it to blob
     download: function(url, callback) {
       async.waterfall(
       [
@@ -66,21 +62,9 @@ function FlickrRequest($http, PNGStorage, DownloadPng) {
             });
         },
         function(sourceUrl, callback) {
-          DownloadPng.get({url: sourceUrl}, function(data) {
-            callback(null, data);
-          }, function(err) {
-            callback(err.data);
+          PNGStorage.decode(sourceUrl, function(data) {
+            callback(null, dataURLToBlob(data));
           });
-        },
-        function(content, callback) {
-          content = content.prefix + content.body;
-          PNGStorage.decode(content, function(data) {
-            callback(null, data);
-          });
-        },
-        function(decoded, callback) {
-          var fileAsBlob = dataURLToBlob(decoded);
-          callback(null, fileAsBlob);
         }
       ],
       function(err, result) {
@@ -104,4 +88,4 @@ function FlickrRequest($http, PNGStorage, DownloadPng) {
 }
 
 flickrRequest.factory('FlickrRequest', [
-  '$http', 'PNGStorage', 'DownloadPng', FlickrRequest]);
+  '$http', 'PNGStorage', FlickrRequest]);

@@ -17,7 +17,6 @@ module.exports = function(app) {
   app.get('/fs/upload', auth.checkLoggedIn, vfs.getUploadFileData);
   app.get('/fs/download', auth.checkLoggedIn, vfs.getDownloadFileData);
   app.delete('/fs/delete', auth.checkLoggedIn, vfs.deleteNode);
-  app.get('/fs/png', auth.checkLoggedIn, vfs.getBase64Png);
 
   var flickrAuth = require('controllers/flickrAuth/oauth');
   app.get('/auth/flickr', flickrAuth.authenticate);
