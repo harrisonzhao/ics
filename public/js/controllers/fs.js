@@ -88,7 +88,7 @@ function fsCtrl($scope, $http, ngDialog, VirtualFs, PNGStorage, SaveFile, Auth){
     //replace all special characters too for good measure
     //this is because uploading to flickr with special characters causes problems when putting it in request url
     var fileName = $scope.uploadFileName.replace(/ /g,'_');
-    fileName = fileName.replace(/[`~!@#$%^&*()|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '_');
+    fileName = fileName.replace(/[`%&+\-=?]/gi, '_');
     file = PNGStorage.encode(file);
     VirtualFs.createFile(
       [{
