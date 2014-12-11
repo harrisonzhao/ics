@@ -47,6 +47,8 @@ function fsCtrl($scope, $http, ngDialog, VirtualFs, PNGStorage, SaveFile, Auth){
       if(err) { cdInProgress = false; return console.log(err); }
       $scope.currDirName = $scope.dirPath[
         $scope.dirPath.length - 1].name;
+      $scope.currDirId = $scope.dirPath[
+        $scope.dirPath.length - 1].id;
       $scope.nodes = nodes;
       cdInProgress = false;
     });
@@ -146,7 +148,6 @@ function fsCtrl($scope, $http, ngDialog, VirtualFs, PNGStorage, SaveFile, Auth){
   $scope.makeDirectory = function() {
     var dirName = $scope.newDirName;
     var currentDirId = $scope.dirPath[$scope.dirPath.length - 1].id;
-    $scope.currDirId = currentDirId;
     VirtualFs.makeDirectory(dirName, currentDirId, function(err, idDirectory) {
       if(err) { return console.log(err); }
       $scope.nodes.push({
@@ -219,10 +220,9 @@ function fsCtrl($scope, $http, ngDialog, VirtualFs, PNGStorage, SaveFile, Auth){
       parentId: parentId
     }).success(function() {
       //ignore if in root moving to root
-      if (parentId !== null) {
+      if (parentId !== null || $scope.currDirId !== null) {
         for (var i = 0; i < $scope.nodes.length; ++i) {
           if ($scope.nodes[i].idNode === childId) {
-            console.log($scope.currDirId);
             $scope.nodes.splice(i, 1);
           }
         }
@@ -230,8 +230,6 @@ function fsCtrl($scope, $http, ngDialog, VirtualFs, PNGStorage, SaveFile, Auth){
     }).error(function(data) {
       console.log(data.data);
     });
-      // console.log("drop success, data:", child);
-      // console.log(parent);
   }
 
   //get the user
