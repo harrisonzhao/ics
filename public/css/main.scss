@@ -39,7 +39,13 @@ $icon-font-path: "/bower_components/sass-bootstrap/fonts/";
 }
 
 .table {
+  border: none;
   float: left;
+}
+
+.table tbody>tr>td.vert
+{
+    vertical-align: middle;
 }
 
 body {

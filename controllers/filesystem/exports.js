@@ -13,11 +13,12 @@ var loadBase64Image = require('lib/utils/loadBase64Image');
 //req must provide currentDirId, dirName 
 //currentDirId might be null if it's root directory
 function makeDirectory(req, res, next) {
+  req.body.currentDirId = parseInt(req.body.currentDirId);
   if (!(req.body.dirName)) {
     return next(new Error('Missing some fields'));
   }
-  if (req.body.currentDirId) {
-    req.body.currentDirId = parseInt(req.body.currentDirId);
+  if (!req.body.currentDirId && req.body.currentDirId !== 0) {
+    req.body.currentDirId = null;
   }
   Nodes.insertDirectory(
     req.body.currentDirId,
@@ -72,7 +73,7 @@ function createFile(req, res, next) {
 //getUrls is array or get requestable urls to get the images
 function getDownloadFileData(req, res, next) {
   req.query.idNode = parseInt(req.query.idNode);
-  if (!(req.query.idNode)) {
+  if (!req.query.idNode && req.query.idNode !== 0) {
     return next(new Error('Missing some params'));
   }
   var images;
@@ -153,11 +154,25 @@ function getUploadFileData(req, res, next) {
 //need idNode for delete
 function deleteNode(req, res, next) {
   req.query.idNode = parseInt(req.query.idNode);
-  if(!req.query.idNode) {
+  if(!req.query.idNode && req.query.idNode !== 0) {
     return next(new Error('no directory or file specified!'));
   }
   Nodes.deleteNode(req.query.idNode, function(err) {
     err ? next(err) : res.sendStatus(200); 
+  });
+}
+
+function moveToNewParent(req, res, next) {
+  req.body.childId = parseInt(req.body.childId);
+  req.body.parentId = parseInt(req.body.parentId);
+  if (!req.body.parentId && req.body.parentId !== 0) {
+    req.body.parentId = null;
+  }
+  if (!req.body.childId && req.body.childId !== 0) {
+    return next(new Error('Missing some fields!'));
+  }
+  Nodes.updateParentId(req.body.childId, req.body.parentId, function(err) {
+    err ? next(err) : res.sendStatus(200);
   });
 }
 
@@ -167,3 +182,4 @@ exports.createFile = createFile;
 exports.getDownloadFileData = getDownloadFileData;
 exports.getUploadFileData = getUploadFileData;
 exports.deleteNode = deleteNode;
+exports.moveToNewParent = moveToNewParent;

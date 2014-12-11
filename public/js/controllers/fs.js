@@ -4,11 +4,15 @@ var fs = angular.module('controllers.fs', [
   'vendor.services.PNGStorage',
   'angularFileUpload',
   'ngDialog',
+  'ngDraggable',
   'services.auth',
   'vendor.services.SaveFile']);
 
 //gotta make the title the non png file??
-function fsCtrl($scope, ngDialog, VirtualFs, PNGStorage, SaveFile, Auth) {
+function fsCtrl($scope, $http, ngDialog, VirtualFs, PNGStorage, SaveFile, Auth){
+  $scope.currentNodeId;
+  $scope.currentNodeName;
+
   $scope.files = [];
   var rootDirObj = {id: null, name: 'Root'};
   $scope.dirPath = [rootDirObj];
@@ -19,10 +23,12 @@ function fsCtrl($scope, ngDialog, VirtualFs, PNGStorage, SaveFile, Auth) {
   //for ng-repeat  
   $scope.nodes = [];
   $scope.currDirName = $scope.dirPath[$scope.dirPath.length - 1].name;
+  $scope.currDirId = $scope.dirPath[$scope.dirPath.length - 1].id;
 
   //prevent multiple clicks
   var cdInProgress = false;
   
+  //
   var changeDirectory = function(idNode, name, isChild) {
     if(cdInProgress) { return; }
     cdInProgress = true;
@@ -76,8 +82,11 @@ function fsCtrl($scope, ngDialog, VirtualFs, PNGStorage, SaveFile, Auth) {
     }
 
     var file = $scope.uploadFile;
-    //can't have spaces in file name
+    //can't have spaces in file name 
+    //replace all special characters too for good measure
+    //this is because uploading to flickr with special characters causes problems when putting it in request url
     var fileName = $scope.uploadFileName.replace(/ /g,'_');
+    fileName = fileName.replace(/[`~!@#$%^&*()|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '_');
     file = PNGStorage.encode(file);
     VirtualFs.createFile(
       [{
@@ -137,6 +146,7 @@ function fsCtrl($scope, ngDialog, VirtualFs, PNGStorage, SaveFile, Auth) {
   $scope.makeDirectory = function() {
     var dirName = $scope.newDirName;
     var currentDirId = $scope.dirPath[$scope.dirPath.length - 1].id;
+    $scope.currDirId = currentDirId;
     VirtualFs.makeDirectory(dirName, currentDirId, function(err, idDirectory) {
       if(err) { return console.log(err); }
       $scope.nodes.push({
@@ -151,9 +161,20 @@ function fsCtrl($scope, ngDialog, VirtualFs, PNGStorage, SaveFile, Auth) {
     if(isDirectory) {
       changeDirectory(idNode, name, true);
     } else {
-      download(idNode, name);
+      $scope.currentNodeId = idNode;
+      $scope.currentNodeName = name;
+      ngDialog.open({
+        template: 'downloadDialog',
+        className: 'ngdialog-theme-default ngdialog-theme-custom',
+        scope: $scope
+      });
     }
   };
+
+  //used in dialog box
+  $scope.downloadFile = function() {
+    download($scope.currentNodeId, $scope.currentNodeName);
+  }
 
   $scope.cdParent = function() {
     if($scope.dirPath.length > 1) {
@@ -176,12 +197,42 @@ function fsCtrl($scope, ngDialog, VirtualFs, PNGStorage, SaveFile, Auth) {
     Auth.logout();
   };
 
-  $scope.openDialog = function() {
-    ngDialog.open({ 
-      template: 'dialog', //references id="dialog" element in filesystem.html
+  $scope.openTutorial = function() {
+    ngDialog.open({
+      //references id="tutorialDialog" element in filesystem.html
+      template: 'tutorialDialog', 
       className: 'ngdialog-theme-default ngdialog-theme-custom'
     });
   };
+
+  //moves the child into parent
+  $scope.onDropComplete = function(child, parent){
+    var childId = child.idNode;
+    var parentId = parent.idNode;
+    //if moving file to parent directory
+    if (parentId !== null && parentId === $scope.currDirId &&
+        $scope.dirPath.length > 1) {
+      parentId = $scope.dirPath[$scope.dirPath.length - 2].id;
+    }
+    $http.post('/fs/move', {
+      childId: childId,
+      parentId: parentId
+    }).success(function() {
+      //ignore if in root moving to root
+      if (parentId !== null) {
+        for (var i = 0; i < $scope.nodes.length; ++i) {
+          if ($scope.nodes[i].idNode === childId) {
+            console.log($scope.currDirId);
+            $scope.nodes.splice(i, 1);
+          }
+        }
+      }
+    }).error(function(data) {
+      console.log(data.data);
+    });
+      // console.log("drop success, data:", child);
+      // console.log(parent);
+  }
 
   //get the user
   Auth.currentUser(function(err, user) {
@@ -200,6 +251,7 @@ function fsCtrl($scope, ngDialog, VirtualFs, PNGStorage, SaveFile, Auth) {
 fs.controller('FsCtrl', 
   [
     '$scope',
+    '$http',
     'ngDialog',
     'VirtualFs',
     'PNGStorage',

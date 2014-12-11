@@ -24,6 +24,16 @@ function selectByParentId(nid, uid, callback) {
 	}
 }
 
+var updateParentIdQuery = multiline(function() {/*
+  update Nodes set idParent = ? where idNode = ?;
+ */});
+
+function updateParentId(nid, pid, callback) {
+  connection.query(updateParentIdQuery, [pid, nid], function(err) {
+    callback(err);
+  });
+}
+
 var selectByIdQuery = multiline(function() {/*
   select * from Nodes where idNode = ? AND idOwner = ?;
 */});
@@ -88,6 +98,7 @@ function deleteNode(nid, callback) {
 }
 
 exports.selectByParentId = selectByParentId;
+exports.updateParentId = updateParentId;
 exports.selectById = selectById;
 exports.insertDirectory = insertDirectory;
 exports.insertFile = insertFile;

@@ -19,7 +19,7 @@
                 <ul class="dropdown-menu">
                     <li><a>Total Storage: {{currentUser.numAccounts}} TB</a></li>
                     <li><a ng-click="addAccount()">Add More Flickr Accounts</a></li>
-                    <li><a ng-click="openDialog()">How To Get More Storage?</a></li>
+                    <li><a ng-click="openTutorial()">How To Get More Storage?</a></li>
                     <li><a ng-click="logout()">Logout</a></li>
                 </ul>
             </li>
@@ -27,32 +27,35 @@
     </div>
 
     <scrollable-table class="table" watch="visibleProjects">
-        <table class="table table-striped table-bordered">
+        <table class="table table-striped table-bordered" border="0">
             <thead>
                 <tr>
-                    <th width=100 sortable-header col="isd" ng-click="deleteClicked()">
-                        <button type="button">Delete Selected</button>
+                    <th sortable-header width=40 col="isd" ng-click="deleteClicked()">
+                        <a>Delete Selected</a>
                     </th>
-                    <th width=65 sortable-header col="id">Type</th>
-                    <th sortable-header ng-click="cdParent()" col="name">{{currDirName}} >> Go Up</th>
+                    <th sortable-header width=50 col="id">File Type</th>
+                    <th sortable-header ng-click="cdParent()" col="name" ng-drop="true" 
+                    ng-drop-success="onDropComplete($data, {idNode: currDirId})">
+                        <a>{{currDirName}} >> Go Up</a>
+                    </th>
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="node in nodes" ng-click="clickNode(node.idNode, node.name, node.isDirectory)">
-                    <td width=100 ng-click="$event.stopPropagation()">
+                <tr ng-repeat="node in nodes" >
+                    <td class="vert">
                         <input class="checkbox" type="checkbox" ng-model="node.clicked"
                             ng-true-value="1" ng-false-value="0">
                     </td>
-                    <td width=65>
+                    <td ng-drag="true" ng-drop="node.isDirectory ? true : false" ng-drag-data="node" ng-drop-success="node.isDirectory && ($data.idNode !== node.idNode) ? onDropComplete($data, node) : angular.noop">
                         <img ng-show="node.isDirectory" src="img/directory.png">
                         <img ng-show="!node.isDirectory" src="img/file.png">
                     </td>
-                    <td>{{ node.name }}</td>
+                    <td class="vert"><a ng-click="clickNode(node.idNode, node.name, node.isDirectory)">{{ node.name }}</a></td>
                 </tr>
             </tbody>
         </table>
     </scrollable-table>
-    <script type="text/ng-template" id="dialog">
+    <script type="text/ng-template" id="tutorialDialog">
         <div class="ngdialog-message">
             <h2>Achieving Infinite Storage</h2>
             <ol class="mt">
@@ -65,4 +68,14 @@
             </ol>
         </div>
     </script>
+    <script type="text/ng-template" id="downloadDialog">
+        <div class="ngdialog-message">
+            <div class="text-center"> 
+                <img src="img/file.png">
+                <h1 class="login-title-small">{{currentNodeName}}</h1>
+                <button class="btn btn-default text-center" type="button" ng-click="downloadFile()">Download</button>
+            </div>
+        </div>
+    </script>
+
 </div>
