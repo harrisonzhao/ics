@@ -219,6 +219,7 @@ function fsCtrl($scope, $http, ngDialog, VirtualFs, PNGStorage, SaveFile, Auth){
       childId: childId,
       parentId: parentId
     }).success(function() {
+      //NOTE: I don't check for name conflicts when moving
       //ignore if in root moving to root
       if (parentId !== null || $scope.currDirId !== null) {
         for (var i = 0; i < $scope.nodes.length; ++i) {
