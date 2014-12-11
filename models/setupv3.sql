@@ -2,7 +2,7 @@ USE infcs;
 
 #using VARCHARS because lazy testing can't type out 32 char
 
-DROP TABLE IF EXISTS Users;
+#DROP TABLE IF EXISTS Users;
 CREATE TABLE IF NOT EXISTS Users (
   idUser INT NOT NULL AUTO_INCREMENT,
   apiKey VARCHAR(45) NOT NULL,        #length is exactly 32
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS Users (
 #access tokens are unique and never expire
 #select best access token when inserting based on bytes used
 #for now only support 1 flickr account per user I guess
-DROP TABLE IF EXISTS FlickrAccounts;
+#DROP TABLE IF EXISTS FlickrAccounts;
 CREATE TABLE IF NOT EXISTS FlickrAccounts (
   accessToken VARCHAR(34) UNIQUE NOT NULL,  #length is exactly 34
   accessTokenSecret VARCHAR(16) NOT NULL,   #length is exactly 16
@@ -36,7 +36,7 @@ ALTER TABLE FlickrAccounts ADD INDEX(idUser);
 * Entry in files required if and only if isDirectory == 0
 */
 
-DROP TABLE IF EXISTS Nodes;
+#DROP TABLE IF EXISTS Nodes;
 CREATE TABLE IF NOT EXISTS Nodes (
   idNode INT NOT NULL AUTO_INCREMENT,
   idParent INT NULL,
@@ -48,10 +48,10 @@ CREATE TABLE IF NOT EXISTS Nodes (
 
 CREATE INDEX ownerIndx ON Nodes(idOwner) USING BTREE;
 
-DROP TABLE IF EXISTS Files;
+#DROP TABLE IF EXISTS Files;
 
 #bytes is bytes that the png image takes up
-DROP TABLE IF EXISTS Images;
+#DROP TABLE IF EXISTS Images;
 CREATE TABLE IF NOT EXISTS Images (
   idNode INT NOT NULL,
   imgNum INT NOT NULL,
