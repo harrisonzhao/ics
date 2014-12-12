@@ -4,12 +4,13 @@ var fs = angular.module('controllers.fs', [
   'vendor.services.PNGStorage',
   'angularFileUpload',
   'ngDialog',
-  'ngDraggable',
+  'ngDraggable', 
+  'ngNotify',
   'services.auth',
   'vendor.services.SaveFile']);
 
 //gotta make the title the non png file??
-function fsCtrl($scope, $http, ngDialog, VirtualFs, PNGStorage, SaveFile, Auth){
+function fsCtrl($scope, $http, ngDialog, VirtualFs, PNGStorage, SaveFile, ngNotify, Auth){
   $scope.currentNodeId;
   $scope.currentNodeName;
 
@@ -231,7 +232,19 @@ function fsCtrl($scope, $http, ngDialog, VirtualFs, PNGStorage, SaveFile, Auth){
     }).error(function(data) {
       console.log(data.data);
     });
-  }
+  };
+
+  // For notifications
+  $scope.displayNotification = function(notificationType) {
+    switch(notificationType) {
+      case 'Delete':
+        ngNotify.set("Deleting!");
+        break;
+      default:
+        ngNotify.set("This is a default notification. I don't know why it's appearing.");
+        break;
+    }
+  };
 
   //get the user
   Auth.currentUser(function(err, user) {
@@ -255,6 +268,7 @@ fs.controller('FsCtrl',
     'VirtualFs',
     'PNGStorage',
     'SaveFile',
+    'ngNotify',
     'Auth',
     fsCtrl
   ]);

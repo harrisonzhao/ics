@@ -94,6 +94,7 @@ var deleteNodeQuery = multiline(function () {/*
 */});
 
 function deleteNode(nid, callback) {
+  // yes
   connection.query(deleteNodeQuery, [nid], callback);
 }
 

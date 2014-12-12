@@ -14,8 +14,8 @@
     "angular-sanitize": "~1.2.0",
     "angular-route": "~1.2.0",
     "angular-http-auth": "*",
-    "angular-bootstrap": "~0.7.0"
+    "angular-bootstrap": "~0.7.0",
+    "ng-notify": "~0.5.0"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }

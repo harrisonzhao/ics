@@ -36,7 +36,7 @@ var selectBestQuery = multiline(function() {/*
   order by bytesUsed asc
   LIMIT 1;
 */});
-/**
+/** 
  * [selectBest description]
  * @param  {int}   idUser   [description]
  * @param  {Function} callback [description]
@@ -59,6 +59,7 @@ var deleteByAccessToken = multiline(function() {/*
   delete from FlickrAccounts
   where accessToken = ?;
 */});
+
 /**
  * [deleteByAccessToken description]
  * @param  {[type]}   token    [description]
@@ -73,6 +74,7 @@ var deleteByIdQuery = multiline(function() {/*
   delete from FlickrAccounts
   where idUser = ?;
 */});
+
 /**
  * [deleteById description]
  * @param  {[type]}   idUser   [description]
