@@ -66,6 +66,7 @@ function fsCtrl($scope, $http, ngDialog, VirtualFs, PNGStorage, SaveFile, ngNoti
   //assumes the existence of $scope.uploadFile and $scope.uploadFileName
   //$files: an array of files selected, each file has name, size, and type.
   $scope.upload = function() {
+    $scope.displayNotification("Upload");
     var checkSize = function(size) {
       if (size < 550) {
         alert('File must be larger than ' + 600 + ' bytes');
@@ -112,6 +113,7 @@ function fsCtrl($scope, $http, ngDialog, VirtualFs, PNGStorage, SaveFile, ngNoti
           name: fileName
         });
       });
+    $scope.displayNotification("Dismiss");
   };
 
   $scope.onFileSelect = function($files) {
@@ -133,14 +135,21 @@ function fsCtrl($scope, $http, ngDialog, VirtualFs, PNGStorage, SaveFile, ngNoti
 
   $scope.deleteClicked = function() {
     var toDelete = [];
+    console.log("I'm at the beginning of deleteClicked");
     for(var i=0; i<$scope.nodes.length; i++){
+      console.log("I'm in the for loop");
       var clicked = $scope.nodes[i].clicked;
       if(clicked == 1){
+        console.log("I'm at a node that should be deleted");
+        $scope.displayNotification("Delete");  
         deleteNode($scope.nodes[i].idNode);
         toDelete.push(i);
       }
     }
-
+    console.log("I'm out of the loop now");
+    //$scope.displayNotification("Dismiss");
+    //ngNotify.dismiss();
+    
     $scope.nodes = $scope.nodes.filter(function(element){
       return !(element.clicked == 1);
     });
@@ -236,12 +245,28 @@ function fsCtrl($scope, $http, ngDialog, VirtualFs, PNGStorage, SaveFile, ngNoti
 
   // For notifications
   $scope.displayNotification = function(notificationType) {
+    console.log("Displaying notification: " + notificationType);
     switch(notificationType) {
       case 'Delete':
-        ngNotify.set("Deleting!");
+        ngNotify.set("Deleting!", {
+          type: 'error',
+          duration: 1000
+        });
+        break;
+      case 'Upload':
+        ngNotify.set("Uploading file", {
+          type: "success",
+          duration: 1000
+        })
+        break;
+      case 'Dismiss':
+        ngNotify.dismiss();
         break;
       default:
-        ngNotify.set("This is a default notification. I don't know why it's appearing.");
+        ngNotify.dismiss();
+        ngNotify.set("This is a default notification. I don't know why it's appearing.", {
+          type: 'error'
+        });
         break;
     }
   };
