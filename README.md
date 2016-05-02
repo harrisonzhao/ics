@@ -1,9 +1,13 @@
 ~~~ INFINITE CLOUD STORAGE ~~~
 =========
 
+Project completed for the Cooper Union's ECE 464 Databases course. Probably does not work anymore. Server is down. Read about in the [paper](./writeup).  
+
 Prerequisites
 ---------------
 - [Node.js](http://nodejs.org)
+- [Bower](http://bower.io/)
+- [Sass](http://sass-lang.com/)
 
 Getting Started
 ---------------
@@ -36,30 +40,22 @@ File structure:
     models/             --> data model containing CRUD for database
     node_modules/       --> modules for node npm installed
     package.json        --> for npm
+    .bowerrc            --> bower stuff
+    Gruntfile.js        --> for running mocha tests
     public/             --> all of the files to be used in on the client side
-      css/              --> css files
-        app.css         --> default stylesheet
+      css/              --> css and sass files
+        main.scss       --> default sass stylesheet
       img/              --> image files
       js/               --> javascript files
         app.js          --> declare top-level app module
-        controllers.js  --> application controllers
-        directives.js   --> custom angular directives
-        filters.js      --> custom angular filters
-        services.js     --> custom angular services
-        lib/            --> angular and 3rd party JavaScript libraries
-          angular/
-            angular.js            --> the latest angular js
-            angular.min.js        --> the latest minified angular js
-            angular-*.js          --> angular add-on modules
-            version.txt           --> version number
+        controllers/    --> application controllers
+        services/       --> custom angular services
+        vendor/         --> 3rd party JavaScript libraries
     routes/
-      api.js            --> route for serving JSON
-      index.js          --> route for serving HTML pages and partials
+      api.js            --> register all endpoints
+      index.js          --> serving static files
     views/
       index.html        --> main page for app
-      layout.html       --> doctype, title, head boilerplate
-      partials/         --> angular view partials (partial hbs templates)
+      partials/         --> angular view partials
         partial1.html
         partial2.html
-
-CRUD = Create Read Update Delete
